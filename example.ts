@@ -14,6 +14,9 @@ let entry = LLVM.LLVMAppendBasicBlock(main, "entry");
 // Build a tiny program in the block.
 let builder = LLVM.LLVMCreateBuilder();
 LLVM.LLVMPositionBuilderAtEnd(builder, entry);
+let sum = LLVM.LLVMBuildAdd(builder, LLVM.LLVMConstInt(34),
+                            LLVM.LLVMConstInt(8), "sum");
+LLVM.LLVMBuildRet(builder, sum);
 LLVM.LLVMDisposeBuilder(builder);
 
 // Dump the IR as bitcode to disk.

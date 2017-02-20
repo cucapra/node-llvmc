@@ -22,8 +22,7 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Function types.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeFunction.html
-  'LLVMFunctionType':           [voidp, [voidp, voidp, ref.types.uint32,
-                                         'bool']],
+  'LLVMFunctionType':           [voidp, [voidp, voidp, 'uint', 'bool']],
 
   // Basic blocks.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueBasicBlock.html
@@ -36,6 +35,12 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMPositionBuilderBefore':  [void_, [voidp, voidp]],
   'LLVMPositionBuilderAtEnd':   [void_, [voidp, voidp]],
   'LLVMDisposeBuilder':         [void_, [voidp]],
+  'LLVMBuildAdd':               [voidp, [voidp, voidp, voidp, 'string']],
+  'LLVMBuildRet':               [voidp, [voidp, voidp]],
+
+  // Scalar constants.
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantScalar.html
+  'LLVMConstInt':               [voidp, [voidp, 'ulonglong', 'bool']],
 
   // Types.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeInt.html
