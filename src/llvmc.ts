@@ -5,5 +5,6 @@ import * as ref from 'ref';
 let voidp = ref.refType(ref.types.void);  // Pointer to an opaque LLVM value.
 
 export const LLVM = ffi.Library('libLLVM', {
-  'LLVMModuleCreateWithName': [voidp, ['CString']],
+  'LLVMModuleCreateWithName': [voidp, ['string']],
+  'LLVMWriteBitcodeToFile':   ['int', [voidp, 'string']],
 });
