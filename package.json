@@ -1,0 +1,12 @@
+{
+  "name": "llvmc",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/ffi": "^0.0.19",
+    "ffi": "^2.2.0"
+  }
+}
