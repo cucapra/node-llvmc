@@ -5,3 +5,6 @@ let err = LLVM.LLVMWriteBitcodeToFile(mod, "out.bc");
 if (err) {
   console.error("write failed", err);
 }
+let ir = LLVM.LLVMPrintModuleToString(mod);
+console.log(ir);
+LLVM.LLVMDisposeModule(mod);
