@@ -5,7 +5,8 @@ let mod = LLVM.LLVMModuleCreateWithName("some_module");
 
 // Add a function to the module.
 let paramtypes = new Buffer(0);
-let functype = LLVM.LLVMFunctionType(LLVM.LLVMInt32Type(), paramtypes, 0, 0);
+let functype = LLVM.LLVMFunctionType(LLVM.LLVMInt32Type(), paramtypes, 0,
+                                     false);
 let main = LLVM.LLVMAddFunction(mod, "main", functype);
 
 // Add a single basic block to the function.
@@ -14,8 +15,9 @@ let entry = LLVM.LLVMAppendBasicBlock(main, "entry");
 // Build a tiny program in the block.
 let builder = LLVM.LLVMCreateBuilder();
 LLVM.LLVMPositionBuilderAtEnd(builder, entry);
-let sum = LLVM.LLVMBuildAdd(builder, LLVM.LLVMConstInt(34),
-                            LLVM.LLVMConstInt(8), "sum");
+let arg1 = LLVM.LLVMConstInt(LLVM.LLVMInt32Type(), 34, false);
+let arg2 = LLVM.LLVMConstInt(LLVM.LLVMInt32Type(), 8, false);
+let sum = LLVM.LLVMBuildAdd(builder, arg1, arg2, "sum");
 LLVM.LLVMBuildRet(builder, sum);
 LLVM.LLVMDisposeBuilder(builder);
 
