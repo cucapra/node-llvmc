@@ -23,13 +23,12 @@ builder.ret(sum);
 builder.free();
 
 // Dump the IR as bitcode to disk.
-let err = LLVM.LLVMWriteBitcodeToFile(mod.ref, "out.bc");
+let err = mod.writeBitcodeToFile("out.bc");
 if (err) {
   console.error("write failed", err);
 }
 
 // Write the IR as text to the console.
-let ir = LLVM.LLVMPrintModuleToString(mod.ref);
-console.log(ir);
+console.log(mod.toString());
 
 mod.free();

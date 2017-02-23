@@ -70,6 +70,20 @@ export class Module {
   }
 
   /**
+   * Dump the IR to a file on disk.
+   */
+  writeBitcodeToFile(filename: string): number {
+    return LLVM.LLVMWriteBitcodeToFile(this.ref, filename);
+  }
+
+  /**
+   * Dump the textual IR to a string.
+   */
+  toString(): string {
+    return LLVM.LLVMPrintModuleToString(this.ref);
+  }
+
+  /**
    * Free the memory for this module.
    */
   free() {
