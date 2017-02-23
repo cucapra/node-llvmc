@@ -101,13 +101,6 @@ export class Builder extends Ref implements Freeable {
   }
 
   /**
-   * Build an integer constant.
-   */
-  constInt32(value: number): any {
-    return LLVM.LLVMConstInt(LLVM.LLVMInt32Type(), value, false);
-  }
-
-  /**
    * Build an integer addition instruction.
    */
   add(lhs: any, rhs: any, name: string): any {
@@ -127,4 +120,58 @@ export class Builder extends Ref implements Freeable {
   free() {
     LLVM.LLVMDisposeBuilder(this.ref);
   }
+}
+
+/**
+ * An LLVM type; wraps `LLVMTypeRef`.
+ */
+export class Type extends Ref {
+  /**
+   * Get the i1 type.
+   */
+  static int1(): Type {
+    return new Type(LLVM.LLVMInt1Type());
+  }
+
+  /**
+   * Get the i8 type.
+   */
+  static int8(): Type {
+    return new Type(LLVM.LLVMInt8Type());
+  }
+
+  /**
+   * Get the i16 type.
+   */
+  static int16(): Type {
+    return new Type(LLVM.LLVMInt16Type());
+  }
+
+  /**
+   * Get the i32 type.
+   */
+  static int32(): Type {
+    return new Type(LLVM.LLVMInt32Type());
+  }
+
+  /**
+   * Get the i64 type.
+   */
+  static int64(): Type {
+    return new Type(LLVM.LLVMInt64Type());
+  }
+
+  /**
+   * Get the i128 type.
+   */
+  static int128(): Type {
+    return new Type(LLVM.LLVMInt128Type());
+  }
+}
+
+/**
+ * Build an integer constant.
+ */
+export function constInt(value: number, type: Type): any {
+  return LLVM.LLVMConstInt(type.ref, value, false);
 }
