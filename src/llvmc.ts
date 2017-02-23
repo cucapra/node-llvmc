@@ -59,7 +59,7 @@ export class Module {
   /**
    * Wrap an LLVMModuleRef.
    */
-  constructor(public modref: any) {}
+  constructor(public ref: any) {}
   
   /**
    * Create a new module.
@@ -73,6 +73,59 @@ export class Module {
    * Free the memory for this module.
    */
   free() {
-    LLVM.LLVMDisposeModule(this.modref);
+    LLVM.LLVMDisposeModule(this.ref);
+  }
+}
+
+/**
+ * Represents an LLVM IR builder.
+ */
+export class Builder {
+  /**
+   * Wrap an LLVMBuilderRef.
+   */
+  constructor (public ref: any) {}
+
+  /**
+   * Create a new builder.
+   */
+  static create() {
+    let bref = LLVM.LLVMCreateBuilder();
+    return new Builder(bref);
+  }
+
+  /**
+   * Position the builder's insertion point at the end of the given basic block.
+   */
+  positionAtEnd(bbref: any) {
+    LLVM.LLVMPositionBuilderAtEnd(this.ref, bbref);
+  }
+
+  /**
+   * Build an integer constant.
+   */
+  constInt32(value: number): any {
+    return LLVM.LLVMConstInt(LLVM.LLVMInt32Type(), value, false);
+  }
+
+  /**
+   * Build an integer addition instruction.
+   */
+  add(lhs: any, rhs: any, name: string): any {
+    return LLVM.LLVMBuildAdd(this.ref, lhs, rhs, name);
+  }
+
+  /**
+   * Build a return instruction.
+   */
+  ret(arg: any): any {
+    return LLVM.LLVMBuildRet(this.ref, arg);
+  }
+
+  /**
+   * Free the memory for this builder.
+   */
+  free() {
+    LLVM.LLVMDisposeBuilder(this.ref);
   }
 }
