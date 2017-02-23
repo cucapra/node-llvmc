@@ -1,7 +1,7 @@
 /**
  * This module contains a set of classes that add abstraction over the
  * low-level functions in the LLVM C API.
- * 
+ *
  * Unlike using the lower-level functions, these wrappers aim for *type
  * safety* in the TypeScript level. As much as possible, you use a real
  * TypeScript class instead of an opaque pointer from the API.
@@ -185,7 +185,7 @@ export class Value extends Ref {
  */
 export class FunctionType extends Ref {
   static create(ret: Type, params: Type[], isVarArg = false) {
-    // TODO parameter types ignored currently. We need to transform the 
+    // TODO parameter types ignored currently. We need to transform the
     // JavaScript array into a C array of pointers, and then set the length
     // parameter to its length (instead of just 0).
     let paramtypes = new Buffer(0);
