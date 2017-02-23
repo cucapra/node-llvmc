@@ -1,6 +1,10 @@
 /**
  * This module contains a set of classes that add abstraction over the
  * low-level functions in the LLVM C API.
+ * 
+ * Unlike using the lower-level functions, these wrappers aim for *type
+ * safety* in the TypeScript level. As much as possible, you use a real
+ * TypeScript class instead of an opaque pointer from the API.
  */
 
 import { LLVM } from './llvmc';
@@ -52,8 +56,8 @@ export class Module extends Ref implements Freeable {
   /**
    * Add a function to the module, returning a `Function` wrapper.
    */
-  addFunction(name: string, type: any): Function {
-    let funcref = LLVM.LLVMAddFunction(this.ref, name, type);
+  addFunction(name: string, type: FunctionType): Function {
+    let funcref = LLVM.LLVMAddFunction(this.ref, name, type.ref);
     return new Function(funcref);
   }
 
@@ -174,6 +178,20 @@ export class Type extends Ref {
  * Wraps *any* LLVM value via an `LLVMValueRef`.
  */
 export class Value extends Ref {
+}
+
+/**
+ * Wraps a function type: an `LLVMFunctionTypeRef`.
+ */
+export class FunctionType extends Ref {
+  static create(ret: Type, params: Type[], isVarArg = false) {
+    // TODO parameter types ignored currently. We need to transform the 
+    // JavaScript array into a C array of pointers, and then set the length
+    // parameter to its length (instead of just 0).
+    let paramtypes = new Buffer(0);
+    let ftref = LLVM.LLVMFunctionType(ret.ref, paramtypes, 0, isVarArg);
+    return new FunctionType(ftref);
+  }
 }
 
 /**

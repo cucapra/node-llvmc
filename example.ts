@@ -6,8 +6,7 @@ let mod = llvmc.Module.create("some_module");
 
 // Add a function to the module.
 let paramtypes = new Buffer(0);
-let functype = LLVM.LLVMFunctionType(LLVM.LLVMInt32Type(), paramtypes, 0,
-                                     false);
+let functype = llvmc.FunctionType.create(llvmc.Type.int32(), []);
 let main = mod.addFunction("main", functype);
 
 // Add a single basic block to the function.
