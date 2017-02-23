@@ -1,4 +1,4 @@
-import * as llvmc from './src/llvmc';
+import * as llvmc from './src/wrapped';
 import { LLVM } from './src/llvmc';
 
 // Create a module.
