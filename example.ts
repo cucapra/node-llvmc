@@ -8,10 +8,10 @@ let mod = llvmc.Module.create("some_module");
 let paramtypes = new Buffer(0);
 let functype = LLVM.LLVMFunctionType(LLVM.LLVMInt32Type(), paramtypes, 0,
                                      false);
-let main = LLVM.LLVMAddFunction(mod.ref, "main", functype);
+let main = mod.addFunction("main", functype);
 
 // Add a single basic block to the function.
-let entry = LLVM.LLVMAppendBasicBlock(main, "entry");
+let entry = main.appendBasicBlock("entry");
 
 // Build a tiny program in the block.
 let builder = llvmc.Builder.create();

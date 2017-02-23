@@ -84,11 +84,44 @@ export class Module {
   }
 
   /**
+   * Add a function to the module, returning a `Function` wrapper.
+   */
+  addFunction(name: string, type: any): Function {
+    let funcref = LLVM.LLVMAddFunction(this.ref, name, type);
+    return new Function(funcref);
+  }
+
+  /**
    * Free the memory for this module.
    */
   free() {
     LLVM.LLVMDisposeModule(this.ref);
   }
+}
+
+/**
+ * Represents an LLVM function, wrapping an `LLVMFunctionRef`.
+ */
+export class Function {
+  /**
+   * Wrap an LLVMFunctionRef.
+   */
+  constructor(public ref: any) {}
+
+  /**
+   * Add a new basic block to this function.
+   */
+  appendBasicBlock(name: string) {
+    let bbref = LLVM.LLVMAppendBasicBlock(this.ref, "entry");
+    return new BasicBlock(bbref);
+  }
+}
+
+export class BasicBlock {
+  /**
+   * Wrap an LLVMBasicBlockRef.
+   */
+  constructor(public ref: any) {}
 }
 
 /**
@@ -111,8 +144,8 @@ export class Builder {
   /**
    * Position the builder's insertion point at the end of the given basic block.
    */
-  positionAtEnd(bbref: any) {
-    LLVM.LLVMPositionBuilderAtEnd(this.ref, bbref);
+  positionAtEnd(bb: BasicBlock) {
+    LLVM.LLVMPositionBuilderAtEnd(this.ref, bb.ref);
   }
 
   /**
