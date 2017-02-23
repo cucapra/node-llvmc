@@ -1,3 +1,8 @@
+/**
+ * This module contains a set of classes that add abstraction over the
+ * low-level functions in the LLVM C API.
+ */
+
 import { LLVM } from './llvmc';
 
 /**

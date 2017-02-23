@@ -1,3 +1,11 @@
+/**
+ * This module contains the low-level FFI declaration for the LLVM C library.
+ * You can call the functions on the `LLVM` object contained here to operate
+ * directly on LLVM value references.
+ * 
+ * More convenient wrapper classes are found in the `wrapped` module.
+ */
+
 import * as ffi from 'ffi';
 import * as ref from 'ref';
 
