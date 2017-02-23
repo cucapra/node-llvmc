@@ -6,14 +6,19 @@
 import { LLVM } from './llvmc';
 
 /**
- * Represents an LLVM module: specifically, and underlying `LLVMModuleRef`.
+ * A base class for our wrapper classes that abstract an `LLVM*Ref` type.
  */
-export class Module {
+export class Ref {
   /**
-   * Wrap an LLVMModuleRef.
+   * Create a new wrapepr for an underlying `LLVM*Ref` value.
    */
   constructor(public ref: any) {}
-  
+}
+
+/**
+ * Represents an LLVM module: specifically, and underlying `LLVMModuleRef`.
+ */
+export class Module extends Ref {
   /**
    * Create a new module.
    */
@@ -55,12 +60,7 @@ export class Module {
 /**
  * Represents an LLVM function, wrapping an `LLVMFunctionRef`.
  */
-export class Function {
-  /**
-   * Wrap an LLVMFunctionRef.
-   */
-  constructor(public ref: any) {}
-
+export class Function extends Ref {
   /**
    * Add a new basic block to this function.
    */
@@ -70,22 +70,13 @@ export class Function {
   }
 }
 
-export class BasicBlock {
-  /**
-   * Wrap an LLVMBasicBlockRef.
-   */
-  constructor(public ref: any) {}
+export class BasicBlock extends Ref {
 }
 
 /**
  * Represents an LLVM IR builder.
  */
-export class Builder {
-  /**
-   * Wrap an LLVMBuilderRef.
-   */
-  constructor (public ref: any) {}
-
+export class Builder extends Ref {
   /**
    * Create a new builder.
    */
