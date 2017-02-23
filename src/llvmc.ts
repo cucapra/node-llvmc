@@ -51,3 +51,28 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMInt64Type':              [voidp, []],
   'LLVMInt128Type':             [voidp, []],
 });
+
+/**
+ * Represents an LLVM module: specifically, and underlying `LLVMModuleRef`.
+ */
+export class Module {
+  /**
+   * Wrap an LLVMModuleRef.
+   */
+  constructor(public modref: any) {}
+  
+  /**
+   * Create a new module.
+   */
+  static create(name: String) {
+    let modref = LLVM.LLVMModuleCreateWithName(name);
+    return new Module(modref);
+  }
+
+  /**
+   * Free the memory for this module.
+   */
+  free() {
+    LLVM.LLVMDisposeModule(this.modref);
+  }
+}
