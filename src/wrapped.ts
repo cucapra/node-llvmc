@@ -103,15 +103,16 @@ export class Builder extends Ref implements Freeable {
   /**
    * Build an integer addition instruction.
    */
-  add(lhs: any, rhs: any, name: string): any {
-    return LLVM.LLVMBuildAdd(this.ref, lhs, rhs, name);
+  add(lhs: Value, rhs: Value, name: string): Value {
+    let vref = LLVM.LLVMBuildAdd(this.ref, lhs.ref, rhs.ref, name);
+    return new Value(vref);
   }
 
   /**
    * Build a return instruction.
    */
-  ret(arg: any): any {
-    return LLVM.LLVMBuildRet(this.ref, arg);
+  ret(arg: Value): any {
+    return LLVM.LLVMBuildRet(this.ref, arg.ref);
   }
 
   /**
@@ -170,8 +171,15 @@ export class Type extends Ref {
 }
 
 /**
+ * Wraps *any* LLVM value via an `LLVMValueRef`.
+ */
+export class Value extends Ref {
+}
+
+/**
  * Build an integer constant.
  */
-export function constInt(value: number, type: Type): any {
-  return LLVM.LLVMConstInt(type.ref, value, false);
+export function constInt(value: number, type: Type): Value {
+  let vref = LLVM.LLVMConstInt(type.ref, value, false);
+  return new Value(vref);
 }
