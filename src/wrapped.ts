@@ -16,9 +16,17 @@ export class Ref {
 }
 
 /**
+ * An LLVM wrapper object that has a `free` method that you must call when
+ * you're done with the memory.
+ */
+export interface Freeable {
+  free(): void;
+}
+
+/**
  * Represents an LLVM module: specifically, and underlying `LLVMModuleRef`.
  */
-export class Module extends Ref {
+export class Module extends Ref implements Freeable {
   /**
    * Create a new module.
    */
@@ -76,7 +84,7 @@ export class BasicBlock extends Ref {
 /**
  * Represents an LLVM IR builder.
  */
-export class Builder extends Ref {
+export class Builder extends Ref implements Freeable {
   /**
    * Create a new builder.
    */
