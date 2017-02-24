@@ -14,6 +14,10 @@ let voidp = ref.refType(ref.types.void);  // Pointer to an opaque LLVM value.
 let void_ = ref.types.void;
 
 export const LLVM = ffi.Library('libLLVM', {
+  /* ==============================
+   *             Core
+   * ============================== */
+
   // Modules.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreModule.html
   'LLVMModuleCreateWithName':           [voidp, ['string']],
@@ -25,13 +29,13 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetTarget':                      ['string', [voidp]],
   'LLVMSetTarget':                      [void_, [voidp, 'string']],
   'LLVMDumpModule':                     [void_, [voidp]],
-  'LLVMPrintModuleToFile':              [],
+  'LLVMPrintModuleToFile':              [],                        // todo
   'LLVMPrintModuleToString':            ['string', [voidp]],
   'LLVMSetModuleInlineAsm':             [void_, [voidp, 'string']],
   'LLVMGetModuleContext':               [voidp, [voidp]],
   'LLVMGetTypeByName':                  [voidp, [voidp, 'string']],
   'LLVMGetNamedMetadataNumOperands':    ['uint', [voidp, 'string']],
-  'LLVMGetNamedMetadataOperands':       [],
+  'LLVMGetNamedMetadataOperands':       [],                         // todo
   'LLVMAddNamedMetadataOperand':        [void_, [voidp, 'string', voidp]],
   'LLVMAddFunction':                    [voidp, [voidp, 'string', voidp]],
   'LLVMGetNamedFunction':               [voidp, [voidp, 'string']],
@@ -40,6 +44,25 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetNextFunction':                [voidp, [voidp]],
   'LLVMGetPreviousFunction':            [voidp, [voidp]],
   'LLVMWriteBitcodeToFile':             ['int', [voidp, 'string']],
+
+  // Integer Types.
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeInt.html
+  'LLVMInt1TypeInContext':      [voidp, [voidp]],
+  'LLVMInt8TypeInContext':      [voidp, [voidp]],
+  'LLVMInt16TypeInContext':     [voidp, [voidp]],
+  'LLVMInt32TypeInContext':     [voidp, [voidp]],
+  'LLVMInt64TypeInContext':     [voidp, [voidp]],
+  'LLVMInt128TypeInContext':    [voidp, [voidp]],
+  'LLVMIntTypeInContext':       [voidp, [voidp, 'uint']],
+  'LLVMInt1Type':               [voidp, []],
+  'LLVMInt8Type':               [voidp, []],
+  'LLVMInt16Type':              [voidp, []],
+  'LLVMInt32Type':              [voidp, []],
+  'LLVMInt64Type':              [voidp, []],
+  'LLVMInt128Type':             [voidp, []],
+  'LLVMIntType':                [voidp, ['uint']],
+  'LLVMGetIntTypeWidth':        ['uint', [voidp]],
+
   
 
   // Function types.
@@ -63,13 +86,4 @@ export const LLVM = ffi.Library('libLLVM', {
   // Scalar constants.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantScalar.html
   'LLVMConstInt':               [voidp, [voidp, 'ulonglong', 'bool']],
-
-  // Types.
-  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeInt.html
-  'LLVMInt1Type':               [voidp, []],
-  'LLVMInt8Type':               [voidp, []],
-  'LLVMInt16Type':              [voidp, []],
-  'LLVMInt32Type':              [voidp, []],
-  'LLVMInt64Type':              [voidp, []],
-  'LLVMInt128Type':             [voidp, []],
 });
