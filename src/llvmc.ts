@@ -63,7 +63,20 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMIntType':                [voidp, ['uint']],
   'LLVMGetIntTypeWidth':        ['uint', [voidp]],
 
-  
+  // Floating Point Types.
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeFloat.html
+  'LLVMHalfTypeInContext':      [],
+  'LLVMFloatTypeInContext':     [],
+  'LLVMDoubleTypeInContext':    [],
+  'LLVMX86FP80TypeInContext':   [],
+  'LLVMFP128TypeInContext':     [],
+  'LLVMPPCFP128TypeInContext':  [],
+  'LLVMHalfType':               [],
+  'LLVMFloatType':              [],
+  'LLVMDoubleType':             [],
+  'LLVMX86FP80Type':            [],
+  'LLVMFP128Type':              [],
+  'LLVMPPCFP128Type':           [],
 
   // Function types.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeFunction.html
