@@ -18,6 +18,12 @@ export const LLVM = ffi.Library('libLLVM', {
    *             Core
    * ============================== */
 
+  // Types and Enumerations
+  // todo
+
+  // Contexts
+  // todo
+
   // Modules.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreModule.html
   'LLVMModuleCreateWithName':           [voidp, ['string']],
@@ -29,13 +35,13 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetTarget':                      ['string', [voidp]],
   'LLVMSetTarget':                      [void_, [voidp, 'string']],
   'LLVMDumpModule':                     [void_, [voidp]],
-  'LLVMPrintModuleToFile':              [],                              // todo
+  'LLVMPrintModuleToFile':              [],                              // todo llvmbool, char**
   'LLVMPrintModuleToString':            ['string', [voidp]],
   'LLVMSetModuleInlineAsm':             [void_, [voidp, 'string']],
   'LLVMGetModuleContext':               [voidp, [voidp]],
   'LLVMGetTypeByName':                  [voidp, [voidp, 'string']],
   'LLVMGetNamedMetadataNumOperands':    ['uint', [voidp, 'string']],
-  'LLVMGetNamedMetadataOperands':       [],                               // todo
+  'LLVMGetNamedMetadataOperands':       [],                               // todo ref *
   'LLVMAddNamedMetadataOperand':        [void_, [voidp, 'string', voidp]],
   'LLVMAddFunction':                    [voidp, [voidp, 'string', voidp]],
   'LLVMGetNamedFunction':               [voidp, [voidp, 'string']],
@@ -47,8 +53,8 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Types
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreType.html
-  'LLVMGetTypeKind':            [],                                    // todo
-  'LLVMTypeIsSized':            [],                                    // todo
+  'LLVMGetTypeKind':            [],                                    // todo llvmtypekind
+  'LLVMTypeIsSized':            [],                                    // todo llvmbool
   'LLVMGetTypeContext':         [voidp, [voidp]],
   'LLVMDumpType':               [void_, [voidp]],
   'LLVMPrintTypeToString':      ['string', [voidp]],
@@ -89,23 +95,23 @@ export const LLVM = ffi.Library('libLLVM', {
   // Function types.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeFunction.html
   'LLVMFunctionType':           [voidp, [voidp, voidp, 'uint', 'bool']],
-  'LLVMIsFunctionVarArg':       [],                                      // todo
+  'LLVMIsFunctionVarArg':       [],                                      // todo llvmbool
   'LLVMGetReturnType':          [voidp, [voidp]],
   'LLVMCountParamTypes':        ['uint', [voidp]],
-  'LLVMGetParamTypes':          [],                                      // todo
+  'LLVMGetParamTypes':          [],                                      // todo ref *
 
   // Structure Types
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeStruct.html
-  'LLVMStructTypeInContext':      [],                                    // todo
-  'LLVMStructType':               [],                                    // todo
+  'LLVMStructTypeInContext':      [],                                    // todo ref *, llvmbool
+  'LLVMStructType':               [],                                    // todo ref *, llvmbool
   'LLVMStructCreateNamed':        [voidp, [voidp, 'string']],
   'LLVMGetStructName':            ['string', [voidp]],
-  'LLVMStructSetBody':            [],                                    // todo
+  'LLVMStructSetBody':            [],                                    // todo ref *, llvmbool
   'LLVMCountStructElementTypes':  ['uint', [voidp]],
-  'LLVMGetStructElementTypes':    [],                                    // todo
+  'LLVMGetStructElementTypes':    [],                                    // todo ref *
   'LLVMStructGetTypeAtIndex':     [voidp, [voidp, 'uint']],
-  'LLVMIsPackedStruct':           [],                                    // todo
-  'LLVMIsOpaqueStruct':           [],                                    // todo
+  'LLVMIsPackedStruct':           [],                                    // todo llvmbool
+  'LLVMIsOpaqueStruct':           [],                                    // todo llvmbool
 
   // Sequential Types
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeSequential.html
@@ -126,6 +132,46 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMLabelType':              [voidp, []],
   'LLVMX86MMXType':             [voidp, []],
 
+  // General APIs
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueGeneral.html
+  // todo: #define LLVM_DECLARE_VALUE_CAST
+  'LLVMTypeOf':                 [voidp, [voidp]],
+  'LLVMGetValueName':           ['string', [voidp]],
+  'LLVMSetValueName':           [void_, [voidp, 'string']],
+  'LLVMDumpValue':              [void_, [voidp]],
+  'LLVMPrintValueToString':     ['string', [voidp]],
+  'LLVMReplaceAllUsesWith':     [void_, [voidp, voidp]],
+  'LLVMIsConstant':             [],                                     // todo llvmbool
+  'LLVMIsUndef':                [],                                     // todo llvmbool
+  'LLVMIsAMDNode':              [voidp, [voidp]],
+  'LLVMIsAMDString':            [voidp, [voidp]],
+
+  // Usage
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueUses.html
+  'LLVMGetFirstUse':            [voidp, [voidp]],
+  'LLVMGetNextUse':             [voidp, [voidp]],
+  'LLVMGetUser':                [voidp, [voidp]],
+  'LLVMGetUsedValue':           [voidp, [voidp]],
+
+  // User Value
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueUser.html
+  'LLVMGetOperand':             [voidp, [voidp, 'uint']],
+  'LLVMGetOperandUse':          [voidp, [voidp, 'uint']],
+  'LLVMSetOperand':             [void_, [voidp, 'uint', voidp]],
+  'LLVMGetNumOperands':         ['int', [voidp]],
+
+  // Constants
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstant.html
+  'LLVMConstNull':              [voidp, [voidp]],
+  'LLVMConstAllOnes':           [voidp, [voidp]],
+  'LLVMGetUndef':               [voidp, [voidp]],
+  'LLVMIsNull':                 [],                                    // todo llvmbool
+  'LLVMConstPointerNull':       [voidp, [voidp]],
+
+  // Scalar constants.
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantScalar.html
+  'LLVMConstInt':               [voidp, [voidp, 'ulonglong', 'bool']],
+
   // Basic blocks.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueBasicBlock.html
   'LLVMAppendBasicBlock':       [voidp, [voidp, 'string']],
@@ -139,8 +185,4 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMDisposeBuilder':         [void_, [voidp]],
   'LLVMBuildAdd':               [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildRet':               [voidp, [voidp, voidp]],
-
-  // Scalar constants.
-  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantScalar.html
-  'LLVMConstInt':               [voidp, [voidp, 'ulonglong', 'bool']],
 });
