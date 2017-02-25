@@ -11,6 +11,7 @@ import * as ref from 'ref';
 
 // Some useful types.
 let voidp = ref.refType(ref.types.void);  // Pointer to an opaque LLVM value.
+let voidpp = ref.refType(voidp);  // void**, used for arrays and out-parameters.
 let void_ = ref.types.void;
 
 export const LLVM = ffi.Library('libLLVM', {
@@ -125,7 +126,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMIsFunctionVarArg':       ['bool', [voidp]],                                      
   'LLVMGetReturnType':          [voidp, [voidp]],
   'LLVMCountParamTypes':        ['uint', [voidp]],
-  // void   LLVMGetParamTypes (LLVMTypeRef FunctionTy, LLVMTypeRef *Dest)
+  'LLVMGetParamTypes':          [void_, [voidp, voidpp]],
 
   // Structure Types
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeStruct.html
