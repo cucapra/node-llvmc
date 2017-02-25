@@ -261,6 +261,23 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMConstInlineAsm':         [voidp, [voidp, 'string', 'string', 'bool', 'bool']],
   'LLVMBlockAddress':           [voidp, [voidp, voidp]],
 
+  // Global Values
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantGlobals.html
+  'LLVMGetGlobalParent':         [voidp, [voidp]],
+  'LLVMIsDeclaration':           ['bool', [voidp]],
+  // LLVMLinkage   LLVMGetLinkage (LLVMValueRef Global)
+  // void   LLVMSetLinkage (LLVMValueRef Global, LLVMLinkage Linkage)
+  'LLVMGetSection':              ['string', [voidp]],
+  'LLVMSetSection':              [void_, [voidp, 'string']],
+  // LLVMVisibility   LLVMGetVisibility (LLVMValueRef Global)
+  // void   LLVMSetVisibility (LLVMValueRef Global, LLVMVisibility Viz)
+  // LLVMDLLStorageClass   LLVMGetDLLStorageClass (LLVMValueRef Global)
+  // void   LLVMSetDLLStorageClass (LLVMValueRef Global, LLVMDLLStorageClass Class)
+  'LLVMHasUnnamedAddr':           ['bool', [voidp]],
+  'LLVMSetUnnamedAddr':           [void_, [voidp, 'bool']],
+  'LLVMGetAlignment':             ['uint', [voidp]],
+  'LLVMSetAlignment':             [void_, [voidp, 'uint']],
+
   // Basic blocks.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueBasicBlock.html
   'LLVMAppendBasicBlock':       [voidp, [voidp, 'string']],
