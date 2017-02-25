@@ -65,18 +65,18 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Floating Point Types.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeFloat.html
-  'LLVMHalfTypeInContext':      [],
-  'LLVMFloatTypeInContext':     [],
-  'LLVMDoubleTypeInContext':    [],
-  'LLVMX86FP80TypeInContext':   [],
-  'LLVMFP128TypeInContext':     [],
-  'LLVMPPCFP128TypeInContext':  [],
-  'LLVMHalfType':               [],
-  'LLVMFloatType':              [],
-  'LLVMDoubleType':             [],
-  'LLVMX86FP80Type':            [],
-  'LLVMFP128Type':              [],
-  'LLVMPPCFP128Type':           [],
+  'LLVMHalfTypeInContext':      [voidp, [voidp]],
+  'LLVMFloatTypeInContext':     [voidp, [voidp]],
+  'LLVMDoubleTypeInContext':    [voidp, [voidp]],
+  'LLVMX86FP80TypeInContext':   [voidp, [voidp]],
+  'LLVMFP128TypeInContext':     [voidp, [voidp]],
+  'LLVMPPCFP128TypeInContext':  [voidp, [voidp]],
+  'LLVMHalfType':               [voidp, []],
+  'LLVMFloatType':              [voidp, []],
+  'LLVMDoubleType':             [voidp, []],
+  'LLVMX86FP80Type':            [voidp, []],
+  'LLVMFP128Type':              [voidp, []],
+  'LLVMPPCFP128Type':           [voidp, []],
 
   // Function types.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeFunction.html
