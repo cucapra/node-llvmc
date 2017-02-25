@@ -14,6 +14,30 @@ let voidp = ref.refType(ref.types.void);  // Pointer to an opaque LLVM value.
 let void_ = ref.types.void;
 
 export const LLVM = ffi.Library('libLLVM', {
+  // Analysis
+  // todo
+
+  // Bit Reader
+  // todo
+
+  // Bit Writer
+  // todo
+
+  // Transforms
+  // todo
+
+  // Interprocedural transformations
+  // todo
+
+  // Pass manager builder
+  // todo
+
+  // Scalar transformations
+  // todo
+
+  // Vectorization transformation
+  // todo
+
   // Core
   // http://llvm.org/docs/doxygen/html/group__LLVMCCore.html
   'LLVMInitializeCore':              [void_, [voidp]],
@@ -135,9 +159,13 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMLabelType':              [voidp, []],
   'LLVMX86MMXType':             [voidp, []],
 
+  // Values
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValues.html
+  // #define   LLVM_FOR_EACH_VALUE_SUBCLASS(macro)
+
   // General APIs
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueGeneral.html
-  // todo: #define LLVM_DECLARE_VALUE_CAST
+  // #define   LLVM_DECLARE_VALUE_CAST(name)   LLVMValueRef LLVMIsA##name(LLVMValueRef Val);
   'LLVMTypeOf':                 [voidp, [voidp]],
   'LLVMGetValueName':           ['string', [voidp]],
   'LLVMSetValueName':           [void_, [voidp, 'string']],
@@ -280,6 +308,10 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMSetUnnamedAddr':           [void_, [voidp, 'bool']],
   'LLVMGetAlignment':             ['uint', [voidp]],
   'LLVMSetAlignment':             [void_, [voidp, 'uint']],
+
+  // Values with alignments
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueWithAlignment.html
+  // empty
 
   // Global Variables
   // http://llvm.org/docs/doxygen/html/group__LLVMCoreValueConstantGlobalVariable.html
