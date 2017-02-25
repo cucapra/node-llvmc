@@ -403,6 +403,48 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetFirstInstruction':         [voidp, [voidp]],
   'LLVMGetLastInstruction':          [voidp, [voidp]], 
 
+  // Instructions
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueInstruction.html
+  'LLVMHasMetadata':                 ['int', [voidp]],
+  'LLVMGetMetadata':                 [voidp, [voidp, 'uint']],
+  'LLVMSetMetadata':                 [void_, [voidp, 'uint', voidp]],
+  'LLVMGetInstructionParent':        [voidp, [voidp]],
+  'LLVMGetNextInstruction':          [voidp, [voidp]],
+  'LLVMGetPreviousInstruction':      [voidp, [voidp]],
+  'LLVMInstructionEraseFromParent':  [void_, [voidp]],
+  // LLVMOpcode   LLVMGetInstructionOpcode (LLVMValueRef Inst)
+  // LLVMIntPredicate   LLVMGetICmpPredicate (LLVMValueRef Inst)
+  // LLVMRealPredicate   LLVMGetFCmpPredicate (LLVMValueRef Inst)
+  'LLVMInstructionClone':            [voidp, [voidp]],
+
+  // Call sites and Invocations
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueInstructionCall.html
+  'LLVMSetInstructionCallConv':      [void_, [voidp, 'uint']],
+  'LLVMGetInstructionCallConv':      ['uint', [voidp]],
+  // void   LLVMAddInstrAttribute (LLVMValueRef Instr, unsigned index, LLVMAttribute)
+  // void   LLVMRemoveInstrAttribute (LLVMValueRef Instr, unsigned index, LLVMAttribute)
+  'LLVMSetInstrParamAlignment':      [void_, [voidp, 'uint', 'uint']],
+  'LLVMIsTailCall':                  ['bool', [voidp]],
+  'LLVMSetTailCall':                 [void_, [voidp, 'bool']],
+
+  // Terminators
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueInstructionTerminator.html
+  'LLVMGetNumSuccessors':       ['uint', [voidp]],
+  'LLVMGetSuccessor':           [voidp, [voidp, 'uint']],
+  'LLVMSetSuccessor':           [void_, [voidp, 'uint', voidp]],
+  'LLVMIsConditional':          ['bool', [voidp]],
+  'LLVMGetCondition':           [voidp, [voidp]],
+  'LLVMSetCondition':           [void_, [voidp, voidp]],
+  'LLVMGetSwitchDefaultDest':   [voidp, [voidp]],
+
+  // PHI Nodes
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueInstructionPHINode.html
+  // void   LLVMAddIncoming (LLVMValueRef PhiNode, LLVMValueRef *IncomingValues, LLVMBasicBlockRef *IncomingBlocks, unsigned Count)
+  'LLVMCountIncoming':          ['uint', [voidp]], 
+  'LLVMGetIncomingValue':       [voidp, [voidp, 'uint']],
+  'LLVMGetIncomingBlock':       [voidp, [voidp, 'uint']],
+
+
   // Instruction builder.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreInstructionBuilder.html
   'LLVMCreateBuilder':          [voidp, []],
