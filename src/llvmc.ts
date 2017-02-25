@@ -35,13 +35,13 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetTarget':                      ['string', [voidp]],
   'LLVMSetTarget':                      [void_, [voidp, 'string']],
   'LLVMDumpModule':                     [void_, [voidp]],
-  'LLVMPrintModuleToFile':              [],                              // todo char**
+  // LLVMBool   LLVMPrintModuleToFile (LLVMModuleRef M, const char *Filename, char **ErrorMessage)
   'LLVMPrintModuleToString':            ['string', [voidp]],
   'LLVMSetModuleInlineAsm':             [void_, [voidp, 'string']],
   'LLVMGetModuleContext':               [voidp, [voidp]],
   'LLVMGetTypeByName':                  [voidp, [voidp, 'string']],
   'LLVMGetNamedMetadataNumOperands':    ['uint', [voidp, 'string']],
-  'LLVMGetNamedMetadataOperands':       [],                               // todo ref *
+  // void   LLVMGetNamedMetadataOperands (LLVMModuleRef M, const char *name, LLVMValueRef *Dest)
   'LLVMAddNamedMetadataOperand':        [void_, [voidp, 'string', voidp]],
   'LLVMAddFunction':                    [voidp, [voidp, 'string', voidp]],
   'LLVMGetNamedFunction':               [voidp, [voidp, 'string']],
@@ -53,7 +53,7 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Types
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreType.html
-  'LLVMGetTypeKind':            [],                                    // todo llvmtypekind
+  // LLVMTypeKind   LLVMGetTypeKind (LLVMTypeRef Ty)
   'LLVMTypeIsSized':            ['bool', [voidp]],                                    
   'LLVMGetTypeContext':         [voidp, [voidp]],
   'LLVMDumpType':               [void_, [voidp]],
@@ -98,17 +98,17 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMIsFunctionVarArg':       ['bool', [voidp]],                                      
   'LLVMGetReturnType':          [voidp, [voidp]],
   'LLVMCountParamTypes':        ['uint', [voidp]],
-  'LLVMGetParamTypes':          [],                                      // todo ref *
+  // void   LLVMGetParamTypes (LLVMTypeRef FunctionTy, LLVMTypeRef *Dest)
 
   // Structure Types
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeStruct.html
-  'LLVMStructTypeInContext':      [],                                    // todo ref *
-  'LLVMStructType':               [],                                    // todo ref *
+  // LLVMTypeRef   LLVMStructTypeInContext (LLVMContextRef C, LLVMTypeRef *ElementTypes, unsigned ElementCount, LLVMBool Packed)
+  // LLVMTypeRef   LLVMStructType (LLVMTypeRef *ElementTypes, unsigned ElementCount, LLVMBool Packed)
   'LLVMStructCreateNamed':        [voidp, [voidp, 'string']],
   'LLVMGetStructName':            ['string', [voidp]],
-  'LLVMStructSetBody':            [],                                    // todo ref *
+  // void   LLVMStructSetBody (LLVMTypeRef StructTy, LLVMTypeRef *ElementTypes, unsigned ElementCount, LLVMBool Packed)
   'LLVMCountStructElementTypes':  ['uint', [voidp]],
-  'LLVMGetStructElementTypes':    [],                                    // todo ref *
+  // void   LLVMGetStructElementTypes (LLVMTypeRef StructTy, LLVMTypeRef *Dest)
   'LLVMStructGetTypeAtIndex':     [voidp, [voidp, 'uint']],
   'LLVMIsPackedStruct':           ['bool', [voidp]],                                   
   'LLVMIsOpaqueStruct':           ['bool', [voidp]],                                   
@@ -171,32 +171,32 @@ export const LLVM = ffi.Library('libLLVM', {
   // Scalar constants.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantScalar.html
   'LLVMConstInt':                       [voidp, [voidp, 'ulonglong', 'bool']],
-  'LLVMConstIntOfArbitraryPrecision':   [],                                      // todo const uint
-  'LLVMConstIntOfString':               [],                                      // todo uint8
-  'LLVMConstIntOfStringAndSize':        [],                                      // todo uint8
+  // LLVMValueRef   LLVMConstIntOfArbitraryPrecision (LLVMTypeRef IntTy, unsigned NumWords, const uint64_t Words[])
+  // LLVMValueRef   LLVMConstIntOfString (LLVMTypeRef IntTy, const char *Text, uint8_t Radix)
+  // LLVMValueRef   LLVMConstIntOfStringAndSize (LLVMTypeRef IntTy, const char *Text, unsigned SLen, uint8_t Radix)
   'LLVMConstReal':                      [voidp, [voidp, 'double']],
   'LLVMConstRealOfString':              [voidp, [voidp, 'string']],
   'LLVMConstRealOfStringAndSize':       [voidp, [voidp, 'string', 'uint']],
   'LLVMConstIntGetZExtValue':           ['ulonglong', [voidp]],
   'LLVMConstIntGetSExtValue':           ['longlong', [voidp]],
-  'LLVMConstRealGetDouble':             [],                                       // todo llvmbool *
+  // double   LLVMConstRealGetDouble (LLVMValueRef ConstantVal, LLVMBool *losesInfo)
   
   // Composite Constants
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantComposite.html
   'LLVMConstStringInContext':   [voidp, [voidp, 'string', 'uint', 'bool']],
   'LLVMConstString':            [voidp, ['string', 'uint', 'bool']],
   'LLVMIsConstantString':       ['bool', [voidp]],
-  'LLVMGetAsString':            [],                                               // todo size_t
-  'LLVMConstStructInContext':   [],                                               // todo ref *
-  'LLVMConstStruct':            [],                                               // todo ref *
-  'LLVMConstArray':             [],                                               // todo ref *
-  'LLVMConstNamedStruct':       [],                                               // todo ref *
+  // const char *   LLVMGetAsString (LLVMValueRef c, size_t *out)
+  // LLVMValueRef   LLVMConstStructInContext (LLVMContextRef C, LLVMValueRef *ConstantVals, unsigned Count, LLVMBool Packed)
+  // LLVMValueRef   LLVMConstStruct (LLVMValueRef *ConstantVals, unsigned Count, LLVMBool Packed)
+  // LLVMValueRef   LLVMConstArray (LLVMTypeRef ElementTy, LLVMValueRef *ConstantVals, unsigned Length)
+  // LLVMValueRef   LLVMConstNamedStruct (LLVMTypeRef StructTy, LLVMValueRef *ConstantVals, unsigned Count)
   'LLVMGetElementAsConstant':   [voidp, [voidp, 'uint']],
-  'LLVMConstVector':            [],                                               // todo ref *
+  // LLVMValueRef   LLVMConstVector (LLVMValueRef *ScalarConstantVals, unsigned Size)
   
   // Constant Expression
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantExpressions.html
-  'LLVMGetConstOpcode':         [],                                               // llvmopcode
+  // LLVMOpcode   LLVMGetConstOpcode (LLVMValueRef ConstantVal)
   'LLVMAlignOf':                [voidp, [voidp]],
   'LLVMSizeOf ':                [voidp, [voidp]],
   'LLVMConstNeg':               [voidp, [voidp]],
@@ -226,13 +226,13 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMConstAnd':               [voidp, [voidp, voidp]],
   'LLVMConstOr':                [voidp, [voidp, voidp]],
   'LLVMConstXor':               [voidp, [voidp, voidp]],
-  'LLVMConstICmp':              [],                                    //todo llvmintpredicate
-  'LLVMConstFCmp':              [],                                    // todo llvmrealpredicate
+  // LLVMValueRef   LLVMConstICmp (LLVMIntPredicate Predicate, LLVMValueRef LHSConstant, LLVMValueRef RHSConstant)
+  // LLVMValueRef   LLVMConstFCmp (LLVMRealPredicate Predicate, LLVMValueRef LHSConstant, LLVMValueRef RHSConstant)
   'LLVMConstShl':               [voidp, [voidp, voidp]],
   'LLVMConstLShr':              [voidp, [voidp, voidp]],
   'LLVMConstAShr':              [voidp, [voidp, voidp]],
-  'LLVMConstGEP':               [],                                    // todo ref *
-  'LLVMConstInBoundsGEP':       [],                                    // todo ref *
+  // LLVMValueRef   LLVMConstGEP (LLVMValueRef ConstantVal, LLVMValueRef *ConstantIndices, unsigned NumIndices)
+  // LLVMValueRef   LLVMConstInBoundsGEP (LLVMValueRef ConstantVal, LLVMValueRef *ConstantIndices, unsigned NumIndices)
   'LLVMConstTrunc':             [voidp, [voidp, voidp]],
   'LLVMConstSExt':              [voidp, [voidp, voidp]],
   'LLVMConstZExt':              [voidp, [voidp, voidp]],
@@ -256,8 +256,8 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMConstExtractElement':    [voidp, [voidp, voidp]],
   'LLVMConstInsertElement':     [voidp, [voidp, voidp, voidp]],
   'LLVMConstShuffleVector':     [voidp, [voidp, voidp, voidp]],
-  'LLVMConstExtractValue':      [],                                      // todo uint *
-  'LLVMConstInsertValue':       [],                                      // todo uint *
+  // LLVMValueRef   LLVMConstExtractValue (LLVMValueRef AggConstant, unsigned *IdxList, unsigned NumIdx)
+  // LLVMValueRef   LLVMConstInsertValue (LLVMValueRef AggConstant, LLVMValueRef ElementValueConstant, unsigned *IdxList, unsigned NumIdx)
   'LLVMConstInlineAsm':         [voidp, [voidp, 'string', 'string', 'bool', 'bool']],
   'LLVMBlockAddress':           [voidp, [voidp, voidp]],
 
