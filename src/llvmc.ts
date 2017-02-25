@@ -194,6 +194,73 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetElementAsConstant':   [voidp, [voidp, 'uint']],
   'LLVMConstVector':            [],                                               // todo ref *
   
+  // Constant Expression
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantExpressions.html
+  'LLVMGetConstOpcode':         [],                                               // llvmopcode
+  'LLVMAlignOf':                [voidp, [voidp]],
+  'LLVMSizeOf ':                [voidp, [voidp]],
+  'LLVMConstNeg':               [voidp, [voidp]],
+  'LLVMConstNSWNeg':            [voidp, [voidp]],
+  'LLVMConstNUWNeg':            [voidp, [voidp]],
+  'LLVMConstFNeg':              [voidp, [voidp]],
+  'LLVMConstNot':               [voidp, [voidp]],
+  'LLVMConstAdd':               [voidp, [voidp, voidp]],
+  'LLVMConstNSWAdd':            [voidp, [voidp, voidp]],
+  'LLVMConstNUWAdd':            [voidp, [voidp, voidp]],
+  'LLVMConstFAdd':              [voidp, [voidp, voidp]],
+  'LLVMConstSub':               [voidp, [voidp, voidp]],
+  'LLVMConstNSWSub':            [voidp, [voidp, voidp]],
+  'LLVMConstNUWSub':            [voidp, [voidp, voidp]],
+  'LLVMConstFSub':              [voidp, [voidp, voidp]],
+  'LLVMConstMul':               [voidp, [voidp, voidp]],
+  'LLVMConstNSWMul':            [voidp, [voidp, voidp]],
+  'LLVMConstNUWMul':            [voidp, [voidp, voidp]],
+  'LLVMConstFMul':              [voidp, [voidp, voidp]],
+  'LLVMConstUDiv':              [voidp, [voidp, voidp]],
+  'LLVMConstSDiv':              [voidp, [voidp, voidp]],   
+  'LLVMConstExactSDiv':         [voidp, [voidp, voidp]],
+  'LLVMConstFDiv':              [voidp, [voidp, voidp]],
+  'LLVMConstURem':              [voidp, [voidp, voidp]],
+  'LLVMConstSRem':              [voidp, [voidp, voidp]],   
+  'LLVMConstFRem':              [voidp, [voidp, voidp]],
+  'LLVMConstAnd':               [voidp, [voidp, voidp]],
+  'LLVMConstOr':                [voidp, [voidp, voidp]],
+  'LLVMConstXor':               [voidp, [voidp, voidp]],
+  'LLVMConstICmp':              [],                                    //todo llvmintpredicate
+  'LLVMConstFCmp':              [],                                    // todo llvmrealpredicate
+  'LLVMConstShl':               [voidp, [voidp, voidp]],
+  'LLVMConstLShr':              [voidp, [voidp, voidp]],
+  'LLVMConstAShr':              [voidp, [voidp, voidp]],
+  'LLVMConstGEP':               [],                                    // todo ref *
+  'LLVMConstInBoundsGEP':       [],                                    // todo ref *
+  'LLVMConstTrunc':             [voidp, [voidp, voidp]],
+  'LLVMConstSExt':              [voidp, [voidp, voidp]],
+  'LLVMConstZExt':              [voidp, [voidp, voidp]],
+  'LLVMConstFPTrunc':           [voidp, [voidp, voidp]],
+  'LLVMConstFPExt':             [voidp, [voidp, voidp]],
+  'LLVMConstUIToFP':            [voidp, [voidp, voidp]],
+  'LLVMConstSIToFP':            [voidp, [voidp, voidp]], 
+  'LLVMConstFPToUI':            [voidp, [voidp, voidp]],
+  'LLVMConstFPToSI':            [voidp, [voidp, voidp]],
+  'LLVMConstPtrToInt':          [voidp, [voidp, voidp]],
+  'LLVMConstIntToPtr':          [voidp, [voidp, voidp]],   
+  'LLVMConstBitCast':           [voidp, [voidp, voidp]],
+  'LLVMConstAddrSpaceCast':     [voidp, [voidp, voidp]],    
+  'LLVMConstZExtOrBitCast':     [voidp, [voidp, voidp]],
+  'LLVMConstSExtOrBitCast':     [voidp, [voidp, voidp]],
+  'LLVMConstTruncOrBitCast':    [voidp, [voidp, voidp]],
+  'LLVMConstPointerCast':       [voidp, [voidp, voidp]],
+  'LLVMConstIntCast':           [voidp, [voidp, voidp, 'bool']],
+  'LLVMConstFPCast':            [voidp, [voidp, voidp]],
+  'LLVMConstSelect':            [voidp, [voidp, voidp, voidp]],
+  'LLVMConstExtractElement':    [voidp, [voidp, voidp]],
+  'LLVMConstInsertElement':     [voidp, [voidp, voidp, voidp]],
+  'LLVMConstShuffleVector':     [voidp, [voidp, voidp, voidp]],
+  'LLVMConstExtractValue':      [],                                      // todo uint *
+  'LLVMConstInsertValue':       [],                                      // todo uint *
+  'LLVMConstInlineAsm':         [voidp, [voidp, 'string', 'string', 'bool', 'bool']],
+  'LLVMBlockAddress':           [voidp, [voidp, voidp]],
+
   // Basic blocks.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueBasicBlock.html
   'LLVMAppendBasicBlock':       [voidp, [voidp, 'string']],
