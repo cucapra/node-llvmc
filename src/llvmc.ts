@@ -303,20 +303,35 @@ export const LLVM = ffi.Library('libLLVM', {
   // http://llvm.org/docs/doxygen/html/group__LLVMCoreValueConstantGlobalAlias.html
   'LLVMAddAlias':                 [voidp, [voidp, voidp, voidp, 'string']],
 
-  // Functions
+  // Function Values
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueFunction.html
-  'LLVMDeleteFunction':           [void_, [voidp]], 
-  'LLVMGetPersonalityFn':         [voidp, [voidp]],
-  'LLVMSetPersonalityFn':         [void_, [voidp, voidp]],
-  'LLVMGetIntrinsicID':           ['uint', [voidp]],
-  'LLVMGetFunctionCallConv':      ['uint', [voidp]],
-  'LLVMSetFunctionCallConv':      [void_, [voidp, 'uint']],
-  'LLVMGetGC':                    ['string', [voidp]],
-  'LLVMSetGC':                    [void_, [voidp, 'string']], 
+  'LLVMDeleteFunction':                 [void_, [voidp]], 
+  'LLVMGetPersonalityFn':               [voidp, [voidp]],
+  'LLVMSetPersonalityFn':               [void_, [voidp, voidp]],
+  'LLVMGetIntrinsicID':                 ['uint', [voidp]],
+  'LLVMGetFunctionCallConv':            ['uint', [voidp]],
+  'LLVMSetFunctionCallConv':            [void_, [voidp, 'uint']],
+  'LLVMGetGC':                          ['string', [voidp]],
+  'LLVMSetGC':                          [void_, [voidp, 'string']], 
   // void   LLVMAddFunctionAttr (LLVMValueRef Fn, LLVMAttribute PA)
-  'LLVMAddTargetDependentFunctionAttr':  [void_, [voidp, 'string', 'string']], 
+  'LLVMAddTargetDependentFunctionAttr': [void_, [voidp, 'string', 'string']], 
   // LLVMAttribute   LLVMGetFunctionAttr (LLVMValueRef Fn)
   // void   LLVMRemoveFunctionAttr (LLVMValueRef Fn, LLVMAttribute PA)
+
+  // Function Parameters
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueFunctionParameters.html 
+  'LLVMCountParams':              ['uint', [voidp]],
+  // void   LLVMGetParams (LLVMValueRef Fn, LLVMValueRef *Params)
+  'LLVMGetParam':                 [voidp, [voidp, 'uint']],
+  'LLVMGetParamParent':           [voidp, [voidp]],  
+  'LLVMGetFirstParam':            [voidp, [voidp]],  
+  'LLVMGetLastParam':             [voidp, [voidp]],  
+  'LLVMGetNextParam':             [voidp, [voidp]],  
+  'LLVMGetPreviousParam':         [voidp, [voidp]],  
+  // void   LLVMAddAttribute (LLVMValueRef Arg, LLVMAttribute PA)
+  // void   LLVMRemoveAttribute (LLVMValueRef Arg, LLVMAttribute PA)
+  // LLVMAttribute   LLVMGetAttribute (LLVMValueRef Arg)
+  'LLVMSetParamAlignment':        [void_, [voidp, 'uint']],
 
   // Basic blocks.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueBasicBlock.html
