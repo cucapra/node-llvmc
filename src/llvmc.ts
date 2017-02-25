@@ -203,9 +203,9 @@ export const LLVM = ffi.Library('libLLVM', {
   // Scalar constants.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantScalar.html
   'LLVMConstInt':                       [voidp, [voidp, 'ulonglong', 'bool']],
-  // LLVMValueRef   LLVMConstIntOfArbitraryPrecision (LLVMTypeRef IntTy, unsigned NumWords, const uint64_t Words[])
-  // LLVMValueRef   LLVMConstIntOfString (LLVMTypeRef IntTy, const char *Text, uint8_t Radix)
-  // LLVMValueRef   LLVMConstIntOfStringAndSize (LLVMTypeRef IntTy, const char *Text, unsigned SLen, uint8_t Radix)
+  'LLVMConstIntOfArbitraryPrecision':   [voidp, [voidp, 'uint', 'uint64']],
+  'LLVMConstIntOfString':               [voidp, [voidp, 'string', 'uint8']],
+  'LLVMConstIntOfStringAndSize':        [voidp, [voidp, 'string', 'uint', 'uint8']],
   'LLVMConstReal':                      [voidp, [voidp, 'double']],
   'LLVMConstRealOfString':              [voidp, [voidp, 'string']],
   'LLVMConstRealOfStringAndSize':       [voidp, [voidp, 'string', 'uint']],
@@ -218,7 +218,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMConstStringInContext':   [voidp, [voidp, 'string', 'uint', 'bool']],
   'LLVMConstString':            [voidp, ['string', 'uint', 'bool']],
   'LLVMIsConstantString':       ['bool', [voidp]],
-  // const char *   LLVMGetAsString (LLVMValueRef c, size_t *out)
+  'LLVMGetAsString':            ['string', [voidp, 'size_t']],
   // LLVMValueRef   LLVMConstStructInContext (LLVMContextRef C, LLVMValueRef *ConstantVals, unsigned Count, LLVMBool Packed)
   // LLVMValueRef   LLVMConstStruct (LLVMValueRef *ConstantVals, unsigned Count, LLVMBool Packed)
   // LLVMValueRef   LLVMConstArray (LLVMTypeRef ElementTy, LLVMValueRef *ConstantVals, unsigned Length)
