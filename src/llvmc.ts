@@ -29,13 +29,13 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetTarget':                      ['string', [voidp]],
   'LLVMSetTarget':                      [void_, [voidp, 'string']],
   'LLVMDumpModule':                     [void_, [voidp]],
-  'LLVMPrintModuleToFile':              [],                        // todo
+  'LLVMPrintModuleToFile':              [],                              // todo
   'LLVMPrintModuleToString':            ['string', [voidp]],
   'LLVMSetModuleInlineAsm':             [void_, [voidp, 'string']],
   'LLVMGetModuleContext':               [voidp, [voidp]],
   'LLVMGetTypeByName':                  [voidp, [voidp, 'string']],
   'LLVMGetNamedMetadataNumOperands':    ['uint', [voidp, 'string']],
-  'LLVMGetNamedMetadataOperands':       [],                         // todo
+  'LLVMGetNamedMetadataOperands':       [],                               // todo
   'LLVMAddNamedMetadataOperand':        [void_, [voidp, 'string', voidp]],
   'LLVMAddFunction':                    [voidp, [voidp, 'string', voidp]],
   'LLVMGetNamedFunction':               [voidp, [voidp, 'string']],
@@ -81,6 +81,11 @@ export const LLVM = ffi.Library('libLLVM', {
   // Function types.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeFunction.html
   'LLVMFunctionType':           [voidp, [voidp, voidp, 'uint', 'bool']],
+  'LLVMIsFunctionVarArg':       [],                                      // todo
+  'LLVMGetReturnType':          [voidp, [voidp]],
+  'LLVMCountParamTypes':        ['uint', [voidp]],
+  'LLVMGetParamTypes':          [],                                      // todo
+
 
   // Basic blocks.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueBasicBlock.html
