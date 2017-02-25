@@ -299,6 +299,25 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMIsExternallyInitialized':  ['bool', [voidp]],
   'LLVMSetExternallyInitialized': [void_, [voidp, 'bool']],
 
+  // Global Aliases
+  // http://llvm.org/docs/doxygen/html/group__LLVMCoreValueConstantGlobalAlias.html
+  'LLVMAddAlias':                 [voidp, [voidp, voidp, voidp, 'string']],
+
+  // Functions
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueFunction.html
+  'LLVMDeleteFunction':           [void_, [voidp]], 
+  'LLVMGetPersonalityFn':         [voidp, [voidp]],
+  'LLVMSetPersonalityFn':         [void_, [voidp, voidp]],
+  'LLVMGetIntrinsicID':           ['uint', [voidp]],
+  'LLVMGetFunctionCallConv':      ['uint', [voidp]],
+  'LLVMSetFunctionCallConv':      [void_, [voidp, 'uint']],
+  'LLVMGetGC':                    ['string', [voidp]],
+  'LLVMSetGC':                    [void_, [voidp, 'string']], 
+  // void   LLVMAddFunctionAttr (LLVMValueRef Fn, LLVMAttribute PA)
+  'LLVMAddTargetDependentFunctionAttr':  [void_, [voidp, 'string', 'string']], 
+  // LLVMAttribute   LLVMGetFunctionAttr (LLVMValueRef Fn)
+  // void   LLVMRemoveFunctionAttr (LLVMValueRef Fn, LLVMAttribute PA)
+
   // Basic blocks.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueBasicBlock.html
   'LLVMAppendBasicBlock':       [voidp, [voidp, 'string']],
