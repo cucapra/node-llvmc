@@ -84,7 +84,7 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Types
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreType.html
-  // LLVMTypeKind   LLVMGetTypeKind (LLVMTypeRef Ty)
+  'LLVMGetTypeKind':            ['int', [voidp]],
   'LLVMTypeIsSized':            ['bool', [voidp]],                                    
   'LLVMGetTypeContext':         [voidp, [voidp]],
   'LLVMDumpType':               [void_, [voidp]],
@@ -231,7 +231,7 @@ export const LLVM = ffi.Library('libLLVM', {
   
   // Constant Expression
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantExpressions.html
-  // LLVMOpcode   LLVMGetConstOpcode (LLVMValueRef ConstantVal)
+  'LLVMGetConstOpcode':         ['int', [voidp]],
   'LLVMAlignOf':                [voidp, [voidp]],
   'LLVMSizeOf':                 [voidp, [voidp]],
   'LLVMConstNeg':               [voidp, [voidp]],
@@ -261,8 +261,8 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMConstAnd':               [voidp, [voidp, voidp]],
   'LLVMConstOr':                [voidp, [voidp, voidp]],
   'LLVMConstXor':               [voidp, [voidp, voidp]],
-  // LLVMValueRef   LLVMConstICmp (LLVMIntPredicate Predicate, LLVMValueRef LHSConstant, LLVMValueRef RHSConstant)
-  // LLVMValueRef   LLVMConstFCmp (LLVMRealPredicate Predicate, LLVMValueRef LHSConstant, LLVMValueRef RHSConstant)
+  'LLVMConstICmp':              [voidp, ['int', voidp, voidp]], 
+  'LLVMConstFCmp':              [voidp, ['int', voidp, voidp]],
   'LLVMConstShl':               [voidp, [voidp, voidp]],
   'LLVMConstLShr':              [voidp, [voidp, voidp]],
   'LLVMConstAShr':              [voidp, [voidp, voidp]],
@@ -300,18 +300,18 @@ export const LLVM = ffi.Library('libLLVM', {
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantGlobals.html
   'LLVMGetGlobalParent':         [voidp, [voidp]],
   'LLVMIsDeclaration':           ['bool', [voidp]],
-  // LLVMLinkage   LLVMGetLinkage (LLVMValueRef Global)
-  // void   LLVMSetLinkage (LLVMValueRef Global, LLVMLinkage Linkage)
+  'LLVMGetLinkage':              ['int', [voidp]],
+  'LLVMSetLinkage':              [void_, [voidp, 'int']], 
   'LLVMGetSection':              ['string', [voidp]],
   'LLVMSetSection':              [void_, [voidp, 'string']],
-  // LLVMVisibility   LLVMGetVisibility (LLVMValueRef Global)
-  // void   LLVMSetVisibility (LLVMValueRef Global, LLVMVisibility Viz)
-  // LLVMDLLStorageClass   LLVMGetDLLStorageClass (LLVMValueRef Global)
-  // void   LLVMSetDLLStorageClass (LLVMValueRef Global, LLVMDLLStorageClass Class)
-  'LLVMHasUnnamedAddr':           ['bool', [voidp]],
-  'LLVMSetUnnamedAddr':           [void_, [voidp, 'bool']],
-  'LLVMGetAlignment':             ['uint', [voidp]],
-  'LLVMSetAlignment':             [void_, [voidp, 'uint']],
+  'LLVMGetVisibility':           ['int', [voidp]],
+  'LLVMSetVisibility':           [void_, [voidp, 'int']],
+  'LLVMGetDLLStorageClass':      ['int', [voidp]], 
+  'LLVMSetDLLStorageClass':      [void_, [voidp, 'int']], 
+  'LLVMHasUnnamedAddr':          ['bool', [voidp]],
+  'LLVMSetUnnamedAddr':          [void_, [voidp, 'bool']],
+  'LLVMGetAlignment':            ['uint', [voidp]],
+  'LLVMSetAlignment':            [void_, [voidp, 'uint']],
 
   // Values with alignments
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueWithAlignment.html
@@ -333,8 +333,8 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMSetThreadLocal':           [void_, [voidp, 'bool']],
   'LLVMIsGlobalConstant':         ['bool', [voidp]],   
   'LLVMSetGlobalConstant':        [void_, [voidp, 'bool']],
-  // LLVMThreadLocalMode   LLVMGetThreadLocalMode (LLVMValueRef GlobalVar)
-  // void   LLVMSetThreadLocalMode (LLVMValueRef GlobalVar, LLVMThreadLocalMode Mode)
+  'LLVMGetThreadLocalMode':       ['int', [voidp]], 
+  'LLVMSetThreadLocalMode':       [void_, [voidp, 'int']],
   'LLVMIsExternallyInitialized':  ['bool', [voidp]],
   'LLVMSetExternallyInitialized': [void_, [voidp, 'bool']],
 
@@ -352,10 +352,10 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMSetFunctionCallConv':            [void_, [voidp, 'uint']],
   'LLVMGetGC':                          ['string', [voidp]],
   'LLVMSetGC':                          [void_, [voidp, 'string']], 
-  // void   LLVMAddFunctionAttr (LLVMValueRef Fn, LLVMAttribute PA)
+  'LLVMAddFunctionAttr':                [void_, [voidp, 'int']], 
   'LLVMAddTargetDependentFunctionAttr': [void_, [voidp, 'string', 'string']], 
-  // LLVMAttribute   LLVMGetFunctionAttr (LLVMValueRef Fn)
-  // void   LLVMRemoveFunctionAttr (LLVMValueRef Fn, LLVMAttribute PA)
+  'LLVMGetFunctionAttr':                ['int', [voidp]], 
+  'LLVMRemoveFunctionAttr':             [void_, [voidp, 'int']],
 
   // Function Parameters
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueFunctionParameters.html 
@@ -367,9 +367,9 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetLastParam':             [voidp, [voidp]],  
   'LLVMGetNextParam':             [voidp, [voidp]],  
   'LLVMGetPreviousParam':         [voidp, [voidp]],  
-  // void   LLVMAddAttribute (LLVMValueRef Arg, LLVMAttribute PA)
-  // void   LLVMRemoveAttribute (LLVMValueRef Arg, LLVMAttribute PA)
-  // LLVMAttribute   LLVMGetAttribute (LLVMValueRef Arg)
+  'LLVMAddAttribute':             [void_, [voidp, 'int']], 
+  'LLVMRemoveAttribute':          [void_, [voidp, 'int']], 
+  'LLVMGetAttribute':             ['int', [voidp]],
   'LLVMSetParamAlignment':        [void_, [voidp, 'uint']],
 
   // Metadata
@@ -416,17 +416,17 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetNextInstruction':          [voidp, [voidp]],
   'LLVMGetPreviousInstruction':      [voidp, [voidp]],
   'LLVMInstructionEraseFromParent':  [void_, [voidp]],
-  // LLVMOpcode   LLVMGetInstructionOpcode (LLVMValueRef Inst)
-  // LLVMIntPredicate   LLVMGetICmpPredicate (LLVMValueRef Inst)
-  // LLVMRealPredicate   LLVMGetFCmpPredicate (LLVMValueRef Inst)
+  'LLVMGetInstructionOpcode':        ['int', [voidp]],
+  'LLVMGetICmpPredicate':            ['int', [voidp]],
+  'LLVMGetFCmpPredicate':            ['int', [voidp]],
   'LLVMInstructionClone':            [voidp, [voidp]],
 
   // Call sites and Invocations
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueInstructionCall.html
   'LLVMSetInstructionCallConv':      [void_, [voidp, 'uint']],
   'LLVMGetInstructionCallConv':      ['uint', [voidp]],
-  // void   LLVMAddInstrAttribute (LLVMValueRef Instr, unsigned index, LLVMAttribute)
-  // void   LLVMRemoveInstrAttribute (LLVMValueRef Instr, unsigned index, LLVMAttribute)
+  'LLVMAddInstrAttribute':           [void_, [voidp, 'uint', 'int']], 
+  'LLVMRemoveInstrAttribute':        [void_, [voidp, 'uint', 'int']],
   'LLVMSetInstrParamAlignment':      [void_, [voidp, 'uint', 'uint']],
   'LLVMIsTailCall':                  ['bool', [voidp]],
   'LLVMSetTailCall':                 [void_, [voidp, 'bool']],
