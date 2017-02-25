@@ -35,7 +35,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetTarget':                      ['string', [voidp]],
   'LLVMSetTarget':                      [void_, [voidp, 'string']],
   'LLVMDumpModule':                     [void_, [voidp]],
-  'LLVMPrintModuleToFile':              [],                              // todo llvmbool, char**
+  'LLVMPrintModuleToFile':              [],                              // todo char**
   'LLVMPrintModuleToString':            ['string', [voidp]],
   'LLVMSetModuleInlineAsm':             [void_, [voidp, 'string']],
   'LLVMGetModuleContext':               [voidp, [voidp]],
@@ -54,7 +54,7 @@ export const LLVM = ffi.Library('libLLVM', {
   // Types
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreType.html
   'LLVMGetTypeKind':            [],                                    // todo llvmtypekind
-  'LLVMTypeIsSized':            [],                                    // todo llvmbool
+  'LLVMTypeIsSized':            ['bool', [voidp]],                                    
   'LLVMGetTypeContext':         [voidp, [voidp]],
   'LLVMDumpType':               [void_, [voidp]],
   'LLVMPrintTypeToString':      ['string', [voidp]],
@@ -95,23 +95,23 @@ export const LLVM = ffi.Library('libLLVM', {
   // Function types.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeFunction.html
   'LLVMFunctionType':           [voidp, [voidp, voidp, 'uint', 'bool']],
-  'LLVMIsFunctionVarArg':       [],                                      // todo llvmbool
+  'LLVMIsFunctionVarArg':       ['bool', [voidp]],                                      
   'LLVMGetReturnType':          [voidp, [voidp]],
   'LLVMCountParamTypes':        ['uint', [voidp]],
   'LLVMGetParamTypes':          [],                                      // todo ref *
 
   // Structure Types
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeStruct.html
-  'LLVMStructTypeInContext':      [],                                    // todo ref *, llvmbool
-  'LLVMStructType':               [],                                    // todo ref *, llvmbool
+  'LLVMStructTypeInContext':      [],                                    // todo ref *
+  'LLVMStructType':               [],                                    // todo ref *
   'LLVMStructCreateNamed':        [voidp, [voidp, 'string']],
   'LLVMGetStructName':            ['string', [voidp]],
-  'LLVMStructSetBody':            [],                                    // todo ref *, llvmbool
+  'LLVMStructSetBody':            [],                                    // todo ref *
   'LLVMCountStructElementTypes':  ['uint', [voidp]],
   'LLVMGetStructElementTypes':    [],                                    // todo ref *
   'LLVMStructGetTypeAtIndex':     [voidp, [voidp, 'uint']],
-  'LLVMIsPackedStruct':           [],                                    // todo llvmbool
-  'LLVMIsOpaqueStruct':           [],                                    // todo llvmbool
+  'LLVMIsPackedStruct':           ['bool', [voidp]],                                   
+  'LLVMIsOpaqueStruct':           ['bool', [voidp]],                                   
 
   // Sequential Types
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeSequential.html
@@ -141,8 +141,8 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMDumpValue':              [void_, [voidp]],
   'LLVMPrintValueToString':     ['string', [voidp]],
   'LLVMReplaceAllUsesWith':     [void_, [voidp, voidp]],
-  'LLVMIsConstant':             [],                                     // todo llvmbool
-  'LLVMIsUndef':                [],                                     // todo llvmbool
+  'LLVMIsConstant':             ['bool', [voidp]],                   
+  'LLVMIsUndef':                ['bool', [voidp]],                   
   'LLVMIsAMDNode':              [voidp, [voidp]],
   'LLVMIsAMDString':            [voidp, [voidp]],
 
@@ -165,7 +165,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMConstNull':              [voidp, [voidp]],
   'LLVMConstAllOnes':           [voidp, [voidp]],
   'LLVMGetUndef':               [voidp, [voidp]],
-  'LLVMIsNull':                 [],                                    // todo llvmbool
+  'LLVMIsNull':                 ['bool', [voidp]],                                    
   'LLVMConstPointerNull':       [voidp, [voidp]],
 
   // Scalar constants.
