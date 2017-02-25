@@ -86,6 +86,37 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMCountParamTypes':        ['uint', [voidp]],
   'LLVMGetParamTypes':          [],                                      // todo
 
+  // Structure Types
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeStruct.html
+  'LLVMStructTypeInContext':      [],                                    // todo
+  'LLVMStructType':               [],                                    // todo
+  'LLVMStructCreateNamed':        [voidp, [voidp, 'string']],
+  'LLVMGetStructName':            ['string', [voidp]],
+  'LLVMStructSetBody':            [],                                    // todo
+  'LLVMCountStructElementTypes':  ['uint', [voidp]],
+  'LLVMGetStructElementTypes':    [],                                    // todo
+  'LLVMStructGetTypeAtIndex':     [voidp, [voidp, 'uint']],
+  'LLVMIsPackedStruct':           [],                                    // todo
+  'LLVMIsOpaqueStruct':           [],                                    // todo
+
+  // Sequential Types
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeSequential.html
+  'LLVMGetElementType':         [voidp, [voidp]],
+  'LLVMArrayType':              [voidp, [voidp, 'uint']],
+  'LLVMGetArrayLength':         ['uint', [voidp]],
+  'LLVMPointerType':            [voidp, [voidp, 'uint']],
+  'LLVMGetPointerAddressSpace': ['uint', [voidp]],
+  'LLVMVectorType':             [voidp, [voidp, 'uint']],
+  'LLVMGetVectorSize':          ['uint', [voidp]],
+
+  // Other Types
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeOther.html
+  'LLVMVoidTypeInContext':      [voidp, [voidp]],
+  'LLVMLabelTypeInContext':     [voidp, [voidp]],
+  'LLVMX86MMXTypeInContext':    [voidp, [voidp]],
+  'LLVMVoidType':               [voidp, []],
+  'LLVMLabelType':              [voidp, []],
+  'LLVMX86MMXType':             [voidp, []],
 
   // Basic blocks.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueBasicBlock.html
