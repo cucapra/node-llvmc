@@ -45,6 +45,14 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetPreviousFunction':            [voidp, [voidp]],
   'LLVMWriteBitcodeToFile':             ['int', [voidp, 'string']],
 
+  // Types
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreType.html
+  'LLVMGetTypeKind':            [],                                    // todo
+  'LLVMTypeIsSized':            [],                                    // todo
+  'LLVMGetTypeContext':         [voidp, [voidp]],
+  'LLVMDumpType':               [void_, [voidp]],
+  'LLVMPrintTypeToString':      ['string', [voidp]],
+
   // Integer Types.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeInt.html
   'LLVMInt1TypeInContext':      [voidp, [voidp]],
