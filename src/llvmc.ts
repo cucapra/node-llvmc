@@ -43,7 +43,7 @@ export const LLVM = ffi.Library('libLLVM', {
   // http://llvm.org/docs/doxygen/html/group__LLVMCCore.html
   'LLVMInitializeCore':              [void_, [voidp]],
   'LLVMShutdown':                    [void_, [void_]],
-  'LLVMCreateMessag':                ['string', ['string']],
+  'LLVMCreateMessage':               ['string', ['string']],
   'LLVMDisposeMessage':              [void_, ['string']],
 
   // Types and Enumerations
@@ -230,7 +230,7 @@ export const LLVM = ffi.Library('libLLVM', {
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantExpressions.html
   // LLVMOpcode   LLVMGetConstOpcode (LLVMValueRef ConstantVal)
   'LLVMAlignOf':                [voidp, [voidp]],
-  'LLVMSizeOf ':                [voidp, [voidp]],
+  'LLVMSizeOf':                 [voidp, [voidp]],
   'LLVMConstNeg':               [voidp, [voidp]],
   'LLVMConstNSWNeg':            [voidp, [voidp]],
   'LLVMConstNUWNeg':            [voidp, [voidp]],
