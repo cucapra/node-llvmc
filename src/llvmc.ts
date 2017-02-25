@@ -368,9 +368,40 @@ export const LLVM = ffi.Library('libLLVM', {
   // LLVMAttribute   LLVMGetAttribute (LLVMValueRef Arg)
   'LLVMSetParamAlignment':        [void_, [voidp, 'uint']],
 
+  // Metadata
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueMetadata.html
+  'LLVMMDStringInContext':        [voidp, [voidp, 'string', 'uint']],
+  'LLVMMDString':                 [voidp, ['string', 'uint']],
+  // LLVMValueRef   LLVMMDNodeInContext (LLVMContextRef C, LLVMValueRef *Vals, unsigned Count)
+  // LLVMValueRef   LLVMMDNode (LLVMValueRef *Vals, unsigned Count)
+  // const char *   LLVMGetMDString (LLVMValueRef V, unsigned *Len)
+  'LLVMGetMDNodeNumOperands':     ['uint', [voidp]],
+  // void   LLVMGetMDNodeOperands (LLVMValueRef V, LLVMValueRef *Dest)
+
   // Basic blocks.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueBasicBlock.html
-  'LLVMAppendBasicBlock':       [voidp, [voidp, 'string']],
+  'LLVMBasicBlockAsValue':           [voidp, [voidp]],
+  'LLVMValueIsBasicBlock':           ['bool', [voidp]],
+  'LLVMValueAsBasicBlock':           [voidp, [voidp]],
+  'LLVMGetBasicBlockParent':         [voidp, [voidp]],
+  'LLVMGetBasicBlockTerminator':     [voidp, [voidp]],
+  'LLVMCountBasicBlocks':            ['uint', [voidp]],
+  // void   LLVMGetBasicBlocks (LLVMValueRef Fn, LLVMBasicBlockRef *BasicBlocks)
+  'LLVMGetFirstBasicBlock':          [voidp, [voidp]],
+  'LLVMGetLastBasicBlock':           [voidp, [voidp]],
+  'LLVMGetNextBasicBlock':           [voidp, [voidp]],
+  'LLVMGetPreviousBasicBlock':       [voidp, [voidp]],   
+  'LLVMGetEntryBasicBlock':          [voidp, [voidp]],
+  'LLVMAppendBasicBlockInContext':   [voidp, [voidp, voidp, 'string']],
+  'LLVMAppendBasicBlock':            [voidp, [voidp, 'string']],
+  'LLVMInsertBasicBlockInContext':   [voidp, [voidp, voidp, 'string']], 
+  'LLVMInsertBasicBlock':            [voidp, [voidp, 'string']],
+  'LLVMDeleteBasicBlock':            [void_, [voidp]],
+  'LLVMRemoveBasicBlockFromParent':  [void_, [voidp]],
+  'LLVMMoveBasicBlockBefore':        [void_, [voidp, voidp]],
+  'LLVMMoveBasicBlockAfter':         [void_, [voidp, voidp]], 
+  'LLVMGetFirstInstruction':         [voidp, [voidp]],
+  'LLVMGetLastInstruction':          [voidp, [voidp]], 
 
   // Instruction builder.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreInstructionBuilder.html
