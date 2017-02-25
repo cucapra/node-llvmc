@@ -278,6 +278,27 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetAlignment':             ['uint', [voidp]],
   'LLVMSetAlignment':             [void_, [voidp, 'uint']],
 
+  // Global Variables
+  // http://llvm.org/docs/doxygen/html/group__LLVMCoreValueConstantGlobalVariable.html
+  'LLVMAddGlobal':                [voidp, [voidp, voidp, 'string']],
+  'LLVMAddGlobalInAddressSpace':  [voidp, [voidp, voidp, 'string', 'uint']],
+  'LLVMGetNamedGlobal':           [voidp, [voidp, 'string']],
+  'LLVMGetFirstGlobal':           [voidp, [voidp]],
+  'LLVMGetLastGlobal':            [voidp, [voidp]],
+  'LLVMGetNextGlobal':            [voidp, [voidp]],
+  'LLVMGetPreviousGlobal':        [voidp, [voidp]],
+  'LLVMDeleteGlobal':             [void_, [voidp]],
+  'LLVMGetInitializer':           [voidp, [voidp]],
+  'LLVMSetInitializer':           [void_, [voidp, voidp]],
+  'LLVMIsThreadLocal':            [void_, [voidp]],
+  'LLVMSetThreadLocal':           [void_, [voidp, 'bool']],
+  'LLVMIsGlobalConstant':         ['bool', [voidp]],   
+  'LLVMSetGlobalConstant':        [void_, [voidp, 'bool']],
+  // LLVMThreadLocalMode   LLVMGetThreadLocalMode (LLVMValueRef GlobalVar)
+  // void   LLVMSetThreadLocalMode (LLVMValueRef GlobalVar, LLVMThreadLocalMode Mode)
+  'LLVMIsExternallyInitialized':  ['bool', [voidp]],
+  'LLVMSetExternallyInitialized': [void_, [voidp, 'bool']],
+
   // Basic blocks.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueBasicBlock.html
   'LLVMAppendBasicBlock':       [voidp, [voidp, 'string']],
