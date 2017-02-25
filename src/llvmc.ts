@@ -170,8 +170,30 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Scalar constants.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantScalar.html
-  'LLVMConstInt':               [voidp, [voidp, 'ulonglong', 'bool']],
-
+  'LLVMConstInt':                       [voidp, [voidp, 'ulonglong', 'bool']],
+  'LLVMConstIntOfArbitraryPrecision':   [],                                      // todo const uint
+  'LLVMConstIntOfString':               [],                                      // todo uint8
+  'LLVMConstIntOfStringAndSize':        [],                                      // todo uint8
+  'LLVMConstReal':                      [voidp, [voidp, 'double']],
+  'LLVMConstRealOfString':              [voidp, [voidp, 'string']],
+  'LLVMConstRealOfStringAndSize':       [voidp, [voidp, 'string', 'uint']],
+  'LLVMConstIntGetZExtValue':           ['ulonglong', [voidp]],
+  'LLVMConstIntGetSExtValue':           ['longlong', [voidp]],
+  'LLVMConstRealGetDouble':             [],                                       // todo llvmbool *
+  
+  // Composite Constants
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantComposite.html
+  'LLVMConstStringInContext':   [voidp, [voidp, 'string', 'uint', 'bool']],
+  'LLVMConstString':            [voidp, ['string', 'uint', 'bool']],
+  'LLVMIsConstantString':       ['bool', [voidp]],
+  'LLVMGetAsString':            [],                                               // todo size_t
+  'LLVMConstStructInContext':   [],                                               // todo ref *
+  'LLVMConstStruct':            [],                                               // todo ref *
+  'LLVMConstArray':             [],                                               // todo ref *
+  'LLVMConstNamedStruct':       [],                                               // todo ref *
+  'LLVMGetElementAsConstant':   [voidp, [voidp, 'uint']],
+  'LLVMConstVector':            [],                                               // todo ref *
+  
   // Basic blocks.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueBasicBlock.html
   'LLVMAppendBasicBlock':       [voidp, [voidp, 'string']],
@@ -186,3 +208,11 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMBuildAdd':               [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildRet':               [voidp, [voidp, voidp]],
 });
+
+
+
+
+
+
+
+
