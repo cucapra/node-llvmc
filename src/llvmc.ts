@@ -122,7 +122,7 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Function types.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeFunction.html
-  'LLVMFunctionType':           [voidp, [voidp, voidp, 'uint', 'bool']],
+  'LLVMFunctionType':           [voidp, [voidp, voidpp, 'uint', 'bool']],
   'LLVMIsFunctionVarArg':       ['bool', [voidp]],                                      
   'LLVMGetReturnType':          [voidp, [voidp]],
   'LLVMCountParamTypes':        ['uint', [voidp]],
