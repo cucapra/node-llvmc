@@ -14,9 +14,12 @@ let voidp = ref.refType(ref.types.void);  // Pointer to an opaque LLVM value.
 let void_ = ref.types.void;
 
 export const LLVM = ffi.Library('libLLVM', {
-  /* ==============================
-   *             Core
-   * ============================== */
+  // Core
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCore.html
+  'LLVMInitializeCore':              [void_, [voidp]],
+  'LLVMShutdown':                    [void_, [void_]],
+  'LLVMCreateMessag':                ['string', ['string']],
+  'LLVMDisposeMessage':              [void_, ['string']],
 
   // Types and Enumerations
   // todo
