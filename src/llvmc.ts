@@ -49,7 +49,21 @@ export const LLVM = ffi.Library('libLLVM', {
   // empty
 
   // Interprocedural transformations
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCTransformsIPO.html
+  'LLVMAddArgumentPromotionPass':      [void_, [voidp]],
+  'LLVMAddConstantMergePass':          [void_, [voidp]],
+  'LLVMAddDeadArgEliminationPass':     [void_, [voidp]],
+  'LLVMAddFunctionAttrsPass':          [void_, [voidp]],
+  'LLVMAddFunctionInliningPass':       [void_, [voidp]],
+  'LLVMAddAlwaysInlinerPass':          [void_, [voidp]],
+  'LLVMAddGlobalDCEPass':              [void_, [voidp]],
+  'LLVMAddGlobalOptimizerPass':        [void_, [voidp]],
+  'LLVMAddIPConstantPropagationPass':  [void_, [voidp]],
+  'LLVMAddPruneEHPass':                [void_, [voidp]],
+  'LLVMAddIPSCCPPass':                 [void_, [voidp]],
+  'LLVMAddInternalizePass':            [void_, [voidp, 'uint']], 
+  'LLVMAddStripDeadPrototypesPass':    [void_, [voidp]],
+  'LLVMAddStripSymbolsPass':           [void_, [voidp]],
 
   // Pass manager builder
   // todo
