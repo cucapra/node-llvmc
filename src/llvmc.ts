@@ -569,7 +569,8 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMDisposeMemoryBuffer':                    [void_, [voidp]],
 
   // Pass Registry
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCorePassRegistry.html
+  'LLVMGetGlobalPassRegistry':             [voidp, []],
 
   // Pass Manager
   // todo
