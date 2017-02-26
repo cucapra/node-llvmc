@@ -554,7 +554,9 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMBuildRet':               [voidp, [voidp, voidp]],
 
   // Module Providers
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreModuleProvider.html
+  'LLVMCreateModuleProviderForExistingModule':  [voidp, [voidp]],
+  'LLVMDisposeModuleProvider':                  [void_, [voidp]],
 
   // Memory Buffers
   // todo
