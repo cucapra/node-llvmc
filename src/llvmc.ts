@@ -66,7 +66,18 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMAddStripSymbolsPass':           [void_, [voidp]],
 
   // Pass manager builder
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCTransformsPassManagerBuilder.html
+  'LLVMPassManagerBuilderCreate':                      [voidp, []], 
+  'LLVMPassManagerBuilderDispose':                     [void_, [voidp]],
+  'LLVMPassManagerBuilderSetOptLevel':                 [void_, [voidp, 'uint']],
+  'LLVMPassManagerBuilderSetSizeLevel':                [void_, [voidp, 'uint']],
+  'LLVMPassManagerBuilderSetDisableUnitAtATime':       [void_, [voidp, 'bool']],
+  'LLVMPassManagerBuilderSetDisableUnrollLoops':       [void_, [voidp, 'bool']],
+  'LLVMPassManagerBuilderSetDisableSimplifyLibCalls':  [void_, [voidp, 'bool']],   
+  'LLVMPassManagerBuilderUseInlinerWithThreshold':     [void_, [voidp, 'uint']],
+  'LLVMPassManagerBuilderPopulateFunctionPassManager': [void_, [voidp, voidp]],
+  'LLVMPassManagerBuilderPopulateModulePassManager':   [void_, [voidp, voidp]],
+  'LLVMPassManagerBuilderPopulateLTOPassManager':      [void_, [voidp, voidp, 'bool', 'bool']],
 
   // Scalar transformations
   // todo
