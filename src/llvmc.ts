@@ -544,6 +544,7 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Instruction builder.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreInstructionBuilder.html
+  // todo: not done yet
   'LLVMCreateBuilder':          [voidp, []],
   'LLVMPositionBuilder':        [void_, [voidp, voidp, voidp]],
   'LLVMPositionBuilderBefore':  [void_, [voidp, voidp]],
@@ -551,6 +552,42 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMDisposeBuilder':         [void_, [voidp]],
   'LLVMBuildAdd':               [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildRet':               [voidp, [voidp, voidp]],
+
+  // Module Providers
+  // todo
+
+  // Memory Buffers
+  // todo
+
+  // Pass Registry
+  // todo
+
+  // Pass Manager
+  // todo
+
+  // Threading
+  // todo
+
+  // Disassembler
+  // todo
+
+  // Execution Engine
+  // todo
+
+  // Initialization Routine
+  // todo
+
+  // Link Time Optimization
+  // todo
+
+  // LTO
+  // todo
+
+  // Object file reading and writing
+  // todo
+
+  // Target information
+  // todo
 });
 
 
