@@ -68,10 +68,21 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMDisposeMessage':              [void_, ['string']],
 
   // Types and Enumerations
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreContext.html
+  // contains enums
 
   // Contexts
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreContext.html
+  // contains typedefs
+  'LLVMContextCreate':                [voidp, []],
+  'LLVMGetGlobalContext':             [voidp, []],
+  // void   LLVMContextSetDiagnosticHandler (LLVMContextRef C, LLVMDiagnosticHandler Handler, void *DiagnosticContext)
+  // void   LLVMContextSetYieldCallback (LLVMContextRef C, LLVMYieldCallback Callback, void *OpaqueHandle)
+  'LLVMContextDispose':               [void_, [voidp]],
+  'LLVMGetDiagInfoDescription':       ['string', [voidp]],
+  // LLVMDiagnosticSeverity   LLVMGetDiagInfoSeverity (LLVMDiagnosticInfoRef DI)
+  'LLVMGetMDKindIDInContext':         ['uint', [voidp, 'string', 'uint']],
+  'LLVMGetMDKindID':                  ['uint', ['string', 'uint']],
 
   // Modules.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreModule.html
