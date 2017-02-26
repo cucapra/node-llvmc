@@ -45,7 +45,8 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMWriteBitcodeToMemoryBuffer':  [voidp, [voidp]],
 
   // Transforms
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCTransforms.html
+  // empty
 
   // Interprocedural transformations
   // todo
@@ -181,11 +182,11 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Values
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValues.html
-  // #define   LLVM_FOR_EACH_VALUE_SUBCLASS(macro)
+  // contains #defines
 
   // General APIs
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueGeneral.html
-  // #define   LLVM_DECLARE_VALUE_CAST(name)   LLVMValueRef LLVMIsA##name(LLVMValueRef Val);
+  // contains #defines
   'LLVMTypeOf':                 [voidp, [voidp]],
   'LLVMGetValueName':           ['string', [voidp]],
   'LLVMSetValueName':           [void_, [voidp, 'string']],
