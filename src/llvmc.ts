@@ -38,7 +38,11 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetBitcodeModule2':           ['bool', [voidp, voidpp]],
 
   // Bit Writer
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCBitWriter.html
+  'LLVMWriteBitcodeToFile':          ['int', [voidp, 'string']],
+  'LLVMWriteBitcodeToFD':            ['int', [voidp, 'int', 'int', 'int']],
+  'LLVMWriteBitcodeToFileHandle':    ['int', [voidp, 'int']],
+  'LLVMWriteBitcodeToMemoryBuffer':  [voidp, [voidp]],
 
   // Transforms
   // todo
@@ -93,7 +97,6 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetLastFunction':                [voidp, [voidp]],
   'LLVMGetNextFunction':                [voidp, [voidp]],
   'LLVMGetPreviousFunction':            [voidp, [voidp]],
-  'LLVMWriteBitcodeToFile':             ['int', [voidp, 'string']],
 
   // Types
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreType.html
