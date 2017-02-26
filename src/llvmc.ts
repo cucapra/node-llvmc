@@ -584,7 +584,10 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMDisposePassManager':                  [void_, [voidp]],
 
   // Threading
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreThreading.html
+  'LLVMStartMultithreaded':                  ['bool', []],
+  'LLVMStopMultithreaded':                   [void_, []],
+  'LLVMIsMultithreaded':                     ['bool', []],
 
   // Disassembler
   // todo
