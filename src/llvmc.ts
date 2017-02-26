@@ -19,7 +19,12 @@ let void_ = ref.types.void;
 
 export const LLVM = ffi.Library('libLLVM', {
   // Analysis
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCAnalysis.html
+  // contains enums
+  'LLVMVerifyModule':              ['bool', [voidp, 'int', stringp]],
+  'LLVMVerifyFunction':            ['bool', [voidp, 'int']],
+  'LLVMViewFunctionCFG':           [void_, [voidp]],
+  'LLVMViewFunctionCFGOnly':       [void_, [voidp]],
 
   // Bit Reader
   // todo
