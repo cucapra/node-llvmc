@@ -80,7 +80,45 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMPassManagerBuilderPopulateLTOPassManager':      [void_, [voidp, voidp, 'bool', 'bool']],
 
   // Scalar transformations
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCTransformsScalar.html
+  'LLVMAddAggressiveDCEPass':                      [void_, [voidp]],
+  'LLVMAddBitTrackingDCEPass':                     [void_, [voidp]],
+  'LLVMAddAlignmentFromAssumptionsPass':           [void_, [voidp]],
+  'LLVMAddCFGSimplificationPass':                  [void_, [voidp]],
+  'LLVMAddDeadStoreEliminationPass':               [void_, [voidp]],
+  'LLVMAddScalarizerPass':                         [void_, [voidp]],
+  'LLVMAddMergedLoadStoreMotionPass':              [void_, [voidp]],
+  'LLVMAddGVNPass':                                [void_, [voidp]],
+  'LLVMAddIndVarSimplifyPass':                     [void_, [voidp]],
+  'LLVMAddInstructionCombiningPass':               [void_, [voidp]],
+  'LLVMAddJumpThreadingPass':                      [void_, [voidp]],
+  'LLVMAddLICMPass':                               [void_, [voidp]],
+  'LLVMAddLoopDeletionPass':                       [void_, [voidp]],
+  'LLVMAddLoopIdiomPass':                          [void_, [voidp]],
+  'LLVMAddLoopRotatePass':                         [void_, [voidp]],
+  'LLVMAddLoopRerollPass':                         [void_, [voidp]],
+  'LLVMAddLoopUnrollPass':                         [void_, [voidp]],
+  'LLVMAddLoopUnswitchPass':                       [void_, [voidp]],
+  'LLVMAddMemCpyOptPass':                          [void_, [voidp]],
+  'LLVMAddPartiallyInlineLibCallsPass':            [void_, [voidp]],
+  'LLVMAddLowerSwitchPass':                        [void_, [voidp]],
+  'LLVMAddPromoteMemoryToRegisterPass':            [void_, [voidp]],
+  'LLVMAddReassociatePass':                        [void_, [voidp]],
+  'LLVMAddSCCPPass':                               [void_, [voidp]],
+  'LLVMAddScalarReplAggregatesPass':               [void_, [voidp]],
+  'LLVMAddScalarReplAggregatesPassSSA':            [void_, [voidp]],
+  'LLVMAddScalarReplAggregatesPassWithThreshold':  [void_, [voidp, 'int']],
+  'LLVMAddSimplifyLibCallsPass':                   [void_, [voidp]],
+  'LLVMAddTailCallEliminationPass':                [void_, [voidp]],
+  'LLVMAddConstantPropagationPass':                [void_, [voidp]],
+  'LLVMAddDemoteMemoryToRegisterPass':             [void_, [voidp]],
+  'LLVMAddVerifierPass':                           [void_, [voidp]],
+  'LLVMAddCorrelatedValuePropagationPass':         [void_, [voidp]],
+  'LLVMAddEarlyCSEPass':                           [void_, [voidp]],
+  'LLVMAddLowerExpectIntrinsicPass':               [void_, [voidp]],
+  'LLVMAddTypeBasedAliasAnalysisPass':             [void_, [voidp]],
+  'LLVMAddScopedNoAliasAAPass':                    [void_, [voidp]],
+  'LLVMAddBasicAliasAnalysisPass':                 [void_, [voidp]],
 
   // Vectorization transformation
   // http://llvm.org/docs/doxygen/html/group__LLVMCTransformsVectorize.html
@@ -503,7 +541,6 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMCountIncoming':          ['uint', [voidp]], 
   'LLVMGetIncomingValue':       [voidp, [voidp, 'uint']],
   'LLVMGetIncomingBlock':       [voidp, [voidp, 'uint']],
-
 
   // Instruction builder.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreInstructionBuilder.html
