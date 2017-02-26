@@ -559,7 +559,14 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMDisposeModuleProvider':                  [void_, [voidp]],
 
   // Memory Buffers
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreMemoryBuffers.html
+  'LLVMCreateMemoryBufferWithContentsOfFile':   ['bool', ['string', voidpp, stringp]],
+  'LLVMCreateMemoryBufferWithSTDIN':            ['bool', [voidpp, stringp]],
+  'LLVMCreateMemoryBufferWithMemoryRange':      [voidp, ['string', 'size_t', 'string', 'bool']],
+  'LLVMCreateMemoryBufferWithMemoryRangeCopy':  [voidp, ['string', 'size_t', 'string']],
+  'LLVMGetBufferStart':                         ['string', [voidp]],
+  'LLVMGetBufferSize':                          ['size_t', [voidp]],
+  'LLVMDisposeMemoryBuffer':                    [void_, [voidp]],
 
   // Pass Registry
   // todo
