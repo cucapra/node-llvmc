@@ -570,10 +570,18 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Pass Registry
   // http://llvm.org/docs/doxygen/html/group__LLVMCCorePassRegistry.html
-  'LLVMGetGlobalPassRegistry':             [voidp, []],
+  'LLVMGetGlobalPassRegistry':               [voidp, []],
 
   // Pass Manager
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCorePassManagers.html
+  'LLVMCreatePassManager':                   [voidp, []],
+  'LLVMCreateFunctionPassManagerForModule':  [voidp, [voidp]],
+  'LLVMCreateFunctionPassManager':           [voidp, [voidp]],
+  'LLVMRunPassManager':                      ['bool', [voidp, voidp]],
+  'LLVMInitializeFunctionPassManager':       ['bool', [voidp]],
+  'LLVMRunFunctionPassManager':              ['bool', [voidp, voidp]],
+  'LLVMFinalizeFunctionPassManager':         ['bool', [voidp]],
+  'LLVMDisposePassManager':                  [void_, [voidp]],
 
   // Threading
   // todo
