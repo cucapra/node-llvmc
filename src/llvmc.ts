@@ -27,7 +27,15 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMViewFunctionCFGOnly':       [void_, [voidp]],
 
   // Bit Reader
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCBitReader.html
+  'LLVMParseBitcode':                ['bool', [voidp, voidpp, stringp]],
+  'LLVMParseBitcode2':               ['bool', [voidp, voidpp]],
+  'LLVMParseBitcodeInContext':       ['bool', [voidp, voidp, voidpp, stringp]],
+  'LLVMParseBitcodeInContext2':      ['bool', [voidp, voidp, voidpp]],
+  'LLVMGetBitcodeModuleInContext':   ['bool', [voidp, voidp, voidpp, stringp]],
+  'LLVMGetBitcodeModuleInContext2':  ['bool', [voidp, voidp, voidpp]],
+  'LLVMGetBitcodeModule':            ['bool', [voidp, voidpp, stringp]],
+  'LLVMGetBitcodeModule2':           ['bool', [voidp, voidpp]],
 
   // Bit Writer
   // todo
