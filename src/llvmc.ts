@@ -700,7 +700,6 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Initialization Routine
   // http://llvm.org/docs/doxygen/html/group__LLVMCInitialization.html
-  // 'LLVMInitializeCore':              [void_, [voidp]],  OVERLOADED METHOD
   'LLVMInitializeTransformUtils':    [void_, [voidp]],
   'LLVMInitializeScalarOpts':        [void_, [voidp]],
   'LLVMInitializeObjCARCOpts':       [void_, [voidp]],
