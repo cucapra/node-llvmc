@@ -730,7 +730,7 @@ export const LLVM = ffi.Library('libLLVM', {
 'LLVMDisposeSectionIterator':         [void_, [voidp]],
 'LLVMIsSectionIteratorAtEnd':         ['bool', [voidp, voidp]],
 'LLVMMoveToNextSection':              [void_, [voidp]],
-'LLVMMoveToContainingSection':        [void_, [vodip, voidp]],
+'LLVMMoveToContainingSection':        [void_, [voidp, voidp]],
 'LLVMGetSymbols':                     [voidp, [voidp]],
 'LLVMDisposeSymbolIterator':          [void_, [voidp]],
 'LLVMIsSymbolIteratorAtEnd':          ['bool', [voidp, voidp]],
