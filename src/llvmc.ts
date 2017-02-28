@@ -723,7 +723,35 @@ export const LLVM = ffi.Library('libLLVM', {
   // todo
 
   // Object file reading and writing
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCObject.html
+'LLVMCreateObjectFile':               [voidp, [voidp]],
+'LLVMDisposeObjectFile':              [void_, [voidp]],
+'LLVMGetSections':                    [voidp, [voidp]],
+'LLVMDisposeSectionIterator':         [void_, [voidp]],
+'LLVMIsSectionIteratorAtEnd':         ['bool', [voidp, voidp]],
+'LLVMMoveToNextSection':              [void_, [voidp]],
+'LLVMMoveToContainingSection':        [void_, [vodip, voidp]],
+'LLVMGetSymbols':                     [voidp, [voidp]],
+'LLVMDisposeSymbolIterator':          [void_, [voidp]],
+'LLVMIsSymbolIteratorAtEnd':          ['bool', [voidp, voidp]],
+'LLVMMoveToNextSymbol':               [void_, [voidp]],
+'LLVMGetSectionName':                 ['string', [voidp]],
+'LLVMGetSectionSize':                 ['uint64', [voidp]],
+'LLVMGetSectionContents':             ['string', [voidp]],
+'LLVMGetSectionAddress':              ['uint64', [voidp]],
+'LLVMGetSectionContainsSymbol':       ['bool', [voidp, voidp]],
+'LLVMGetRelocations':                 [voidp, [voidp]],
+'LLVMDisposeRelocationIterator':      [void_, [voidp]],
+'LLVMIsRelocationIteratorAtEnd':      ['bool', [voidp, voidp]],
+'LLVMMoveToNextRelocation':           [void_, [voidp]],
+'LLVMGetSymbolName':                  ['string', [voidp]],
+'LLVMGetSymbolAddress':               ['uint64', [voidp]],
+'LLVMGetSymbolSize':                  ['uint64', [voidp]],
+'LLVMGetRelocationOffset':            ['uint64', [voidp]],
+'LLVMGetRelocationSymbol':            [voidp, [voidp]],
+'LLVMGetRelocationType':              ['uint64', [voidp]],
+'LLVMGetRelocationTypeName':          ['string', [voidp]],
+'LLVMGetRelocationValueString':       ['string', [voidp]],
 
   // Target information
   // todo
