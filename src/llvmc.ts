@@ -13,6 +13,7 @@ import * as Struct from 'ref-struct';
 // Some useful types.
 let boolp = ref.refType('bool');
 let uintp = ref.refType('uint');
+let uint8p = ref.refType('uint8');
 let stringp = ref.refType('string');
 let voidp = ref.refType(ref.types.void);  // Pointer to an opaque LLVM value.
 let voidpp = ref.refType(voidp);  // void**, used for arrays and out-parameters.
@@ -727,46 +728,46 @@ export const LLVM = ffi.Library('libLLVM', {
 // LLVMDisasmContextRef   LLVMCreateDisasm (const char *TripleName, void *DisInfo, int TagType, LLVMOpInfoCallback GetOpInfo, LLVMSymbolLookupCallback SymbolLookUp)
 // LLVMDisasmContextRef   LLVMCreateDisasmCPU (const char *Triple, const char *CPU, void *DisInfo, int TagType, LLVMOpInfoCallback GetOpInfo, LLVMSymbolLookupCallback SymbolLookUp)
 // LLVMDisasmContextRef   LLVMCreateDisasmCPUFeatures (const char *Triple, const char *CPU, const char *Features, void *DisInfo, int TagType, LLVMOpInfoCallback GetOpInfo, LLVMSymbolLookupCallback SymbolLookUp)
-// int   LLVMSetDisasmOptions (LLVMDisasmContextRef DC, uint64_t Options)
-// void   LLVMDisasmDispose (LLVMDisasmContextRef DC)
-// size_t   LLVMDisasmInstruction (LLVMDisasmContextRef DC, uint8_t *Bytes, uint64_t BytesSize, uint64_t PC, char *OutString, size_t OutStringSize)
+  'LLVMSetDisasmOptions':                      ['int', [voidp, 'uint64']],
+  'LLVMDisasmDispose':                         [void_, [voidp]],
+  'LLVMDisasmInstruction':                     ['size_t', [voidp, uint8p, 'uint64', 'uint64', 'string', 'size_t']],
 
   // Execution Engine
   // http://llvm.org/docs/doxygen/html/group__LLVMCExecutionEngine.html
   // contains structs, typedefs, 
-'LLVMLinkInMCJIT':                          [void_, []],
-'LLVMLinkInInterpreter':                    [void_, []],
-'LLVMCreateGenericValueOfInt':              [voidp, [voidp, 'ulonglong', 'bool']],
-'LLVMCreateGenericValueOfPointer':          [voidp, [voidp]],
-'LLVMCreateGenericValueOfFloat':            [voidp, [voidp, 'double']],
-'LLVMGenericValueIntWidth':                 ['uint', [voidp]],
-'LLVMGenericValueToInt':                    ['ulonglong', [voidp, 'bool']],
-'LLVMGenericValueToPointer':                [voidp, [voidp]],
-'LLVMGenericValueToFloat':                  ['double', [voidp, voidp]],
-'LLVMDisposeGenericValue':                  [void_, [voidp]],
-'LLVMCreateExecutionEngineForModule':       ['bool', [voidpp, voidp, stringp]],
-'LLVMCreateInterpreterForModule':           ['bool', [voidpp, voidp, stringp]],
-'LLVMCreateJITCompilerForModule':           ['bool', [voidpp, voidp, 'uint', stringp]],
-'LLVMInitializeMCJITCompilerOptions':       [void_, [LLVMCJITCompilerOptionsPtr, 'sizet']],
-'LLVMCreateMCJITCompilerForModule':         ['bool', [voidpp, voidp, LLVMCJITCompilerOptionsPtr, 'size_t', stringp]],
-'LLVMDisposeExecutionEngine':               [void_, [voidp]],
-'LLVMRunStaticConstructors':                [void_, [voidp]],
-'LLVMRunStaticDestructors':                 [void_, [voidp]],
-'LLVMRunFunctionAsMain':                    ['int', [voidp, voidp, 'uint', 'string', 'string']],
-'LLVMRunFunction':                          [voidp, [voidp, voidp, 'uint', voidpp]],
-'LLVMFreeMachineCodeForFunction':           [void_, [voidp, voidp]],
-'LLVMAddModule':                            [void_, [voidp, voidp]],
-'LLVMRemoveModule':                         ['bool', [voidp, voidp, voidpp, stringp]],
-'LLVMFindFunction':                         ['bool', [voidp, 'string', voidpp]],
-'LLVMRecompileAndRelinkFunction':           [voidp, [voidp, voidp]],
-'LLVMGetExecutionEngineTargetData':         [voidp, [voidp]],
-'LLVMGetExecutionEngineTargetMachine':      [voidp, [voidp]],
-'LLVMAddGlobalMapping':                     [void_, [voidp, voidp, voidp]],
-'LLVMGetPointerToGlobal':                   [voidp, [voidp, voidp]],
-'LLVMGetGlobalValueAddress':                ['uint64', [voidp, 'string']],
-'LLVMGetFunctionAddress':                   ['uint64', [voidp, 'string']],
-// LLVMMCJITMemoryManagerRef   LLVMCreateSimpleMCJITMemoryManager (void *Opaque, LLVMMemoryManagerAllocateCodeSectionCallback AllocateCodeSection, LLVMMemoryManagerAllocateDataSectionCallback AllocateDataSection, LLVMMemoryManagerFinalizeMemoryCallback FinalizeMemory, LLVMMemoryManagerDestroyCallback Destroy)
-'LLVMDisposeMCJITMemoryManager':            [void_, [voidp]],
+  'LLVMLinkInMCJIT':                          [void_, []],
+  'LLVMLinkInInterpreter':                    [void_, []],
+  'LLVMCreateGenericValueOfInt':              [voidp, [voidp, 'ulonglong', 'bool']],
+  'LLVMCreateGenericValueOfPointer':          [voidp, [voidp]],
+  'LLVMCreateGenericValueOfFloat':            [voidp, [voidp, 'double']],
+  'LLVMGenericValueIntWidth':                 ['uint', [voidp]],
+  'LLVMGenericValueToInt':                    ['ulonglong', [voidp, 'bool']],
+  'LLVMGenericValueToPointer':                [voidp, [voidp]],
+  'LLVMGenericValueToFloat':                  ['double', [voidp, voidp]],
+  'LLVMDisposeGenericValue':                  [void_, [voidp]],
+  'LLVMCreateExecutionEngineForModule':       ['bool', [voidpp, voidp, stringp]],
+  'LLVMCreateInterpreterForModule':           ['bool', [voidpp, voidp, stringp]],
+  'LLVMCreateJITCompilerForModule':           ['bool', [voidpp, voidp, 'uint', stringp]],
+  'LLVMInitializeMCJITCompilerOptions':       [void_, [LLVMCJITCompilerOptionsPtr, 'sizet']],
+  'LLVMCreateMCJITCompilerForModule':         ['bool', [voidpp, voidp, LLVMCJITCompilerOptionsPtr, 'size_t', stringp]],
+  'LLVMDisposeExecutionEngine':               [void_, [voidp]],
+  'LLVMRunStaticConstructors':                [void_, [voidp]],
+  'LLVMRunStaticDestructors':                 [void_, [voidp]],
+  'LLVMRunFunctionAsMain':                    ['int', [voidp, voidp, 'uint', 'string', 'string']],
+  'LLVMRunFunction':                          [voidp, [voidp, voidp, 'uint', voidpp]],
+  'LLVMFreeMachineCodeForFunction':           [void_, [voidp, voidp]],
+  'LLVMAddModule':                            [void_, [voidp, voidp]],
+  'LLVMRemoveModule':                         ['bool', [voidp, voidp, voidpp, stringp]],
+  'LLVMFindFunction':                         ['bool', [voidp, 'string', voidpp]],
+  'LLVMRecompileAndRelinkFunction':           [voidp, [voidp, voidp]],
+  'LLVMGetExecutionEngineTargetData':         [voidp, [voidp]],
+  'LLVMGetExecutionEngineTargetMachine':      [voidp, [voidp]],
+  'LLVMAddGlobalMapping':                     [void_, [voidp, voidp, voidp]],
+  'LLVMGetPointerToGlobal':                   [voidp, [voidp, voidp]],
+  'LLVMGetGlobalValueAddress':                ['uint64', [voidp, 'string']],
+  'LLVMGetFunctionAddress':                   ['uint64', [voidp, 'string']],
+  // LLVMMCJITMemoryManagerRef   LLVMCreateSimpleMCJITMemoryManager (void *Opaque, LLVMMemoryManagerAllocateCodeSectionCallback AllocateCodeSection, LLVMMemoryManagerAllocateDataSectionCallback AllocateDataSection, LLVMMemoryManagerFinalizeMemoryCallback FinalizeMemory, LLVMMemoryManagerDestroyCallback Destroy)
+  'LLVMDisposeMCJITMemoryManager':            [void_, [voidp]],
 
   // Initialization Routine
   // http://llvm.org/docs/doxygen/html/group__LLVMCInitialization.html
