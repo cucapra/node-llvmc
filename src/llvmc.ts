@@ -754,7 +754,39 @@ export const LLVM = ffi.Library('libLLVM', {
 'LLVMGetRelocationValueString':       ['string', [voidp]],
 
   // Target information
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCTarget.html
+'LLVMInitializeAllTargetInfos':       [void_, []],
+'LLVMInitializeAllTargets':           [void_, []],
+'LLVMInitializeAllTargetMCs':         [void_, []],
+'LLVMInitializeAllAsmPrinters':       [void_, []],
+'LLVMInitializeAllAsmParsers':        [void_, []],
+'LLVMInitializeAllDisassemblers':     [void_, []],
+'LLVMInitializeNativeTarget':         ['bool', []],
+'LLVMInitializeNativeAsmParser':      ['bool', []],
+'LLVMInitializeNativeAsmPrinter':     ['bool', []],
+'LLVMInitializeNativeDisassembler':   ['bool', []],
+'LLVMCreateTargetData':               [voidp, ['string']],
+'LLVMAddTargetData':                  [void_, [voidp, voidp]],
+'LLVMAddTargetLibraryInfo':           [void_, [voidp, voidp]],
+'LLVMCopyStringRepOfTargetData':      ['string', [voidp]],
+'LLVMByteOrder':                      ['int', [voidp]],
+'LLVMPointerSize':                    ['uint', [voidp]],   
+'LLVMPointerSizeForAS':               ['uint', [voidp, 'uint']],
+'LLVMIntPtrType':                     [voidp, [voidp]],
+'LLVMIntPtrTypeForAS':                [voidp, [voidp, 'uint']],   
+'LLVMIntPtrTypeInContext':            [voidp, [voidp, voidp]],
+'LLVMIntPtrTypeForASInContext':       [voidp, [voidp, voidp, 'uint']],
+'LLVMSizeOfTypeInBits':               ['ulonglong', [voidp, voidp]],
+'LLVMStoreSizeOfType':                ['ulonglong', [voidp, voidp]],
+'LLVMABISizeOfType':                  ['ulonglong', [voidp, voidp]],
+'LLVMABIAlignmentOfType':             ['uint', [voidp, voidp]],
+'LLVMCallFrameAlignmentOfType':       ['uint', [voidp, voidp]],
+'LLVMPreferredAlignmentOfType':       ['uint', [voidp, voidp]],
+'LLVMPreferredAlignmentOfGlobal':     ['uint', [voidp, voidp]],
+'LLVMElementAtOffset':                ['uint', [voidp, voidp, 'ulonglong']],
+'LLVMOffsetOfElement':                ['ulonglong', [voidp, voidp, 'uint']],
+'LLVMDisposeTargetData':              [void_, [voidp]],
+
 });
 
 
