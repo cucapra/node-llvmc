@@ -699,7 +699,19 @@ export const LLVM = ffi.Library('libLLVM', {
   // todo
 
   // Initialization Routine
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCInitialization.html
+  // 'LLVMInitializeCore':              [void_, [voidp]],  OVERLOADED METHOD
+  'LLVMInitializeTransformUtils':    [void_, [voidp]],
+  'LLVMInitializeScalarOpts':        [void_, [voidp]],
+  'LLVMInitializeObjCARCOpts':       [void_, [voidp]],
+  'LLVMInitializeVectorization':     [void_, [voidp]],
+  'LLVMInitializeInstCombine':       [void_, [voidp]],
+  'LLVMInitializeIPO':               [void_, [voidp]],
+  'LLVMInitializeInstrumentation':   [void_, [voidp]],
+  'LLVMInitializeAnalysis':          [void_, [voidp]],
+  'LLVMInitializeIPA':               [void_, [voidp]],
+  'LLVMInitializeCodeGen':           [void_, [voidp]],
+  'LLVMInitializeTarget':            [void_, [voidp]],
 
   // Link Time Optimization
   // todo
