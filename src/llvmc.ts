@@ -713,7 +713,11 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMInitializeTarget':            [void_, [voidp]],
 
   // Link Time Optimization
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCLinkTimeOptimizer.html
+  'llvm_create_optimizer':           ['voidp', []],
+  'llvm_destroy_optimizer':          [void_, [voidp]],
+  'llvm_read_object_file':           ['int', [voidp, 'string']],
+  'llvm_optimize_modules':           ['int', [voidp, 'string']],
 
   // LTO
   // todo
