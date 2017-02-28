@@ -8,6 +8,7 @@
 
 import * as ffi from 'ffi';
 import * as ref from 'ref';
+import * as Struct from 'ref-struct';
 
 // Some useful types.
 let boolp = ref.refType('bool');
@@ -16,6 +17,34 @@ let stringp = ref.refType('string');
 let voidp = ref.refType(ref.types.void);  // Pointer to an opaque LLVM value.
 let voidpp = ref.refType(voidp);  // void**, used for arrays and out-parameters.
 let void_ = ref.types.void;
+
+// some structs
+// http://llvm.org/docs/doxygen/html/structLLVMOpInfoSymbol1.html
+var LLVMOpInfoSymbol1 = Struct({
+  'Present':  'uint64',
+  'Name':     'string',
+  'Value':    'uint64', 
+});
+var LLVMOpInfoSymbol1Ptr = ref.refType(LLVMOpInfoSymbol1);
+
+// http://llvm.org/docs/doxygen/html/structLLVMOpInfo1.html
+var LLVMOpInfo1 = Struct({
+  'AddSymbol':        LLVMOpInfoSymbol1,
+  'SubtractSymbol':   LLVMOpInfoSymbol1,
+  'Value':            'uint64',
+  'VariantKind':      'uint64',
+});
+var LLVMOpInfo1Ptr = ref.refType(LLVMOpInfo1);
+
+// http://llvm.org/docs/doxygen/html/structLLVMMCJITCompilerOptions.html
+var LLVMCJITCompilerOptions = Struct({
+  'OptLevel':            'uint',
+  'CodeModel':           'int',
+  'NoFramePointerElim':  'bool',
+  'EnableFastISel':      'bool',
+   'MCJMM':              voidp, 
+});
+var LLVMCJITCompilerOptionsPtr = ref.refType(LLVMCJITCompilerOptions);
 
 export const LLVM = ffi.Library('libLLVM', {
   // Analysis
@@ -720,7 +749,49 @@ export const LLVM = ffi.Library('libLLVM', {
   'llvm_optimize_modules':           ['int', [voidp, 'string']],
 
   // LTO
-  // todo
+  // http://llvm.org/docs/doxygen/html/group__LLVMCLTO.html
+// const char *   lto_get_version (void)
+// const char *   lto_get_error_message (void)
+// lto_bool_t   lto_module_is_object_file (const char *path)
+// lto_bool_t   lto_module_is_object_file_for_target (const char *path, const char *target_triple_prefix)
+// lto_bool_t   lto_module_is_object_file_in_memory (const void *mem, size_t length)
+// lto_bool_t   lto_module_is_object_file_in_memory_for_target (const void *mem, size_t length, const char *target_triple_prefix)
+// lto_module_t   lto_module_create (const char *path)
+// lto_module_t   lto_module_create_from_memory (const void *mem, size_t length)
+// lto_module_t   lto_module_create_from_memory_with_path (const void *mem, size_t length, const char *path)
+// lto_module_t   lto_module_create_in_local_context (const void *mem, size_t length, const char *path)
+// lto_module_t   lto_module_create_in_codegen_context (const void *mem, size_t length, const char *path, lto_code_gen_t cg)
+// lto_module_t   lto_module_create_from_fd (int fd, const char *path, size_t file_size)
+// lto_module_t   lto_module_create_from_fd_at_offset (int fd, const char *path, size_t file_size, size_t map_size, off_t offset)
+// void   lto_module_dispose (lto_module_t mod)
+// const char *   lto_module_get_target_triple (lto_module_t mod)
+// void   lto_module_set_target_triple (lto_module_t mod, const char *triple)
+// unsigned int   lto_module_get_num_symbols (lto_module_t mod)
+// const char *   lto_module_get_symbol_name (lto_module_t mod, unsigned int index)
+// lto_symbol_attributes   lto_module_get_symbol_attribute (lto_module_t mod, unsigned int index)
+// const char *   lto_module_get_linkeropts (lto_module_t mod)
+// void   lto_codegen_set_diagnostic_handler (lto_code_gen_t, lto_diagnostic_handler_t, void *)
+// lto_code_gen_t   lto_codegen_create (void)
+// lto_code_gen_t   lto_codegen_create_in_local_context (void)
+// void   lto_codegen_dispose (lto_code_gen_t)
+// lto_bool_t   lto_codegen_add_module (lto_code_gen_t cg, lto_module_t mod)
+// void   lto_codegen_set_module (lto_code_gen_t cg, lto_module_t mod)
+// lto_bool_t   lto_codegen_set_debug_model (lto_code_gen_t cg, lto_debug_model)
+// lto_bool_t   lto_codegen_set_pic_model (lto_code_gen_t cg, lto_codegen_model)
+// void   lto_codegen_set_cpu (lto_code_gen_t cg, const char *cpu)
+// void   lto_codegen_set_assembler_path (lto_code_gen_t cg, const char *path)
+// void   lto_codegen_set_assembler_args (lto_code_gen_t cg, const char **args, int nargs)
+// void   lto_codegen_add_must_preserve_symbol (lto_code_gen_t cg, const char *symbol)
+// lto_bool_t   lto_codegen_write_merged_modules (lto_code_gen_t cg, const char *path)
+// const void *   lto_codegen_compile (lto_code_gen_t cg, size_t *length)
+// lto_bool_t   lto_codegen_compile_to_file (lto_code_gen_t cg, const char **name)
+// lto_bool_t   lto_codegen_optimize (lto_code_gen_t cg)
+// const void *   lto_codegen_compile_optimized (lto_code_gen_t cg, size_t *length)
+// unsigned int   lto_api_version (void)
+// void   lto_codegen_debug_options (lto_code_gen_t cg, const char *)
+// void   lto_initialize_disassembler (void)
+// void   lto_codegen_set_should_internalize (lto_code_gen_t cg, lto_bool_t ShouldInternalize)
+// void   lto_codegen_set_should_embed_uselists (lto_code_gen_t cg, lto_bool_t ShouldEmbedUselists)
 
   // Object file reading and writing
   // http://llvm.org/docs/doxygen/html/group__LLVMCObject.html
