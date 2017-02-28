@@ -722,9 +722,13 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMIsMultithreaded':                     ['bool', []],
 
   // Disassembler
+  // http://llvm.org/docs/doxygen/html/group__LLVMCDisassembler.html
+  // contains structs, #defines, typedegs
   // todo
 
   // Execution Engine
+  // http://llvm.org/docs/doxygen/html/group__LLVMCExecutionEngine.html
+  // contains structs, typedefs, 
   // todo
 
   // Initialization Routine
@@ -743,6 +747,7 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Link Time Optimization
   // http://llvm.org/docs/doxygen/html/group__LLVMCLinkTimeOptimizer.html
+  // contains typedefs, enums
   'llvm_create_optimizer':           ['voidp', []],
   'llvm_destroy_optimizer':          [void_, [voidp]],
   'llvm_read_object_file':           ['int', [voidp, 'string']],
@@ -750,6 +755,7 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // LTO
   // http://llvm.org/docs/doxygen/html/group__LLVMCLTO.html
+  // contains #defines, typedefs, enums
 // const char *   lto_get_version (void)
 // const char *   lto_get_error_message (void)
 // lto_bool_t   lto_module_is_object_file (const char *path)
@@ -795,6 +801,7 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Object file reading and writing
   // http://llvm.org/docs/doxygen/html/group__LLVMCObject.html
+  // contains typdefs
 'LLVMCreateObjectFile':               [voidp, [voidp]],
 'LLVMDisposeObjectFile':              [void_, [voidp]],
 'LLVMGetSections':                    [voidp, [voidp]],
@@ -826,6 +833,7 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Target information
   // http://llvm.org/docs/doxygen/html/group__LLVMCTarget.html
+  // contains #defines, typedefs, enums
 'LLVMInitializeAllTargetInfos':       [void_, []],
 'LLVMInitializeAllTargets':           [void_, []],
 'LLVMInitializeAllTargetMCs':         [void_, []],
