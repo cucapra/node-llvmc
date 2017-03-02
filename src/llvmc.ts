@@ -14,6 +14,7 @@ import * as Struct from 'ref-struct';
 let boolp = ref.refType('bool');
 let uintp = ref.refType('uint');
 let uint8p = ref.refType('uint8');
+let size_tp = ref.refType('size_t');
 let stringp = ref.refType('string');
 let voidp = ref.refType(ref.types.void);  // Pointer to an opaque LLVM value.
 let voidpp = ref.refType(voidp);  // void**, used for arrays and out-parameters.
@@ -172,11 +173,11 @@ export const LLVM = ffi.Library('libLLVM', {
   // contains typedefs
   'LLVMContextCreate':                [voidp, []],
   'LLVMGetGlobalContext':             [voidp, []],
-  // void   LLVMContextSetDiagnosticHandler (LLVMContextRef C, LLVMDiagnosticHandler Handler, void *DiagnosticContext)
-  // void   LLVMContextSetYieldCallback (LLVMContextRef C, LLVMYieldCallback Callback, void *OpaqueHandle)
+  'LLVMContextSetDiagnosticHandler':  [void_, [voidp, voidp, voidp]],
+  'LLVMContextSetYieldCallback':      [void_, [voidp, voidp, voidp]],
   'LLVMContextDispose':               [void_, [voidp]],
   'LLVMGetDiagInfoDescription':       ['string', [voidp]],
-  // LLVMDiagnosticSeverity   LLVMGetDiagInfoSeverity (LLVMDiagnosticInfoRef DI)
+  'LLVMGetDiagInfoSeverity':          ['int', [voidp]],
   'LLVMGetMDKindIDInContext':         ['uint', [voidp, 'string', 'uint']],
   'LLVMGetMDKindID':                  ['uint', ['string', 'uint']],
 
@@ -725,9 +726,9 @@ export const LLVM = ffi.Library('libLLVM', {
   // Disassembler
   // http://llvm.org/docs/doxygen/html/group__LLVMCDisassembler.html
   // contains structs, #defines, typedefs
-// LLVMDisasmContextRef   LLVMCreateDisasm (const char *TripleName, void *DisInfo, int TagType, LLVMOpInfoCallback GetOpInfo, LLVMSymbolLookupCallback SymbolLookUp)
-// LLVMDisasmContextRef   LLVMCreateDisasmCPU (const char *Triple, const char *CPU, void *DisInfo, int TagType, LLVMOpInfoCallback GetOpInfo, LLVMSymbolLookupCallback SymbolLookUp)
-// LLVMDisasmContextRef   LLVMCreateDisasmCPUFeatures (const char *Triple, const char *CPU, const char *Features, void *DisInfo, int TagType, LLVMOpInfoCallback GetOpInfo, LLVMSymbolLookupCallback SymbolLookUp)
+  'LLVMCreateDisasm':                          [voidp, ['string', voidp, 'int', voidp, voidp]],
+  'LLVMCreateDisasmCPU':                       [voidp, ['string', 'string', voidp, 'int', voidp, voidp]],
+  'LLVMCreateDisasmCPUFeatures':               [voidp, ['string', 'string', 'string', voidp, 'int', voidp, voidp]],
   'LLVMSetDisasmOptions':                      ['int', [voidp, 'uint64']],
   'LLVMDisasmDispose':                         [void_, [voidp]],
   'LLVMDisasmInstruction':                     ['size_t', [voidp, uint8p, 'uint64', 'uint64', 'string', 'size_t']],
@@ -766,7 +767,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetPointerToGlobal':                   [voidp, [voidp, voidp]],
   'LLVMGetGlobalValueAddress':                ['uint64', [voidp, 'string']],
   'LLVMGetFunctionAddress':                   ['uint64', [voidp, 'string']],
-  // LLVMMCJITMemoryManagerRef   LLVMCreateSimpleMCJITMemoryManager (void *Opaque, LLVMMemoryManagerAllocateCodeSectionCallback AllocateCodeSection, LLVMMemoryManagerAllocateDataSectionCallback AllocateDataSection, LLVMMemoryManagerFinalizeMemoryCallback FinalizeMemory, LLVMMemoryManagerDestroyCallback Destroy)
+  'LLVMCreateSimpleMCJITMemoryManager':       [voidp, [voidp, voidp, voidp, voidp, voidp]],
   'LLVMDisposeMCJITMemoryManager':            [void_, [voidp]],
 
   // Initialization Routine
@@ -794,48 +795,48 @@ export const LLVM = ffi.Library('libLLVM', {
   // LTO
   // http://llvm.org/docs/doxygen/html/group__LLVMCLTO.html
   // contains #defines, typedefs, enums
-// const char *   lto_get_version (void)
-// const char *   lto_get_error_message (void)
-// lto_bool_t   lto_module_is_object_file (const char *path)
-// lto_bool_t   lto_module_is_object_file_for_target (const char *path, const char *target_triple_prefix)
-// lto_bool_t   lto_module_is_object_file_in_memory (const void *mem, size_t length)
-// lto_bool_t   lto_module_is_object_file_in_memory_for_target (const void *mem, size_t length, const char *target_triple_prefix)
-// lto_module_t   lto_module_create (const char *path)
-// lto_module_t   lto_module_create_from_memory (const void *mem, size_t length)
-// lto_module_t   lto_module_create_from_memory_with_path (const void *mem, size_t length, const char *path)
-// lto_module_t   lto_module_create_in_local_context (const void *mem, size_t length, const char *path)
-// lto_module_t   lto_module_create_in_codegen_context (const void *mem, size_t length, const char *path, lto_code_gen_t cg)
-// lto_module_t   lto_module_create_from_fd (int fd, const char *path, size_t file_size)
-// lto_module_t   lto_module_create_from_fd_at_offset (int fd, const char *path, size_t file_size, size_t map_size, off_t offset)
-// void   lto_module_dispose (lto_module_t mod)
-// const char *   lto_module_get_target_triple (lto_module_t mod)
-// void   lto_module_set_target_triple (lto_module_t mod, const char *triple)
-// unsigned int   lto_module_get_num_symbols (lto_module_t mod)
-// const char *   lto_module_get_symbol_name (lto_module_t mod, unsigned int index)
-// lto_symbol_attributes   lto_module_get_symbol_attribute (lto_module_t mod, unsigned int index)
-// const char *   lto_module_get_linkeropts (lto_module_t mod)
-// void   lto_codegen_set_diagnostic_handler (lto_code_gen_t, lto_diagnostic_handler_t, void *)
-// lto_code_gen_t   lto_codegen_create (void)
-// lto_code_gen_t   lto_codegen_create_in_local_context (void)
-// void   lto_codegen_dispose (lto_code_gen_t)
-// lto_bool_t   lto_codegen_add_module (lto_code_gen_t cg, lto_module_t mod)
-// void   lto_codegen_set_module (lto_code_gen_t cg, lto_module_t mod)
-// lto_bool_t   lto_codegen_set_debug_model (lto_code_gen_t cg, lto_debug_model)
-// lto_bool_t   lto_codegen_set_pic_model (lto_code_gen_t cg, lto_codegen_model)
-// void   lto_codegen_set_cpu (lto_code_gen_t cg, const char *cpu)
-// void   lto_codegen_set_assembler_path (lto_code_gen_t cg, const char *path)
-// void   lto_codegen_set_assembler_args (lto_code_gen_t cg, const char **args, int nargs)
-// void   lto_codegen_add_must_preserve_symbol (lto_code_gen_t cg, const char *symbol)
-// lto_bool_t   lto_codegen_write_merged_modules (lto_code_gen_t cg, const char *path)
-// const void *   lto_codegen_compile (lto_code_gen_t cg, size_t *length)
-// lto_bool_t   lto_codegen_compile_to_file (lto_code_gen_t cg, const char **name)
-// lto_bool_t   lto_codegen_optimize (lto_code_gen_t cg)
-// const void *   lto_codegen_compile_optimized (lto_code_gen_t cg, size_t *length)
-// unsigned int   lto_api_version (void)
-// void   lto_codegen_debug_options (lto_code_gen_t cg, const char *)
-// void   lto_initialize_disassembler (void)
-// void   lto_codegen_set_should_internalize (lto_code_gen_t cg, lto_bool_t ShouldInternalize)
-// void   lto_codegen_set_should_embed_uselists (lto_code_gen_t cg, lto_bool_t ShouldEmbedUselists)
+'lto_get_version':                                 ['string', []],
+'lto_get_error_message':                           ['string', []],
+'lto_module_is_object_file':                       ['bool', ['string']],
+'lto_module_is_object_file_for_target':            ['bool', ['string', 'string']],
+'lto_module_is_object_file_in_memory':             ['bool', [voidp, 'size_t']],
+'lto_module_is_object_file_in_memory_for_target':  ['bool', [voidp, 'size_t', 'string']],
+'lto_module_create':                               [voidp, ['string']],
+'lto_module_create_from_memory':                   [voidp, [voidp, 'size_t']],
+'lto_module_create_from_memory_with_path':         [voidp, [voidp, 'size_t', 'string']],
+'lto_module_create_in_local_context':              [voidp, [voidp, 'size_t', 'string']],
+'lto_module_create_in_codegen_context':            [voidp, [voidp, 'size_t', 'string', voidp]],
+'lto_module_create_from_fd':                       [voidp, ['int', 'string', 'size_t']],
+'lto_module_create_from_fd_at_offset':             [voidp, ['int', 'string', 'size_t', 'size_t', 'int']], // off_t offset
+'lto_module_dispose':                              [void_, [voidp]],
+'lto_module_get_target_triple':                    ['string', [voidp]],
+'lto_module_set_target_triple':                    [void_, [voidp, 'string']],
+'lto_module_get_num_symbols':                      ['uint', [voidp]],
+'lto_module_get_symbol_name':                      ['string', [voidp, 'uint']],
+'lto_module_get_symbol_attribute':                 ['int', [voidp, 'uint']],
+'lto_module_get_linkeropts':                       ['string', [voidp]],
+'lto_codegen_set_diagnostic_handler':              [void_, [voidp, voidp, voidp]],
+'lto_codegen_create':                              [voidp, []],
+'lto_codegen_create_in_local_context':             [voidp, []],
+'lto_codegen_dispose':                             [void_, [voidp]],
+'lto_codegen_add_module':                          ['bool', [voidp, voidp]],
+'lto_codegen_set_module':                          [void_, [voidp, voidp]],
+'lto_codegen_set_debug_model':                     ['bool', [voidp, 'int']],
+'lto_codegen_set_pic_model':                       ['bool', [voidp, 'int']],
+'lto_codegen_set_cpu':                             [void_, [voidp, 'string']],
+'lto_codegen_set_assembler_path':                  [void_, [voidp, 'string']],
+'lto_codegen_set_assembler_args':                  [void_, [voidp, stringp, 'int']],
+'lto_codegen_add_must_preserve_symbol':            [void_, [voidp, 'string']],
+'lto_codegen_write_merged_modules':                ['bool', [voidp, 'string']],
+'lto_codegen_compile':                             [voidp, [voidp, size_tp]],
+'lto_codegen_compile_to_file':                     ['bool', [voidp, stringp]],
+'lto_codegen_optimize':                            ['bool', [voidp]],                        
+'lto_codegen_compile_optimized':                   [voidp, [voidp, size_tp]],
+'lto_api_version':                                 ['uint', []],
+'lto_codegen_debug_options':                       [void_, [voidp, 'string']],
+'lto_initialize_disassembler':                     [void_, []],
+'lto_codegen_set_should_internalize':              [void_, [voidp, 'bool']],
+'lto_codegen_set_should_embed_uselists':           [void_, [voidp, 'bool']],
 
   // Object file reading and writing
   // http://llvm.org/docs/doxygen/html/group__LLVMCObject.html
