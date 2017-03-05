@@ -749,7 +749,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMCreateExecutionEngineForModule':       ['bool', [voidpp, voidp, stringp]],
   'LLVMCreateInterpreterForModule':           ['bool', [voidpp, voidp, stringp]],
   'LLVMCreateJITCompilerForModule':           ['bool', [voidpp, voidp, 'uint', stringp]],
-  'LLVMInitializeMCJITCompilerOptions':       [void_, [LLVMCJITCompilerOptionsPtr, 'sizet']],
+  'LLVMInitializeMCJITCompilerOptions':       [void_, [LLVMCJITCompilerOptionsPtr, 'size_t']],
   'LLVMCreateMCJITCompilerForModule':         ['bool', [voidpp, voidp, LLVMCJITCompilerOptionsPtr, 'size_t', stringp]],
   'LLVMDisposeExecutionEngine':               [void_, [voidp]],
   'LLVMRunStaticConstructors':                [void_, [voidp]],
