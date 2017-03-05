@@ -610,7 +610,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMBuildSub':                            [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildNSWSub':                         [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildNUWSub':                         [voidp, [voidp, voidp, voidp, 'string']],
-  'LLVMBuildFSub':                           [voidp, [voidp, voidp. voidp, 'string']],
+  'LLVMBuildFSub':                           [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildMul':                            [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildNSWMul':                         [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildNUWMul':                         [voidp, [voidp, voidp, voidp, 'string']],
