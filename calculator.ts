@@ -56,9 +56,8 @@ function isDigit(str : string) : boolean {
 
 
 /// Retrive the next token
+let lastChar: string = ' ';
 function getTok() : Token {
-	let lastChar : string = ' ';
-
 	// skip whitespace
 	while (lastChar === ' ') 
 		lastChar = getChar();
