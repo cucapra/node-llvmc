@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@types/ffi": "^0.0.19",
+    "@types/node": "^7.0.5",
     "@types/ref": "^0.0.28"
   }
 }

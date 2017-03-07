@@ -6,18 +6,6 @@ let prog: string; // program to run
 let idx: number = 0; // where we are in program
 let EOF: string = ''; 
 
-/*
- * Read and return next char of program (return EOF if at end of program)
- */
-function getChar() : string {
-	if (idx < prog.length) {
-		let result: string = prog.charAt(idx);
-		idx += 1;
-		return result;
-	}
-	return EOF;
-};
-
 ///////////////////////////////////////
 // Tokens
 ///////////////////////////////////////
@@ -25,15 +13,19 @@ interface Token {
 	id : string;
 };
 
+
+/// Token representing end of file
 class Tok_Eof implements Token {
 	public id: string = 'Tok_Eof';
 };
 
+/// Token representing number
 class Tok_Number implements Token {
 	public id: string = 'Tok_Number';
 };
 
-// other
+
+/// Token representing other things (e.g. parens and operators)
 class Tok_Other implements Token {
 	public id: string;
 
@@ -43,21 +35,27 @@ class Tok_Other implements Token {
 ///////////////////////////////////////
 // Lexer
 ///////////////////////////////////////
-let idStr: string; // filled in if tok_identifier
-let numVal: number; // filled in if tok_number
+let numVal: number; // filled with last number seen
 
-function isAlpha(str : string) : boolean {
-  return str.length === 1 && str.match(/[a-z]/i) !== null;
+
+/// Read and return next char of program (return EOF if at end of program)
+function getChar() : string {
+	if (idx < prog.length) {
+		let result: string = prog.charAt(idx);
+		idx += 1;
+		return result;
+	}
+	return EOF;
 };
 
-function isAlNum(str : string) : boolean {
-	return str.length === 1 && str.match(/[a-z0-9]/i) !== null;
-};
 
+/// Check if str is one character and a digit
 function isDigit(str : string) : boolean {
 	return str.length === 1 && str.match(/[0-9]/i) !== null;
 };
 
+
+/// Retrive the next token
 function getTok() : Token {
 	let lastChar : string = ' ';
 
@@ -66,13 +64,17 @@ function getTok() : Token {
 		lastChar = getChar();
 	
 	// number: [0-9.]+
-	if (isDigit(lastChar) || lastChar === '.') { 
+	let seenDecimal: boolean = false;
+	if (isDigit(lastChar) || lastChar === '.') {
   		let numStr : string = '';
   		do {
+  			seenDecimal = (lastChar === '.') ? true : seenDecimal;
     		numStr += lastChar;
     		lastChar = getChar();
+    		if (lastChar === '.' && seenDecimal) {throw 'Too many decimal points';}
   		} while (isDigit(lastChar) || lastChar === '.');
 
+  		// we have seen a number token, so set numVal
   		numVal = parseFloat(numStr);
   		return new Tok_Number();
 	}
@@ -91,13 +93,15 @@ function getTok() : Token {
 // AST
 ////////////////////////////////////
 interface ExprAST{
-	id: string;
-	codegen() : llvmc.Value;
+	id: string; // type of ExprAST
+	codegen() : llvmc.Value; 
 };
 
 class NullExprAST implements ExprAST {
 	public id: string = 'NullExprAST';
-	public codegen() : llvmc.Value { return llvmc.constInt(0, llvmc.Type.int1());}
+	public codegen() : llvmc.Value { 
+		throw "null exception"
+	}
 }
 
 /// NumberExprAST - Expression class for numeric literals like "1.0".
@@ -108,7 +112,7 @@ class NumberExprAST implements ExprAST {
 	public constructor(val: number) {this.val = val;}
 
 	public codegen() : llvmc.Value {
-		return llvmc.constFloat(this.val, llvmc.Type.double());
+		return llvmc.constFloat(this.val, llvmc.Type.float());
 	}
 };
 
@@ -128,9 +132,6 @@ class BinaryExprAST implements ExprAST {
 	public codegen() : llvmc.Value {
 		let lVal: llvmc.Value = this.left.codegen();
 		let rVal: llvmc.Value = this.right.codegen();
-
-  		//if (!L || !R)
-    	//	return nullptr;
 
 		switch (this.op) {
 			case '+':
@@ -170,7 +171,7 @@ function parseParenExpr() : ExprAST {
 	getNextToken(); // eat (.
 	  
 	let v: ExprAST = parseExpression();
-	if (v.id === 'NullExprAST')
+	if (v instanceof NullExprAST)
 	  	return new NullExprAST();
 
 	if (curTok.id !== ')')
@@ -181,13 +182,10 @@ function parseParenExpr() : ExprAST {
 };
 
 /// primary
-///   ::= identifierexpr
 ///   ::= numberexpr
 ///   ::= parenexpr
 function parsePrimary() : ExprAST {
   	switch (curTok.id) {
-  		//case 'Tok_Identifier':
-    	//	return parseIdentifierExpr();
   		case 'Tok_Number':
    			return parseNumberExpr();
   		case '(':
@@ -207,7 +205,7 @@ let BinopPrecedence:{ [op:string] : number } = {
 
 /// GetTokPrecedence - Get the precedence of the pending binary operator token.
 function getTokPrecedence() : number {
-	if (!(curTok instanceof Tok_Other))
+	if (curTok instanceof Tok_Eof)
 		return -1;
 
   	// Make sure it's a declared binop.
@@ -234,7 +232,7 @@ function parseBinOpRHS (exprPrec: number, left: ExprAST) : ExprAST  {
 
     // Parse the primary expression after the binary operator.
     let right: ExprAST = parsePrimary();
-    if (right.id === 'NullExprAST')
+    if (right instanceof NullExprAST)
       return new NullExprAST();
 
     // If BinOp binds less tightly with RHS than the operator after RHS, let
@@ -242,7 +240,7 @@ function parseBinOpRHS (exprPrec: number, left: ExprAST) : ExprAST  {
     let nextPrec: number = getTokPrecedence();
     if (tokPrec < nextPrec) {
       right = parseBinOpRHS(tokPrec + 1, right);
-      if (right.id === 'NullExprAST')
+      if (right instanceof NullExprAST)
         return new NullExprAST();
     }
 
@@ -256,7 +254,7 @@ function parseBinOpRHS (exprPrec: number, left: ExprAST) : ExprAST  {
 ///
 function parseExpression() : ExprAST {
 	let left : ExprAST = parsePrimary();
-  	if (left.id === 'NullExprAST')
+  	if (left instanceof NullExprAST)
 		return new NullExprAST();
 
   	return parseBinOpRHS(0, left);
@@ -268,27 +266,23 @@ function parseExpression() : ExprAST {
 
 function handleExpression() : llvmc.Value {
 	let expr : ExprAST = parseExpression();
-	if (expr.id !== 'NullExprID') {
-		return expr.codegen();
-	}
-	else {
-		getNextToken();
-		return llvmc.constFloat(0, llvmc.Type.float());
-	}
+	return expr.codegen();
 }
 
 function main() : void {
  	prog = process.argv[2];
   	console.log('program: ' + prog);
 
+  	// create func
 	let funcType = llvmc.FunctionType.create(llvmc.Type.float(), []);
-	let mainFunc = mod.addFunction("main", funcType);
+	let func = mod.addFunction("func", funcType);
 
-	let entry = mainFunc.appendBasicBlock("entry");
+	// position builder inside function
+	let entry = func.appendBasicBlock("entry");
 	builder.positionAtEnd(entry);
   	
+  	// run calculator and set main's return value to the result
   	getNextToken();
-  	//mainLoop();
   	let retVal: llvmc.Value = handleExpression();
 	builder.ret(retVal);
 

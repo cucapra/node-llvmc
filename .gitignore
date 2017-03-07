@@ -1,3 +1,7 @@
 node_modules
 yarn.lock
 build
+out.bc
+a.out
+npm-debug.log
+
