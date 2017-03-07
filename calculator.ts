@@ -281,7 +281,7 @@ function main() : void {
 	let entry = func.appendBasicBlock("entry");
 	builder.positionAtEnd(entry);
   	
-  	// run calculator and set main's return value to the result
+  	// run calculator and set func's return value to the result
   	getNextToken();
   	let retVal: llvmc.Value = handleExpression();
 	builder.ret(retVal);
