@@ -112,6 +112,46 @@ export class Builder extends Ref implements Freeable {
     return new Value(vref);
   }
 
+/**
+   * Build an floating point addition instruction.
+   */
+  addf(lhs: Value, rhs: Value, name: string): Value {
+    let vref = LLVM.LLVMBuildFAdd(this.ref, lhs.ref, rhs.ref, name);
+    return new Value(vref);
+  }
+
+  /**
+   * Build an integer subtraction instruction
+   */
+  sub(lhs: Value, rhs: Value, name: string): Value {
+    let vref = LLVM.LLVMBuildSub(this.ref, lhs.ref, rhs.ref, name);
+    return new Value(vref);
+  }
+
+  /**
+   * Build a floating point subtraction instruction
+   */
+  subf(lhs: Value, rhs: Value, name: string): Value {
+    let vref = LLVM.LLVMBuildFSub(this.ref, lhs.ref, rhs.ref, name);
+    return new Value(vref);
+  }
+
+  /**
+   * Build an integer multiplication instruction
+   */
+  mul(lhs: Value, rhs: Value, name: string): Value {
+    let vref = LLVM.LLVMBuildMul(this.ref, lhs.ref, rhs.ref, name);
+    return new Value(vref);
+  }
+
+  /**
+   * Build a floating point multiplication instruction
+   */
+  mulf(lhs: Value, rhs: Value, name: string): Value {
+    let vref = LLVM.LLVMBuildFMul(this.ref, lhs.ref, rhs.ref, name);
+    return new Value(vref);
+  }
+
   /**
    * Build a return instruction.
    */
@@ -172,6 +212,20 @@ export class Type extends Ref {
   static int128(): Type {
     return new Type(LLVM.LLVMInt128Type());
   }
+
+  /**
+   * Get a float type
+   */
+   static float():Type {
+     return new Type(LLVM.LLVMFloatType());
+   }
+
+   /**
+    * Get a double type
+    */
+    static double():Type {
+      return new Type(LLVM.LLVMDoubleType());
+    }
 }
 
 /**
@@ -199,5 +253,13 @@ export class FunctionType extends Ref {
  */
 export function constInt(value: number, type: Type): Value {
   let vref = LLVM.LLVMConstInt(type.ref, value, false);
+  return new Value(vref);
+}
+
+/**
+ * Build a floating point number
+ */
+export function constFloat(value: number, type: Type): Value {
+  let vref = LLVM.LLVMConstReal(type.ref, value);
   return new Value(vref);
 }

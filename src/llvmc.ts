@@ -784,6 +784,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMInitializeCodeGen':           [void_, [voidp]],
   'LLVMInitializeTarget':            [void_, [voidp]],
 
+  /*
   // Link Time Optimization
   // http://llvm.org/docs/doxygen/html/group__LLVMCLinkTimeOptimizer.html
   // contains typedefs, enums
@@ -837,6 +838,7 @@ export const LLVM = ffi.Library('libLLVM', {
 'lto_initialize_disassembler':                     [void_, []],
 'lto_codegen_set_should_internalize':              [void_, [voidp, 'bool']],
 'lto_codegen_set_should_embed_uselists':           [void_, [voidp, 'bool']],
+*/
 
   // Object file reading and writing
   // http://llvm.org/docs/doxygen/html/group__LLVMCObject.html
@@ -870,6 +872,7 @@ export const LLVM = ffi.Library('libLLVM', {
 'LLVMGetRelocationTypeName':          ['string', [voidp]],
 'LLVMGetRelocationValueString':       ['string', [voidp]],
 
+/*
   // Target information
   // http://llvm.org/docs/doxygen/html/group__LLVMCTarget.html
   // contains #defines, typedefs, enums
@@ -904,7 +907,7 @@ export const LLVM = ffi.Library('libLLVM', {
 'LLVMElementAtOffset':                ['uint', [voidp, voidp, 'ulonglong']],
 'LLVMOffsetOfElement':                ['ulonglong', [voidp, voidp, 'uint']],
 'LLVMDisposeTargetData':              [void_, [voidp]],
-
+*/
 });
 
 

@@ -1,27 +1,22 @@
 import * as llvmc from './src/wrapped';
-
-let mod = llvmc.Module.create('some_module');
+let mod = llvmc.Module.create('calculator_module');
 let builder = llvmc.Builder.create();
 
-// static LLVMContext TheContext;
-// static IRBuilder<> Builder(TheContext);
-// static std::unique_ptr<Module> TheModule;
-// static std::map<std::string, Value *> NamedValues;
+let prog: string; // program to run
+let idx: number = 0; // where we are in program
+let EOF: string = ''; 
 
-// program
-let prog: string;
-let idx: number = 0;
-let EOF: string = '';
-
+/*
+ * Read and return next char of program (return EOF if at end of program)
+ */
 function getChar() : string {
 	if (idx < prog.length) {
 		let result: string = prog.charAt(idx);
 		idx += 1;
 		return result;
 	}
-	return '';
+	return EOF;
 };
-
 
 ///////////////////////////////////////
 // Tokens
@@ -33,20 +28,6 @@ interface Token {
 class Tok_Eof implements Token {
 	public id: string = 'Tok_Eof';
 };
-
-// commands
-// class Tok_Def implements Token {
-// 	public id: string = 'Tok_Def';
-// };
-
-//class Tok_Extern implements Token {
-//	public id: string = 'Tok_Extern';
-//};
-
-// primary
-// class Tok_Identifier implements Token {
-// 	public id: string = 'Tok_Identifier';
-// };
 
 class Tok_Number implements Token {
 	public id: string = 'Tok_Number';
@@ -83,19 +64,6 @@ function getTok() : Token {
 	// skip whitespace
 	while (lastChar === ' ') 
 		lastChar = getChar();
-
-	// identifier: [a-zA-Z][a-zA-Z0-9]*
-	// if (isAlpha(lastChar)) { 
-	//   idStr = lastChar;
-	//   while (isAlNum((lastChar = getChar())))
-	//     idStr += lastChar;
-
-	//   if (idStr === "def")
-	//     return new Tok_Def();
-	//    if (idStr == "extern")
-	//      return new Tok_Extern();
-	//   return new Tok_Identifier();
-	// } 
 	
 	// number: [0-9.]+
 	if (isDigit(lastChar) || lastChar === '.') { 
@@ -105,19 +73,8 @@ function getTok() : Token {
     		lastChar = getChar();
   		} while (isDigit(lastChar) || lastChar === '.');
 
-  		let numVal = parseFloat(numStr);
+  		numVal = parseFloat(numStr);
   		return new Tok_Number();
-	}
-	
-	// handle comments
-	if (lastChar === '#') {
-	  // Comment goes to end of line.
-	  do {
-	    lastChar = getChar();
-	  } while (lastChar !== EOF && lastChar != '\n' && lastChar != '\r');
-	  	
-	  	if (lastChar !== EOF)
-	    	return getTok();
 	}
 	
 	// check for end of file
@@ -155,14 +112,6 @@ class NumberExprAST implements ExprAST {
 	}
 };
 
-/// VariableExprAST - Expression class for referencing a variable, like "a".
-// class VariableExprAST implements ExprAST {
-// 	public id: string = 'NumberExprAST';
-//   	public name: string;
-
-// 	public constructor(name: string) {this.name = name;}
-// };
-
 /// BinaryExprAST - Expression class for a binary operator.
 class BinaryExprAST implements ExprAST {
 	public id: string = 'BinaryExprAST';
@@ -185,58 +134,16 @@ class BinaryExprAST implements ExprAST {
 
 		switch (this.op) {
 			case '+':
-				return builder.addf(lVal, rVal, 'sum');
+				return builder.addf(lVal, rVal, 'addtmp');
 			case '-':
-		   		return builder.subf(L, R, "subtmp");
+		   		return builder.subf(lVal, rVal, 'subtmp');
 		  	case '*':
-		   		return builder.mulf(L, R, "multmp");
-		  	// case '<':
-		   //  	L = Builder.CreateFCmpULT(L, R, "cmptmp");
-		   //  	// Convert bool 0/1 to double 0.0 or 1.0
-		   //  	return Builder.CreateUIToFP(L, Type::getDoubleTy(TheContext), "booltmp");
+		   		return builder.mulf(lVal, rVal, 'multmp');
 		  	default:
 		    	throw "invalid binary operator";
 		}
 	}
 };
-
-// /// CallExprAST - Expression class for function calls.
-// class CallExprAST implements ExprAST {
-// 	public id: string = 'CallExprAST';
-//   	public callee: string;
-//   	public args: ExprAST[];
-
-// 	public constructor(callee: string, args: ExprAST[]) {
-// 		this.callee = callee;
-// 		this.args = args;
-// 	}
-// };
-
-// /// PrototypeAST - This class represents the "prototype" for a function,
-// /// which captures its name, and its argument names (thus implicitly the number
-// /// of arguments the function takes).
-// class PrototypeAST implements ExprAST {
-//   	public id: string = 'PrototypeAST'
-//   	public name: string;
-//   	public args: string[];
-
-// 	public constructor(name: string, args: string[]) {
-// 		this.name = name;
-// 		this.args = args;
-// 	}
-// };
-
-// /// FunctionAST - This class represents a function definition itself.
-// class FunctionAST implements ExprAST {
-// 	public id: string = 'FunctionAST';
-//   	public proto: PrototypeAST;
-//   	public body: ExprAST;
-
-// 	public constructor(proto: PrototypeAST, body: ExprAST) {
-// 		this.proto = proto;
-// 		this.body = body;
-// 	}
-// };
 
 ////////////////////////////////////////////////
 // Parser
@@ -273,42 +180,6 @@ function parseParenExpr() : ExprAST {
 	return v;
 };
 
-/// identifierexpr
-///   ::= identifier
-///   ::= identifier '(' expression* ')'
-// function parseIdentifierExpr() : ExprAST {
-// 	let idName: string = idStr;
-
-// 	getNextToken();  // eat identifier.
-
-// 	if (curTok.id !== '(') // Simple variable ref.
-// 	   	return new VariableExprAST(idName);
-// 	throw 'error';
-// 	Call.
-// 	getNextToken();  // eat (
-// 	std::vector<std::unique_ptr<ExprAST>> Args;
-// 	if (CurTok != ')') {
-// 	    while (1) {
-// 		    if (auto Arg = ParseExpression())
-// 	    	    Args.push_back(std::move(Arg));
-// 	      	else
-// 	        	return nullptr;
-
-// 	     	if (CurTok == ')')
-// 	        	break;
-
-// 	      	if (CurTok != ',')
-// 	        	return LogError("Expected ')' or ',' in argument list");
-// 	      	getNextToken();
-// 	    }
-// 	}
-
-// 	// Eat the ')'.
-// 	getNextToken();
-
-// 	return llvm::make_unique<CallExprAST>(IdName, std::move(Args));
-// };
-
 /// primary
 ///   ::= identifierexpr
 ///   ::= numberexpr
@@ -328,8 +199,7 @@ function parsePrimary() : ExprAST {
 
 /// BinopPrecedence - This holds the precedence for each binary operator that is
 /// defined.
-let BinopPrecedence = {
-	//'<': 10,
+let BinopPrecedence:{ [op:string] : number } = {
 	'+': 20,
 	'-': 20,
 	'*': 40,
@@ -342,7 +212,7 @@ function getTokPrecedence() : number {
 
   	// Make sure it's a declared binop.
   	if (BinopPrecedence.hasOwnProperty(curTok.id))
-  		return BinopPrecedence[curTok.id];
+  		return Number(BinopPrecedence[curTok.id]);
   	return -1;
 }
 
@@ -381,58 +251,6 @@ function parseBinOpRHS (exprPrec: number, left: ExprAST) : ExprAST  {
   }
 }
 
-// /// prototype
-// ///   ::= id '(' id* ')'
-// static std::unique_ptr<PrototypeAST> ParsePrototype() {
-//   if (CurTok != tok_identifier)
-//     return LogErrorP("Expected function name in prototype");
-
-//   std::string FnName = IdentifierStr;
-//   getNextToken();
-
-//   if (CurTok != '(')
-//     return LogErrorP("Expected '(' in prototype");
-
-//   // Read the list of argument names.
-//   std::vector<std::string> ArgNames;
-//   while (getNextToken() == tok_identifier)
-//     ArgNames.push_back(IdentifierStr);
-//   if (CurTok != ')')
-//     return LogErrorP("Expected ')' in prototype");
-
-//   // success.
-//   getNextToken();  // eat ')'.
-
-//   return llvm::make_unique<PrototypeAST>(FnName, std::move(ArgNames));
-// }
-
-// /// definition ::= 'def' prototype expression
-// static std::unique_ptr<FunctionAST> ParseDefinition() {
-//   getNextToken();  // eat def.
-//   auto Proto = ParsePrototype();
-//   if (!Proto) return nullptr;
-
-//   if (auto E = ParseExpression())
-//     return llvm::make_unique<FunctionAST>(std::move(Proto), std::move(E));
-//   return nullptr;
-// }
-
-// /// external ::= 'extern' prototype
-// static std::unique_ptr<PrototypeAST> ParseExtern() {
-//   getNextToken();  // eat extern.
-//   return ParsePrototype();
-// }
-
-// /// toplevelexpr ::= expression
-// static std::unique_ptr<FunctionAST> ParseTopLevelExpr() {
-//   if (auto E = ParseExpression()) {
-//     // Make an anonymous proto.
-//     auto Proto = llvm::make_unique<PrototypeAST>("", std::vector<std::string>());
-//     return llvm::make_unique<FunctionAST>(std::move(Proto), std::move(E));
-//   }
-//   return nullptr;
-// }
-
 /// expression
 ///   ::= primary binoprhs
 ///
@@ -441,43 +259,52 @@ function parseExpression() : ExprAST {
   	if (left.id === 'NullExprAST')
 		return new NullExprAST();
 
-  		return parseBinOpRHS(0, left);
+  	return parseBinOpRHS(0, left);
 };
 
 /////////////////////////////////////////////////
-// main
+// Top Level
 /////////////////////////////////////////////////
 
-/// top ::= definition | external | expression | ';'
-function mainLoop() : void {
-  while (1) {
-    console.log("ready> ");
-    switch (curTok.id) {
-	    case 'Tok_EOF':
-	      return;
-	    case ';': // ignore top-level semicolons.
-	      getNextToken();
-	      break;
-	    // case tok_def:
-	    //   handleDefinition();
-	    //   break;
-	    // case tok_extern:
-	    //   handleExtern();
-	    //   break;
-	    // default:
-	    //   handleTopLevelExpression();
-	    //   break;
-    }
-  };
-
-  function main() : void {
-  	console.log("ready>");
-  	getNextToken();
-  	mainLoop();
-  };
-
-  main();
+function handleExpression() : llvmc.Value {
+	let expr : ExprAST = parseExpression();
+	if (expr.id !== 'NullExprID') {
+		return expr.codegen();
+	}
+	else {
+		getNextToken();
+		return llvmc.constFloat(0, llvmc.Type.float());
+	}
 }
+
+function main() : void {
+ 	prog = process.argv[2];
+  	console.log('program: ' + prog);
+
+	let funcType = llvmc.FunctionType.create(llvmc.Type.float(), []);
+	let mainFunc = mod.addFunction("main", funcType);
+
+	let entry = mainFunc.appendBasicBlock("entry");
+	builder.positionAtEnd(entry);
+  	
+  	getNextToken();
+  	//mainLoop();
+  	let retVal: llvmc.Value = handleExpression();
+	builder.ret(retVal);
+
+  	// Dump the IR as bitcode to disk.
+	let err = mod.writeBitcodeToFile("out.bc");
+	if (err) {
+  		console.error("write failed", err);
+	}
+
+	// Write the IR as text to the console.
+	console.log(mod.toString());
+};
+main();
+builder.free();
+mod.free();
+
 
 
 
