@@ -62,6 +62,14 @@ export class Module extends Ref implements Freeable {
   }
 
   /**
+   * Retrieve the function in module with provided name
+   */
+  getFunction(name: string): Function {
+    let funcref = LLVM.LLVMGetNamedFunction(this.ref, name);
+    return new Function(funcref);
+  }
+
+  /**
    * Free the memory for this module.
    */
   free() {
@@ -76,10 +84,32 @@ export class Function extends Ref {
   /**
    * Add a new basic block to this function.
    */
-  appendBasicBlock(name: string) {
+  appendBasicBlock(name: string): BasicBlock {
     let bbref = LLVM.LLVMAppendBasicBlock(this.ref, "entry");
     return new BasicBlock(bbref);
   }
+
+  /**
+   * Get number of params
+   */
+   numParams(): number {
+     return LLVM.LLVMCountParams(this.ref);
+   }
+
+   /**
+    * Get function param at provided index
+    */ 
+    getParam(idx: number): Value {
+      return LLVM.LLVMGetParam(this.ref, idx);
+    }
+
+    /**
+     * Delete function from containing module
+     */
+     deleteFromParent() : void {
+       LLVM.LLVMDeleteFunction(this.ref);
+     }
+
 }
 
 export class BasicBlock extends Ref {
@@ -96,6 +126,13 @@ export class Builder extends Ref implements Freeable {
     let bref = LLVM.LLVMCreateBuilder();
     return new Builder(bref);
   }
+
+  /**
+   * Build function call
+   */
+   buildCall(func: Function, args: Value[], name: string): Value {
+     return new Value(LLVM.LLVMBuildCall(func, args, args.length, name));
+   }
 
   /**
    * Position the builder's insertion point at the end of the given basic block.
@@ -232,6 +269,19 @@ export class Type extends Ref {
  * Wraps *any* LLVM value via an `LLVMValueRef`.
  */
 export class Value extends Ref {
+  /**
+   * Get value's name
+   */ 
+  getName(): string {
+    return LLVM.LLVMGetValueName(this.ref);
+  }
+
+  /**
+   * Set value's name
+   */
+   setName(name: string): void {
+     LLVM.LLVMSetValueName(this.ref, name);
+   }
 }
 
 /**

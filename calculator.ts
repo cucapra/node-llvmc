@@ -1,3 +1,5 @@
+//TODO: find more satisfying way to handle nullptr
+// TODO: handle llvm null ref's
 import * as llvmc from './src/wrapped';
 let mod = llvmc.Module.create('calculator_module');
 let builder = llvmc.Builder.create();
@@ -130,6 +132,7 @@ function getTok() : Token {
 ////////////////////////////////////
 interface ASTNode {
 	id: string; // type of node
+	codegen(): any;
 }
 
 interface ExprAST extends ASTNode{
@@ -213,7 +216,23 @@ class CallExprAST implements ExprAST {
 	}
 
 	public codegen() : llvmc.Value {
-		throw "not implemented yet"
+		// Look up the name in the global module table.
+  	let calleeFunc: llvmc.Function = mod.getFunction(this.callee);
+  	// if (!CalleeF)
+   //  	return LogErrorV("Unknown function referenced");
+
+  	// // If argument mismatch error.
+  	if (calleeFunc.numParams() != this.args.length)
+     	throw "Incorrect # arguments passed";
+
+  	let argsV: llvmc.Value[] = [];
+  	for (let i = 0; i != this.args.length; ++i) {
+    	argsV.concat(this.args[i].codegen());
+    	// if (!ArgsV.back())
+   //    	return nullptr;
+  	}
+
+  	return builder.buildCall(calleeFunc, argsV, "calltmp");
 	}
 };
 
@@ -229,6 +248,26 @@ class PrototypeAST implements ASTNode {
 		this.name = name;
 		this.args = args;
 	}
+
+	public codegen() : llvmc.Function {
+		// Make the function type:  double(double,double) etc.
+		let floats: llvmc.Type[] = [];
+		for (let i = 0; i < this.args.length; i++)
+			floats.concat(llvmc.Type.float());
+  	let ft: llvmc.FunctionType = llvmc.FunctionType.create(llvmc.Type.float(), floats, false);
+
+  	let func: llvmc.Function = mod.addFunction(this.name, ft);
+
+  	// Set names for all arguments.
+  	let idx: number = 0;
+  	let nParams: number = func.numParams();
+  	for(let i = 0; i < nParams; i++) {
+  		let param: llvmc.Value = func.getParam(i);
+  		param.setName(this.args[i]);
+  	}
+
+  	return func;
+	}
 };
 
 /// FunctionAST - This class represents a function definition itself.
@@ -238,8 +277,45 @@ class FunctionAST implements ASTNode {
   public body: ExprAST;
 
 	public constructor(proto: PrototypeAST, body: ExprAST) {
-		this.proto = name;
+		this.proto = proto;
 		this.body = body;
+	}
+
+	public codegen() : llvmc.Function {
+		// First, check for an existing function from a previous 'extern' declaration.
+		let func: llvmc.Function = mod.getFunction(this.proto.name);
+
+  	// if (!TheFunction)
+   //  	TheFunction = Proto->codegen();
+
+  	// if (!TheFunction)
+   //  	return nullptr;
+
+  	// Create a new basic block to start insertion into.
+  	let bb: llvmc.BasicBlock = func.appendBasicBlock("entry");
+  	builder.positionAtEnd(bb);
+
+  	// Record the function arguments in the NamedValues map.
+
+  	NamedValues = {};
+  	let nParams: number = func.numParams();
+  	for(let i = 0; i < nParams; i++) {
+  		let param: llvmc.Value = func.getParam(i);
+  		NamedValues[param.getName()] = param;
+  	}
+
+  	let retVal: llvmc.Value = this.body.codegen();
+  	// if (Value *RetVal = Body->codegen()) {
+  	if (1 == 1) {
+    	// Finish off the function.
+    	builder.ret(retVal);
+    	return func;
+  	}
+
+  	// Error reading body, remove function.
+  	func.deleteFromParent();
+  	// return nullptr;
+		throw "error"
 	}
 };
 
@@ -281,10 +357,6 @@ function parseParenExpr() : ExprAST {
 /// identifierexpr
 ///   ::= identifier
 function parseIdentifierExpr() : ExprAST {
-	// let idName: string = idStr;
-	// getNextToken();  // eat identifier.
-	// return new VariableExprAST(idName);
-
 	let idName: string = idStr;
 
   getNextToken();  // eat identifier.
@@ -467,27 +539,27 @@ function handleExpression() : llvmc.Value {
 }
 
 /// top ::= definition | external | expression | ';'
-// function MainLoop() : void {
-//   while (1) {
-//     fprintf(stderr, "ready> ");
-//     switch (CurTok) {
-//     	case tok_eof:
-//       	return;
-//     	case ';': // ignore top-level semicolons.
-//       	getNextToken();
-//       	break;
-//     	case tok_def:
-//       	HandleDefinition();
-//       	break;
-//     	case tok_extern:
-//       	HandleExtern();
-//       	break;
-//     	default:
-//       	HandleTopLevelExpression();
-//       	break;
-//     }
-//   }
-// }
+function MainLoop() : void {
+  while (true) {
+    console.log('Ready> ');
+    switch (curTok.id) {
+    	case 'Tok_Eof':
+      	return;
+    	case ';': // ignore top-level semicolons.
+      	getNextToken();
+      	break;
+    	case 'Tok_Def':
+      	HandleDefinition();
+      	break;
+    	case 'Tok_Extern':
+      	HandleExtern();
+      	break;
+    	default:
+      	HandleTopLevelExpression();
+      	break;
+    }
+  }
+}
 
 function main() : void {
  	prog = process.argv[2];
