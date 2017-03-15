@@ -1,6 +1,7 @@
 import * as llvmc from './src/wrapped';
 let mod = llvmc.Module.create('calculator_module');
 let builder = llvmc.Builder.create();
+let NamedValues:{[id:string] : llvmc.Value} = {};
 
 let prog: string; // program to run
 let idx: number = 0; // where we are in program
@@ -19,11 +20,25 @@ class Tok_Eof implements Token {
 	public id: string = 'Tok_Eof';
 };
 
+/// Token representing variable declaration 
+class Tok_Def implements Token {
+	public id: string = 'Tok_Def';
+};
+
+/// Token representing extern
+class Tok_Ext implements Token {
+	public id: string = 'Tok_Ext'
+}
+
 /// Token representing number
 class Tok_Number implements Token {
 	public id: string = 'Tok_Number';
 };
 
+/// Token representing variable identifier
+class Tok_Id implements Token {
+	public id: string = 'Tok_Id';
+};
 
 /// Token representing other things (e.g. parens and operators)
 class Tok_Other implements Token {
@@ -36,7 +51,7 @@ class Tok_Other implements Token {
 // Lexer
 ///////////////////////////////////////
 let numVal: number; // filled with last number seen
-
+let idStr: string;  // filled with last variable id seen
 
 /// Read and return next char of program (return EOF if at end of program)
 function getChar() : string {
@@ -48,6 +63,15 @@ function getChar() : string {
 	return EOF;
 };
 
+/// Check if str is a single alphabetic character
+function isAlpha(str : string) : boolean {
+  return str.length === 1 && str.match(/[a-z]/i) !== null;
+};
+
+/// Check if str is a single alphanumeric character
+function isAlNum(str : string) : boolean {
+	return str.length === 1 && str.match(/[a-z0-9]/i) !== null;
+};
 
 /// Check if str is one character and a digit
 function isDigit(str : string) : boolean {
@@ -62,6 +86,19 @@ function getTok() : Token {
 	while (lastChar === ' ') 
 		lastChar = getChar();
 	
+	// identifier: [a-zA-Z][a-zA-Z0-9]*
+	if (isAlpha(lastChar)) { 
+	  idStr = lastChar;
+	  while (isAlNum((lastChar = getChar())))
+	    idStr += lastChar;
+
+	  if (idStr === "def")
+	    return new Tok_Def();
+		if (idStr === "extern")
+			return new Tok_Ext();
+	  return new Tok_Id();
+	} 
+
 	// number: [0-9.]+
 	let seenDecimal: boolean = false;
 	if (isDigit(lastChar) || lastChar === '.') {
@@ -91,8 +128,12 @@ function getTok() : Token {
 /////////////////////////////////////
 // AST
 ////////////////////////////////////
-interface ExprAST{
-	id: string; // type of ExprAST
+interface ASTNode {
+	id: string; // type of node
+}
+
+interface ExprAST implements ASTNode{
+	id: string; 
 	codegen() : llvmc.Value; 
 };
 
@@ -102,6 +143,21 @@ class NullExprAST implements ExprAST {
 		throw "null exception"
 	}
 }
+
+/// VariableExprAST - Expression class for referencing a variable, like "a".
+class VariableExprAST implements ExprAST {
+	public id: string = 'NumberExprAST';
+  	public name: string;
+
+	public constructor(name: string) {this.name = name;}
+
+	public codegen() : llvmc.Value {
+  		// Look this variable up in the function.
+  		if (!NamedValues.hasOwnProperty(this.name))
+    		throw 'unknown variable access'
+  		return NamedValues[this.name];
+	}
+};
 
 /// NumberExprAST - Expression class for numeric literals like "1.0".
 class NumberExprAST implements ExprAST {
@@ -117,7 +173,7 @@ class NumberExprAST implements ExprAST {
 
 /// BinaryExprAST - Expression class for a binary operator.
 class BinaryExprAST implements ExprAST {
-	public id: string = 'BinaryExprAST';
+		public id: string = 'BinaryExprAST';
   	public op: string;
   	public left: ExprAST;
   	public right: ExprAST;
@@ -136,12 +192,50 @@ class BinaryExprAST implements ExprAST {
 			case '+':
 				return builder.addf(lVal, rVal, 'addtmp');
 			case '-':
-		   		return builder.subf(lVal, rVal, 'subtmp');
-		  	case '*':
-		   		return builder.mulf(lVal, rVal, 'multmp');
-		  	default:
-		    	throw "invalid binary operator";
+		   	return builder.subf(lVal, rVal, 'subtmp');
+		  case '*':
+		   	return builder.mulf(lVal, rVal, 'multmp');
+		  default:
+		    throw "invalid binary operator";
 		}
+	}
+};
+
+/// CallExprAST - Expression class for function calls.
+class CallExprAST implements ExprAST {
+	public id: string = 'CallExprAST';
+  public callee: string;
+  public args: ExprAST[] = [];
+
+	public constructor(callee: string, args: ExprAST[]) {
+    this.callee = callee;
+    this.args = args;
+	}
+};
+
+/// PrototypeAST - This class represents the "prototype" for a function,
+/// which captures its name, and its argument names (thus implicitly the number
+/// of arguments the function takes).
+class PrototypeAST implements ASTNode {
+	public id: string = 'PrototypeAST';
+  public name: string;
+  public args: string[];
+
+	public constructor(name: string, args: string[]) {
+		this.name = name;
+		this.args = args;
+	}
+};
+
+/// FunctionAST - This class represents a function definition itself.
+class FunctionAST implements ASTNode {
+	public id: string = 'FunctionAST';
+  public proto: PrototypeAST;
+  public body: ExprAST;
+
+	public constructor(proto: PrototypeAST, body: ExprAST) {
+		this.proto = name;
+		this.body = body;
 	}
 };
 
@@ -180,11 +274,21 @@ function parseParenExpr() : ExprAST {
 	return v;
 };
 
+/// identifierexpr
+///   ::= identifier
+function parseIdentifierExpr() : ExprAST {
+	let idName: string = idStr;
+	getNextToken();  // eat identifier.
+	return new VariableExprAST(idName);
+};
+
 /// primary
 ///   ::= numberexpr
 ///   ::= parenexpr
 function parsePrimary() : ExprAST {
   	switch (curTok.id) {
+  		case 'Tok_Id':
+    		return parseIdentifierExpr();
   		case 'Tok_Number':
    			return parseNumberExpr();
   		case '(':
@@ -267,6 +371,29 @@ function handleExpression() : llvmc.Value {
 	let expr : ExprAST = parseExpression();
 	return expr.codegen();
 }
+
+/// top ::= definition | external | expression | ';'
+// function mainLoop() : void {
+//   	while (1) {
+//     	console.log("ready> ");
+//     	switch (curTok.id) {
+// 	    	case 'Tok_EOF':
+// 	      	return;
+// 	    case ';': // ignore top-level semicolons.
+// 	    	getNextToken();
+// 	      	break;
+// 	    // case tok_def:
+// 	    //   handleDefinition();
+// 	    //   break;
+// 	    // case tok_extern:
+// 	    //   handleExtern();
+// 	    //   break;
+// 	    // default:
+// 	    //   handleTopLevelExpression();
+// 	    //   break;
+//     	}
+//   	}
+// };
 
 function main() : void {
  	prog = process.argv[2];
