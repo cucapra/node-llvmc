@@ -1,6 +1,11 @@
 //TODO: find more satisfying way to handle nullptr
 // TODO: handle llvm null ref's
 import * as llvmc from './src/wrapped';
+import * as readline from 'readline';
+
+///////////////////////////////////////
+// Setup
+///////////////////////////////////////
 let mod = llvmc.Module.create('calculator_module');
 let builder = llvmc.Builder.create();
 let NamedValues:{[id:string] : llvmc.Value} = {};
@@ -15,7 +20,6 @@ let EOF: string = '';
 interface Token {
 	id : string;
 };
-
 
 /// Token representing end of file
 class Tok_Eof implements Token {
@@ -283,12 +287,12 @@ class FunctionAST implements ASTNode {
 
 	public codegen() : llvmc.Function {
 		// First, check for an existing function from a previous 'extern' declaration.
-		let func: llvmc.Function = mod.getFunction(this.proto.name);
+		//let func: llvmc.Function = mod.getFunction(this.proto.name);
 
-  	// if (!TheFunction)
-   //  	TheFunction = Proto->codegen();
+  	// if (!func)
+    	let func = this.proto.codegen();
 
-  	// if (!TheFunction)
+  	// if (!func)
    //  	return nullptr;
 
   	// Create a new basic block to start insertion into.
@@ -591,10 +595,38 @@ function handleTopLevelExpression() : void {
   }
 }
 
+/// Reader line from cmd line
+function read() : void {
+	let rl = readline.createInterface({
+			input: process.stdin,
+			output: process.stdout
+		});
+    
+	rl.setPrompt('Ready> ');
+	rl.prompt();
+	rl.on('line', function(line) {
+    if (line === "quit") {
+    	rl.close();
+    }
+    else if (line !== "") {
+      lastChar = ' ';
+      idx = 0;
+    	prog = line;
+    	console.log("Program: " + prog + "\n");
+    	getNextToken();
+    	mainLoop();
+    }
+    rl.prompt();
+	}).on('close',function(){
+    builder.free();
+    mod.free();
+    process.exit(0);
+	});
+}
+
 /// top ::= definition | external | expression | ';'
-function MainLoop() : void {
-  while (true) {
-    console.log('Ready> ');
+function mainLoop() : void {
+  //while (true) {
     switch (curTok.id) {
     	case 'Tok_Eof':
       	return;
@@ -611,39 +643,20 @@ function MainLoop() : void {
       	handleTopLevelExpression();
       	break;
     }
-  }
+  //}
 }
 
 function main() : void {
- 	prog = process.argv[2];
-  	console.log('program: ' + prog);
+  // Prime the first token.
+  read();
+  //console.log('finished read');
+  //getNextToken();
 
-  	// create func
-	let funcType = llvmc.FunctionType.create(llvmc.Type.float(), []);
-	let func = mod.addFunction("func", funcType);
-
-	// position builder inside function
-	let entry = func.appendBasicBlock("entry");
-	builder.positionAtEnd(entry);
-  	
-  	// run calculator and set func's return value to the result
-  	getNextToken();
-  	let retVal: llvmc.Value = handleExpression();
-	builder.ret(retVal);
-
-  	// Dump the IR as bitcode to disk.
-	let err = mod.writeBitcodeToFile("out.bc");
-	if (err) {
-  		console.error("write failed", err);
-	}
-
-	// Write the IR as text to the console.
-	console.log(mod.toString());
+  // Run the main "interpreter loop" now.
+  //mainLoop()
 };
-main();
-builder.free();
-mod.free();
 
+main();
 
 
 
