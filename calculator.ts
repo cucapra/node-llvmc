@@ -132,7 +132,7 @@ interface ASTNode {
 	id: string; // type of node
 }
 
-interface ExprAST implements ASTNode{
+interface ExprAST extends ASTNode{
 	id: string; 
 	codegen() : llvmc.Value; 
 };
@@ -205,11 +205,15 @@ class BinaryExprAST implements ExprAST {
 class CallExprAST implements ExprAST {
 	public id: string = 'CallExprAST';
   public callee: string;
-  public args: ExprAST[] = [];
+  public args: ExprAST[];
 
 	public constructor(callee: string, args: ExprAST[]) {
     this.callee = callee;
     this.args = args;
+	}
+
+	public codegen() : llvmc.Value {
+		throw "not implemented yet"
 	}
 };
 
@@ -277,9 +281,43 @@ function parseParenExpr() : ExprAST {
 /// identifierexpr
 ///   ::= identifier
 function parseIdentifierExpr() : ExprAST {
+	// let idName: string = idStr;
+	// getNextToken();  // eat identifier.
+	// return new VariableExprAST(idName);
+
 	let idName: string = idStr;
-	getNextToken();  // eat identifier.
-	return new VariableExprAST(idName);
+
+  getNextToken();  // eat identifier.
+  
+  if (curTok.id !== '(') // Simple variable ref.
+    return new VariableExprAST(idName);
+
+  // Call.
+  getNextToken();  // eat (
+  let args: ExprAST[] = [];
+
+  if (curTok.id !== '(') {
+    while (true) {
+    	let arg = parseExpression();
+      
+      if (!(arg instanceof NullExprAST))
+        args.concat(arg);
+      else
+        return new NullExprAST;
+
+      if (curTok.id == ')')
+        break;
+
+      if (curTok.id != ',')
+        throw "Expected ')' or ',' in argument list";
+      
+      getNextToken();
+    }
+  }
+
+  // Eat the ')'.
+  getNextToken();
+  return new CallExprAST(idName, args);
 };
 
 /// primary
@@ -311,10 +349,10 @@ function getTokPrecedence() : number {
 	if (curTok instanceof Tok_Eof)
 		return -1;
 
-  	// Make sure it's a declared binop.
-  	if (BinopPrecedence.hasOwnProperty(curTok.id))
-  		return Number(BinopPrecedence[curTok.id]);
-  	return -1;
+  // Make sure it's a declared binop.
+  if (BinopPrecedence.hasOwnProperty(curTok.id))
+  	return Number(BinopPrecedence[curTok.id]);
+  return -1;
 }
 
 /// binoprhs
@@ -357,11 +395,67 @@ function parseBinOpRHS (exprPrec: number, left: ExprAST) : ExprAST  {
 ///
 function parseExpression() : ExprAST {
 	let left : ExprAST = parsePrimary();
-  	if (left instanceof NullExprAST)
+  if (left instanceof NullExprAST)
 		return new NullExprAST();
 
-  	return parseBinOpRHS(0, left);
+  return parseBinOpRHS(0, left);
 };
+
+/// prototype
+///   ::= id '(' id* ')'
+function parsePrototype() : PrototypeAST {
+  if (!(curTok instanceof Tok_Id))
+    throw "Expected function name in prototype";
+
+  let fnName: string = idStr;
+  getNextToken();
+
+  if (curTok.id !== '(')
+    throw "Expected '(' in prototype";
+
+  // Read the list of argument names.
+ 	let argNames: string[] = [];
+  while (getNextToken() instanceof Tok_Id)
+    argNames.concat(idStr);
+  
+  if (curTok.id !== ')')
+    throw "Expected ')' in prototype";
+
+  // success.
+  getNextToken();  // eat ')'.
+
+  return new PrototypeAST(fnName, argNames);
+};
+
+/// definition ::= 'def' prototype expression
+function parseDefinition() : FunctionAST {
+  getNextToken();  // eat def.
+  let proto: PrototypeAST = parsePrototype();
+  //if (!proto) return nullptr;
+
+  let exp: ExprAST = parseExpression();
+  if (!(exp instanceof NullExprAST))
+    return new FunctionAST(proto, exp);
+  //return nullptr;
+ 	throw "handle nullptrs better"
+};
+
+/// external ::= 'extern' prototype
+function ParseExtern() : PrototypeAST {
+  getNextToken();  // eat extern.
+  return parsePrototype();
+};
+
+/// toplevelexpr ::= expression
+function parseTopLevelExpr() : FunctionAST {
+	let exp: ExprAST = parseExpression();
+  if (!(exp instanceof NullExprAST)) {
+    // Make an anonymous proto.
+    let proto: PrototypeAST = new PrototypeAST("", []);
+    return new FunctionAST(proto, exp);
+  }
+  throw "handle nullptrs better"
+}
 
 /////////////////////////////////////////////////
 // Top Level
@@ -373,27 +467,27 @@ function handleExpression() : llvmc.Value {
 }
 
 /// top ::= definition | external | expression | ';'
-// function mainLoop() : void {
-//   	while (1) {
-//     	console.log("ready> ");
-//     	switch (curTok.id) {
-// 	    	case 'Tok_EOF':
-// 	      	return;
-// 	    case ';': // ignore top-level semicolons.
-// 	    	getNextToken();
-// 	      	break;
-// 	    // case tok_def:
-// 	    //   handleDefinition();
-// 	    //   break;
-// 	    // case tok_extern:
-// 	    //   handleExtern();
-// 	    //   break;
-// 	    // default:
-// 	    //   handleTopLevelExpression();
-// 	    //   break;
-//     	}
-//   	}
-// };
+// function MainLoop() : void {
+//   while (1) {
+//     fprintf(stderr, "ready> ");
+//     switch (CurTok) {
+//     	case tok_eof:
+//       	return;
+//     	case ';': // ignore top-level semicolons.
+//       	getNextToken();
+//       	break;
+//     	case tok_def:
+//       	HandleDefinition();
+//       	break;
+//     	case tok_extern:
+//       	HandleExtern();
+//       	break;
+//     	default:
+//       	HandleTopLevelExpression();
+//       	break;
+//     }
+//   }
+// }
 
 function main() : void {
  	prog = process.argv[2];
