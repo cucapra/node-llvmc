@@ -538,6 +538,59 @@ function handleExpression() : llvmc.Value {
 	return expr.codegen();
 }
 
+// TODO: null checks
+function handleDefinition() : void {
+	let funcAST: FunctionAST = parseDefinition();
+  //if (auto FnAST = ParseDefinition()) {
+  if (1 === 1) {
+  	let funcIR: llvmc.Function = funcAST.codegen();
+    //if (auto *FnIR = FnAST->codegen()) {
+    if (1===1) {
+      console.log("Read function definition:");
+      console.log(mod.toString());
+      console.log("\n");
+    }
+  } else {
+    // Skip token for error recovery.
+    getNextToken();
+  }
+}
+
+function handleExtern() : void {
+	let protoAST: PrototypeAST = ParseExtern();
+  //if (auto ProtoAST = ParseExtern()) {
+  if (1 === 1) {
+  	let funcIR: llvmc.Function = protoAST.codegen();
+    //if (auto *FnIR = ProtoAST->codegen()) {
+    if (1 == 1) {
+      console.log("Read extern:");
+      console.log(mod.toString());
+      console.log("\n");
+    }
+  } else {
+    // Skip token for error recovery.
+    getNextToken();
+  }
+}
+
+function handleTopLevelExpression() : void {
+  // Evaluate a top-level expression into an anonymous function.
+  let funcAST: FunctionAST = parseTopLevelExpr();
+  //if (auto FnAST = ParseTopLevelExpr()) {
+  if (1 === 1) {
+  	let funcIR: llvmc.Function = funcAST.codegen();
+    //if (auto *FnIR = FnAST->codegen()) {
+    if (1 === 1) {
+      console.log("Read top-level expression:");
+      console.log(mod.toString());
+      console.log("\n");
+    }
+  } else {
+    // Skip token for error recovery.
+    getNextToken();
+  }
+}
+
 /// top ::= definition | external | expression | ';'
 function MainLoop() : void {
   while (true) {
@@ -549,13 +602,13 @@ function MainLoop() : void {
       	getNextToken();
       	break;
     	case 'Tok_Def':
-      	HandleDefinition();
+      	handleDefinition();
       	break;
     	case 'Tok_Extern':
-      	HandleExtern();
+      	handleExtern();
       	break;
     	default:
-      	HandleTopLevelExpression();
+      	handleTopLevelExpression();
       	break;
     }
   }
