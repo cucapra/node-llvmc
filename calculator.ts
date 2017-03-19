@@ -229,7 +229,7 @@ class CallExprAST implements ExprAST {
     	throw "unknown function referenced";
 
   	// If argument mismatch error.
-  	if (calleeFunc.numParams() != this.args.length)
+  	if (calleeFunc.countParams() != this.args.length)
      	throw "Incorrect # arguments passed";
 
   	let argsV: llvmc.Value[] = [];
@@ -267,7 +267,7 @@ class PrototypeAST implements ASTNode {
 
   	// Set names for all arguments.
   	let idx: number = 0;
-  	let nParams: number = func.numParams();
+  	let nParams: number = func.countParams();
   	for(let i = 0; i < nParams; i++) {
   		let param: llvmc.Value = func.getParam(i);
   		param.setName(this.args[i]);
@@ -305,7 +305,7 @@ class FunctionAST implements ASTNode {
   	// Record the function arguments in the NamedValues map.
 
   	NamedValues = {};
-  	let nParams: number = func.numParams();
+  	let nParams: number = func.countParams();
   	for(let i = 0; i < nParams; i++) {
   		let param: llvmc.Value = func.getParam(i);
   		NamedValues[param.getName()] = param;

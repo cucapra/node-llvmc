@@ -282,7 +282,7 @@ export class Function extends Value {
   /**
    * Get number of parameters to the function.
    */
-  numParams(): number {
+  countParams(): number {
     return LLVM.LLVMCountParams(this.ref);
   }
 
