@@ -8,6 +8,7 @@
 
 import * as ffi from 'ffi';
 import * as ref from 'ref';
+import * as ArrayType from 'ref-array'
 import * as Struct from 'ref-struct';
 
 // Some useful types.
@@ -19,6 +20,12 @@ let stringp = ref.refType('string');
 let voidp = ref.refType(ref.types.void);  // Pointer to an opaque LLVM value.
 let voidpp = ref.refType(voidp);  // void**, used for arrays and out-parameters.
 let void_ = ref.types.void;
+
+/**
+ * A constructor for arrays of pointers. Use this as `new PointerArray(N)` to
+ * create an array of length N.
+ */
+export const PointerArray = ArrayType(ref.refType(ref.types.void));
 
 // some structs
 // http://llvm.org/docs/doxygen/html/structLLVMOpInfoSymbol1.html
@@ -250,7 +257,7 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Function types.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeFunction.html
-  'LLVMFunctionType':           [voidp, [voidp, voidpp, 'uint', 'bool']],
+  'LLVMFunctionType':           [voidp, [voidp, PointerArray, 'uint', 'bool']],
   'LLVMIsFunctionVarArg':       ['bool', [voidp]],                                      
   'LLVMGetReturnType':          [voidp, [voidp]],
   'LLVMCountParamTypes':        ['uint', [voidp]],

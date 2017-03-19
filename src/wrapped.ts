@@ -7,7 +7,7 @@
  * TypeScript class instead of an opaque pointer from the API.
  */
 
-import { LLVM } from './llvmc';
+import { LLVM, PointerArray } from './llvmc';
 
 /**
  * A base class for our wrapper classes that abstract an `LLVM*Ref` type.
@@ -237,11 +237,15 @@ export class Type extends Ref {
  */
 export class FunctionType extends Ref {
   static create(ret: Type, params: Type[], isVarArg = false) {
-    // TODO parameter types ignored currently. We need to transform the
-    // JavaScript array into a C array of pointers, and then set the length
-    // parameter to its length (instead of just 0).
-    //let paramtypes = new Buffer(params.length);
-    let paramtypes = Buffer.from(params.map(t => t.ref));
+    // Construct an array containing the parameter references.
+    let paramtypes = new PointerArray(params.length);
+    let i = 0;
+    for (let param of params) {
+      paramtypes[i] = param.ref;
+      ++i;
+    }
+
+    // Construct the function type.
     let ftref = LLVM.LLVMFunctionType(ret.ref, paramtypes, params.length, isVarArg);
     return new FunctionType(ftref);
   }
