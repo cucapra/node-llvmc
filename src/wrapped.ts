@@ -282,24 +282,23 @@ export class Function extends Value {
   /**
    * Get number of params
    */
-   numParams(): number {
-     return LLVM.LLVMCountParams(this.ref);
-   }
+  numParams(): number {
+    return LLVM.LLVMCountParams(this.ref);
+  }
 
-   /**
-    * Get function param at provided index
-    */ 
-    getParam(idx: number): Value {
-      return LLVM.LLVMGetParam(this.ref, idx);
-    }
+  /**
+   * Get function param at provided index
+   */
+  getParam(idx: number): Value {
+    return LLVM.LLVMGetParam(this.ref, idx);
+  }
 
-    /**
-     * Delete function from containing module
-     */
-     deleteFromParent() : void {
-       LLVM.LLVMDeleteFunction(this.ref);
-     }
-
+  /**
+   * Delete function from containing module
+   */
+  deleteFromParent() : void {
+    LLVM.LLVMDeleteFunction(this.ref);
+  }
 }
 
 /**
