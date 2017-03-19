@@ -195,6 +195,9 @@ class BinaryExprAST implements ExprAST {
 		let lVal: llvmc.Value = this.left.codegen();
 		let rVal: llvmc.Value = this.right.codegen();
 
+    if (lVal.ref.isNull() || rVal.ref.isNull())
+      throw "null exception"
+
 		switch (this.op) {
 			case '+':
 				return builder.addf(lVal, rVal, 'addtmp');
@@ -222,18 +225,18 @@ class CallExprAST implements ExprAST {
 	public codegen() : llvmc.Value {
 		// Look up the name in the global module table.
   	let calleeFunc: llvmc.Function = mod.getFunction(this.callee);
-  	// if (!CalleeF)
-   //  	return LogErrorV("Unknown function referenced");
+  	if (calleeFunc.ref.isNull())
+    	throw "unknown function referenced";
 
-  	// // If argument mismatch error.
+  	// If argument mismatch error.
   	if (calleeFunc.numParams() != this.args.length)
      	throw "Incorrect # arguments passed";
 
   	let argsV: llvmc.Value[] = [];
   	for (let i = 0; i != this.args.length; ++i) {
     	argsV.concat(this.args[i].codegen());
-    	// if (!ArgsV.back())
-   //    	return nullptr;
+    	if (argsV[argsV.length - 1].ref.isNull())
+      	throw "null exception"
   	}
 
   	return builder.buildCall(calleeFunc, argsV, "calltmp");
@@ -287,13 +290,13 @@ class FunctionAST implements ASTNode {
 
 	public codegen() : llvmc.Function {
 		// First, check for an existing function from a previous 'extern' declaration.
-		//let func: llvmc.Function = mod.getFunction(this.proto.name);
+		let func: llvmc.Function = mod.getFunction(this.proto.name);
 
-  	// if (!func)
-    	let func = this.proto.codegen();
+  	if (func.ref.isNull())
+    	func = this.proto.codegen();
 
-  	// if (!func)
-   //  	return nullptr;
+  	if (func.ref.isNull())
+    	throw "null exception";
 
   	// Create a new basic block to start insertion into.
   	let bb: llvmc.BasicBlock = func.appendBasicBlock("entry");
@@ -309,8 +312,7 @@ class FunctionAST implements ASTNode {
   	}
 
   	let retVal: llvmc.Value = this.body.codegen();
-  	// if (Value *RetVal = Body->codegen()) {
-  	if (1 == 1) {
+  	if (!retVal.ref.isNull()) {
     	// Finish off the function.
     	builder.ret(retVal);
     	return func;
@@ -318,8 +320,7 @@ class FunctionAST implements ASTNode {
 
   	// Error reading body, remove function.
   	func.deleteFromParent();
-  	// return nullptr;
-		throw "error"
+		throw "null exception"
 	}
 };
 
@@ -517,7 +518,7 @@ function parseDefinition() : FunctionAST {
 };
 
 /// external ::= 'extern' prototype
-function ParseExtern() : PrototypeAST {
+function parseExtern() : PrototypeAST {
   getNextToken();  // eat extern.
   return parsePrototype();
 };
@@ -537,23 +538,14 @@ function parseTopLevelExpr() : FunctionAST {
 // Top Level
 /////////////////////////////////////////////////
 
-function handleExpression() : llvmc.Value {
-	let expr : ExprAST = parseExpression();
-	return expr.codegen();
-}
-
-// TODO: null checks
 function handleDefinition() : void {
 	let funcAST: FunctionAST = parseDefinition();
   //if (auto FnAST = ParseDefinition()) {
   if (1 === 1) {
   	let funcIR: llvmc.Function = funcAST.codegen();
-    //if (auto *FnIR = FnAST->codegen()) {
-    if (1===1) {
-      console.log("Read function definition:");
-      console.log(mod.toString());
-      console.log("\n");
-    }
+    console.log("Read function definition:");
+    console.log(mod.toString());
+    console.log("\n");
   } else {
     // Skip token for error recovery.
     getNextToken();
@@ -561,16 +553,13 @@ function handleDefinition() : void {
 }
 
 function handleExtern() : void {
-	let protoAST: PrototypeAST = ParseExtern();
+	let protoAST: PrototypeAST = parseExtern();
   //if (auto ProtoAST = ParseExtern()) {
   if (1 === 1) {
   	let funcIR: llvmc.Function = protoAST.codegen();
-    //if (auto *FnIR = ProtoAST->codegen()) {
-    if (1 == 1) {
-      console.log("Read extern:");
-      console.log(mod.toString());
-      console.log("\n");
-    }
+    console.log("Read extern:");
+    console.log(mod.toString());
+    console.log("\n");
   } else {
     // Skip token for error recovery.
     getNextToken();
@@ -583,12 +572,9 @@ function handleTopLevelExpression() : void {
   //if (auto FnAST = ParseTopLevelExpr()) {
   if (1 === 1) {
   	let funcIR: llvmc.Function = funcAST.codegen();
-    //if (auto *FnIR = FnAST->codegen()) {
-    if (1 === 1) {
-      console.log("Read top-level expression:");
-      console.log(mod.toString());
-      console.log("\n");
-    }
+    console.log("Read top-level expression:");
+    console.log(mod.toString());
+    console.log("\n");
   } else {
     // Skip token for error recovery.
     getNextToken();
@@ -626,7 +612,6 @@ function read() : void {
 
 /// top ::= definition | external | expression | ';'
 function mainLoop() : void {
-  //while (true) {
     switch (curTok.id) {
     	case 'Tok_Eof':
       	return;
@@ -643,20 +628,9 @@ function mainLoop() : void {
       	handleTopLevelExpression();
       	break;
     }
-  //}
 }
 
-function main() : void {
-  // Prime the first token.
-  read();
-  //console.log('finished read');
-  //getNextToken();
-
-  // Run the main "interpreter loop" now.
-  //mainLoop()
-};
-
-main();
+read();
 
 
 
