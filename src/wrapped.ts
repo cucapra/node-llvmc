@@ -240,8 +240,9 @@ export class FunctionType extends Ref {
     // TODO parameter types ignored currently. We need to transform the
     // JavaScript array into a C array of pointers, and then set the length
     // parameter to its length (instead of just 0).
-    let paramtypes = new Buffer(0);
-    let ftref = LLVM.LLVMFunctionType(ret.ref, paramtypes, 0, isVarArg);
+    //let paramtypes = new Buffer(params.length);
+    let paramtypes = Buffer.from(params.map(t => t.ref));
+    let ftref = LLVM.LLVMFunctionType(ret.ref, paramtypes, params.length, isVarArg);
     return new FunctionType(ftref);
   }
 }

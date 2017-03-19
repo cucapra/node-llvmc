@@ -234,7 +234,7 @@ class CallExprAST implements ExprAST {
 
   	let argsV: llvmc.Value[] = [];
   	for (let i = 0; i != this.args.length; ++i) {
-    	argsV.concat(this.args[i].codegen());
+    	argsV.push(this.args[i].codegen());
     	if (argsV[argsV.length - 1].ref.isNull())
       	throw "null exception"
   	}
@@ -260,7 +260,7 @@ class PrototypeAST implements ASTNode {
 		// Make the function type:  double(double,double) etc.
 		let floats: llvmc.Type[] = [];
 		for (let i = 0; i < this.args.length; i++)
-			floats.concat(llvmc.Type.float());
+			floats.push(llvmc.Type.float());
   	let ft: llvmc.FunctionType = llvmc.FunctionType.create(llvmc.Type.float(), floats, false);
 
   	let func: llvmc.Function = mod.addFunction(this.name, ft);
@@ -378,7 +378,7 @@ function parseIdentifierExpr() : ExprAST {
     	let arg = parseExpression();
       
       if (!(arg instanceof NullExprAST))
-        args.concat(arg);
+        args.push(arg);
       else
         return new NullExprAST;
 
@@ -493,7 +493,7 @@ function parsePrototype() : PrototypeAST {
   // Read the list of argument names.
  	let argNames: string[] = [];
   while (getNextToken() instanceof Tok_Id)
-    argNames.concat(idStr);
+    argNames.push(idStr);
   
   if (curTok.id !== ')')
     throw "Expected ')' in prototype";
