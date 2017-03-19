@@ -77,41 +77,7 @@ export class Module extends Ref implements Freeable {
   }
 }
 
-/**
- * Represents an LLVM function, wrapping an `LLVMValueRef` that points to a
- * function.
- */
-export class Function extends Ref {
-  /**
-   * Add a new basic block to this function.
-   */
-  appendBasicBlock(name: string): BasicBlock {
-    let bbref = LLVM.LLVMAppendBasicBlock(this.ref, "entry");
-    return new BasicBlock(bbref);
-  }
 
-  /**
-   * Get number of params
-   */
-   numParams(): number {
-     return LLVM.LLVMCountParams(this.ref);
-   }
-
-   /**
-    * Get function param at provided index
-    */ 
-    getParam(idx: number): Value {
-      return LLVM.LLVMGetParam(this.ref, idx);
-    }
-
-    /**
-     * Delete function from containing module
-     */
-     deleteFromParent() : void {
-       LLVM.LLVMDeleteFunction(this.ref);
-     }
-
-}
 
 export class BasicBlock extends Ref {
 }
@@ -267,6 +233,20 @@ export class Type extends Ref {
 }
 
 /**
+ * Wraps a function type: an `LLVMFunctionTypeRef`.
+ */
+export class FunctionType extends Ref {
+  static create(ret: Type, params: Type[], isVarArg = false) {
+    // TODO parameter types ignored currently. We need to transform the
+    // JavaScript array into a C array of pointers, and then set the length
+    // parameter to its length (instead of just 0).
+    let paramtypes = new Buffer(0);
+    let ftref = LLVM.LLVMFunctionType(ret.ref, paramtypes, 0, isVarArg);
+    return new FunctionType(ftref);
+  }
+}
+
+/**
  * Wraps *any* LLVM value via an `LLVMValueRef`.
  */
 export class Value extends Ref {
@@ -286,17 +266,39 @@ export class Value extends Ref {
 }
 
 /**
- * Wraps a function type: an `LLVMFunctionTypeRef`.
+ * Represents an LLVM function, wrapping an `LLVMValueRef` that points to a
+ * function.
  */
-export class FunctionType extends Ref {
-  static create(ret: Type, params: Type[], isVarArg = false) {
-    // TODO parameter types ignored currently. We need to transform the
-    // JavaScript array into a C array of pointers, and then set the length
-    // parameter to its length (instead of just 0).
-    let paramtypes = new Buffer(0);
-    let ftref = LLVM.LLVMFunctionType(ret.ref, paramtypes, 0, isVarArg);
-    return new FunctionType(ftref);
+export class Function extends Value {
+  /**
+   * Add a new basic block to this function.
+   */
+  appendBasicBlock(name: string): BasicBlock {
+    let bbref = LLVM.LLVMAppendBasicBlock(this.ref, "entry");
+    return new BasicBlock(bbref);
   }
+
+  /**
+   * Get number of params
+   */
+   numParams(): number {
+     return LLVM.LLVMCountParams(this.ref);
+   }
+
+   /**
+    * Get function param at provided index
+    */ 
+    getParam(idx: number): Value {
+      return LLVM.LLVMGetParam(this.ref, idx);
+    }
+
+    /**
+     * Delete function from containing module
+     */
+     deleteFromParent() : void {
+       LLVM.LLVMDeleteFunction(this.ref);
+     }
+
 }
 
 /**
