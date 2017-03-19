@@ -294,6 +294,16 @@ export class Function extends Value {
   }
 
   /**
+   * Iterate over the parameters in the function.
+   */
+  *params() {
+    let count = this.countParams();
+    for (let i = 0; i < count; ++i) {
+      yield this.getParam(i);
+    }
+  }
+
+  /**
    * Delete the function from its containing module.
    */
   deleteFromParent(): void {

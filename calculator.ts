@@ -266,11 +266,10 @@ class PrototypeAST implements ASTNode {
   	let func: llvmc.Function = mod.addFunction(this.name, ft);
 
   	// Set names for all arguments.
-  	let idx: number = 0;
-  	let nParams: number = func.countParams();
-  	for(let i = 0; i < nParams; i++) {
-  		let param: llvmc.Value = func.getParam(i);
+    let i = 0;
+    for (let param of func.params()) {
   		param.setName(this.args[i]);
+      ++i;
   	}
 
   	return func;
@@ -305,9 +304,7 @@ class FunctionAST implements ASTNode {
   	// Record the function arguments in the NamedValues map.
 
   	NamedValues = {};
-  	let nParams: number = func.countParams();
-  	for(let i = 0; i < nParams; i++) {
-  		let param: llvmc.Value = func.getParam(i);
+    for (let param of func.params()) {
   		NamedValues[param.getName()] = param;
   	}
 
