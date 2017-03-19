@@ -78,7 +78,8 @@ export class Module extends Ref implements Freeable {
 }
 
 /**
- * Represents an LLVM function, wrapping an `LLVMFunctionRef`.
+ * Represents an LLVM function, wrapping an `LLVMValueRef` that points to a
+ * function.
  */
 export class Function extends Ref {
   /**
