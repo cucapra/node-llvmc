@@ -252,18 +252,18 @@ export class FunctionType extends Ref {
  */
 export class Value extends Ref {
   /**
-   * Get value's name
-   */ 
+   * Get the value's name.
+   */
   getName(): string {
     return LLVM.LLVMGetValueName(this.ref);
   }
 
   /**
-   * Set value's name
+   * Set the value's name.
    */
-   setName(name: string): void {
-     LLVM.LLVMSetValueName(this.ref, name);
-   }
+  setName(name: string): void {
+    LLVM.LLVMSetValueName(this.ref, name);
+  }
 }
 
 /**
@@ -290,13 +290,13 @@ export class Function extends Value {
    * Get function parameter at the specified index.
    */
   getParam(idx: number): Value {
-    return LLVM.LLVMGetParam(this.ref, idx);
+    return new Value(LLVM.LLVMGetParam(this.ref, idx));
   }
 
   /**
    * Delete the function from its containing module.
    */
-  deleteFromParent() : void {
+  deleteFromParent(): void {
     LLVM.LLVMDeleteFunction(this.ref);
   }
 }
