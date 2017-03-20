@@ -10,6 +10,19 @@
 import { LLVM, PointerArray } from './llvmc';
 
 /**
+ * Convert a normal JavaScript Ref array to a PointerArray
+ */
+function genPtrArray(array: Ref[]) {
+  let ptrArray = new PointerArray(array.length);
+  let i = 0;
+  for (let elem of array) {
+    ptrArray[i] = array[i].ref;
+    ++i;
+  }
+  return ptrArray
+}
+
+/**
  * A base class for our wrapper classes that abstract an `LLVM*Ref` type.
  */
 export class Ref {
@@ -98,7 +111,7 @@ export class Builder extends Ref implements Freeable {
    * Build function call
    */
    buildCall(func: Function, args: Value[], name: string): Value {
-     return new Value(LLVM.LLVMBuildCall(func, args, args.length, name));
+     return new Value(LLVM.LLVMBuildCall(func, genPtrArray(args), args.length, name));
    }
 
   /**
@@ -237,16 +250,8 @@ export class Type extends Ref {
  */
 export class FunctionType extends Ref {
   static create(ret: Type, params: Type[], isVarArg = false) {
-    // Construct an array containing the parameter references.
-    let paramtypes = new PointerArray(params.length);
-    let i = 0;
-    for (let param of params) {
-      paramtypes[i] = param.ref;
-      ++i;
-    }
-
     // Construct the function type.
-    let ftref = LLVM.LLVMFunctionType(ret.ref, paramtypes, params.length, isVarArg);
+    let ftref = LLVM.LLVMFunctionType(ret.ref, genPtrArray(params), params.length, isVarArg);
     return new FunctionType(ftref);
   }
 }
