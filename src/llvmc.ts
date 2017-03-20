@@ -680,7 +680,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMBuildICmp':                           [voidp, [voidp, 'int', voidp, voidp, 'string']],
   'LLVMBuildFCmp':                           [voidp, [voidp, 'int', voidp, voidp, 'string']],
   'LLVMBuildPhi':                            [voidp, [voidp, voidp, 'string']],   
-  'LLVMBuildCall':                           [voidp, [voidp, voidp, voidpp, 'uint', 'string']],
+  'LLVMBuildCall':                           [voidp, [voidp, voidp, PointerArray, 'uint', 'string']],
   'LLVMBuildSelect':                         [voidp, [voidp, voidp, voidp, voidp, 'string']],
   'LLVMBuildVAArg':                          [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildExtractElement':                 [voidp, [voidp, voidp, voidp, 'string']],

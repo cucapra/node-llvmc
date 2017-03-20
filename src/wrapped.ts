@@ -111,7 +111,7 @@ export class Builder extends Ref implements Freeable {
    * Build function call
    */
    buildCall(func: Function, args: Value[], name: string): Value {
-     return new Value(LLVM.LLVMBuildCall(func, genPtrArray(args), args.length, name));
+     return new Value(LLVM.LLVMBuildCall(this.ref, func.ref, genPtrArray(args), args.length, name));
    }
 
   /**
