@@ -4,10 +4,6 @@ import * as readline from 'readline';
 ///////////////////////////////////////
 // Setup
 ///////////////////////////////////////
-let mod = llvmc.Module.create('calculator_module');
-let builder = llvmc.Builder.create();
-let NamedValues:{[id:string] : llvmc.Value} = {};
-
 let prog: string; // program to run
 let idx: number = 0; // where we are in program
 let EOF: string = ''; 
@@ -134,12 +130,12 @@ function getTok() : Token {
 ////////////////////////////////////
 interface ASTNode {
 	id: string; // type of node
-	codegen(): any;
+	codegen(context: Context): any;
 }
 
 interface ExprAST extends ASTNode{
 	id: string; 
-	codegen() : llvmc.Value; 
+	codegen(context: Context) : llvmc.Value; 
 };
 
 /// VariableExprAST - Expression class for referencing a variable, like "a".
@@ -149,11 +145,11 @@ class VariableExprAST implements ExprAST {
 
 	public constructor(name: string) {this.name = name;}
 
-	public codegen() : llvmc.Value {
+	public codegen(context: Context) : llvmc.Value {
   		// Look this variable up in the function.
-  		if (!NamedValues.hasOwnProperty(this.name))
+  		if (!context.namedValues.hasOwnProperty(this.name))
     		throw 'unknown variable access'
-  		return NamedValues[this.name];
+  		return context.namedValues[this.name];
 	}
 };
 
@@ -164,7 +160,7 @@ class NumberExprAST implements ExprAST {
 	
 	public constructor(val: number) {this.val = val;}
 
-	public codegen() : llvmc.Value {
+	public codegen(context: Context) : llvmc.Value {
 		return llvmc.constFloat(this.val, llvmc.Type.float());
 	}
 };
@@ -182,20 +178,20 @@ class BinaryExprAST implements ExprAST {
 		this.right = right;
 	}
 
-	public codegen() : llvmc.Value {
-		let lVal: llvmc.Value = this.left.codegen();
-		let rVal: llvmc.Value = this.right.codegen();
+	public codegen(context: Context) : llvmc.Value {
+		let lVal: llvmc.Value = this.left.codegen(context);
+		let rVal: llvmc.Value = this.right.codegen(context);
 
     if (lVal.ref.isNull() || rVal.ref.isNull())
       throw "null exception"
 
 		switch (this.op) {
 			case '+':
-				return builder.addf(lVal, rVal, 'addtmp');
+				return context.builder.addf(lVal, rVal, 'addtmp');
 			case '-':
-		   	return builder.subf(lVal, rVal, 'subtmp');
+		   	return context.builder.subf(lVal, rVal, 'subtmp');
 		  case '*':
-		   	return builder.mulf(lVal, rVal, 'multmp');
+		   	return context.builder.mulf(lVal, rVal, 'multmp');
 		  default:
 		    throw "invalid binary operator";
 		}
@@ -213,9 +209,9 @@ class CallExprAST implements ExprAST {
     this.args = args;
 	}
 
-	public codegen() : llvmc.Value {
+	public codegen(context: Context) : llvmc.Value {
 		// Look up the name in the global module table.
-  	let calleeFunc: llvmc.Function = mod.getFunction(this.callee);
+  	let calleeFunc: llvmc.Function = context.mod.getFunction(this.callee);
   	if (calleeFunc.ref.isNull())
     	throw "unknown function referenced";
 
@@ -225,12 +221,12 @@ class CallExprAST implements ExprAST {
 
   	let argsV: llvmc.Value[] = [];
   	for (let i = 0; i != this.args.length; ++i) {
-    	argsV.push(this.args[i].codegen());
+    	argsV.push(this.args[i].codegen(context));
     	if (argsV[argsV.length - 1].ref.isNull())
       	throw "null exception"
   	}
 
-  	return builder.buildCall(calleeFunc, argsV, "calltmp");
+  	return context.builder.buildCall(calleeFunc, argsV, "calltmp");
 	}
 };
 
@@ -247,14 +243,14 @@ class PrototypeAST implements ASTNode {
 		this.args = args;
 	}
 
-	public codegen() : llvmc.Function {
+	public codegen(context: Context) : llvmc.Function {
 		// Make the function type:  double(double,double) etc.
 		let floats: llvmc.Type[] = [];
 		for (let i = 0; i < this.args.length; i++)
 			floats.push(llvmc.Type.float());
   	let ft: llvmc.FunctionType = llvmc.FunctionType.create(llvmc.Type.float(), floats, false);
 
-  	let func: llvmc.Function = mod.addFunction(this.name, ft);
+  	let func: llvmc.Function = context.mod.addFunction(this.name, ft);
 
   	// Set names for all arguments.
     let i = 0;
@@ -278,31 +274,31 @@ class FunctionAST implements ASTNode {
 		this.body = body;
 	}
 
-	public codegen() : llvmc.Function {
+	public codegen(context: Context) : llvmc.Function {
 		// First, check for an existing function from a previous 'extern' declaration.
-		let func: llvmc.Function = mod.getFunction(this.proto.name);
+		let func: llvmc.Function = context.mod.getFunction(this.proto.name);
 
   	if (func.ref.isNull())
-    	func = this.proto.codegen();
+    	func = this.proto.codegen(context);
 
   	if (func.ref.isNull())
     	throw "null exception";
 
   	// Create a new basic block to start insertion into.
   	let bb: llvmc.BasicBlock = func.appendBasicBlock("entry");
-  	builder.positionAtEnd(bb);
+  	context.builder.positionAtEnd(bb);
 
   	// Record the function arguments in the NamedValues map.
 
-  	NamedValues = {};
+  	context.namedValues = {};
     for (let param of func.params()) {
-  		NamedValues[param.getName()] = param;
+  		context.namedValues[param.getName()] = param;
   	}
 
-  	let retVal: llvmc.Value = this.body.codegen();
+  	let retVal: llvmc.Value = this.body.codegen(context);
   	if (!retVal.ref.isNull()) {
     	// Finish off the function.
-    	builder.ret(retVal);
+    	context.builder.ret(retVal);
     	return func;
   	}
 
@@ -526,12 +522,12 @@ function parseTopLevelExpr() : FunctionAST|null {
 // Top Level
 /////////////////////////////////////////////////
 
-function handleDefinition() : void {
+function handleDefinition(context: Context) : void {
 	let funcAST: FunctionAST|null = parseDefinition();
   if (funcAST) {
-  	let funcIR: llvmc.Function = funcAST.codegen();
+  	let funcIR: llvmc.Function = funcAST.codegen(context);
     console.log("Read function definition:");
-    console.log(mod.toString());
+    console.log(context.mod.toString());
     console.log("\n");
   } else {
     // Skip token for error recovery.
@@ -539,12 +535,12 @@ function handleDefinition() : void {
   }
 }
 
-function handleExtern() : void {
+function handleExtern(context: Context) : void {
 	let protoAST: PrototypeAST|null = parseExtern();
   if (protoAST) {
-  	let funcIR: llvmc.Function = protoAST.codegen();
+  	let funcIR: llvmc.Function = protoAST.codegen(context);
     console.log("Read extern:");
-    console.log(mod.toString());
+    console.log(context.mod.toString());
     console.log("\n");
   } else {
     // Skip token for error recovery.
@@ -552,22 +548,40 @@ function handleExtern() : void {
   }
 }
 
-function handleTopLevelExpression() : void {
+function handleTopLevelExpression(context: Context) : void {
   // Evaluate a top-level expression into an anonymous function.
   let funcAST: FunctionAST|null = parseTopLevelExpr();
   if (funcAST) {
-  	let funcIR: llvmc.Function = funcAST.codegen();
+  	let funcIR: llvmc.Function = funcAST.codegen(context);
     console.log("Read top-level expression:");
-    console.log(mod.toString());
+    console.log(context.mod.toString());
     console.log("\n");
   } else {
     // Skip token for error recovery.
     getNextToken();
+  }
+}
+
+class Context {
+  public mod: llvmc.Module;
+  public builder: llvmc.Builder;
+  public namedValues: {[id:string] : llvmc.Value};
+
+  constructor(mod: llvmc.Module, builder: llvmc.Builder, namedValues: {[id:string] : llvmc.Value} = {}) {
+    this.mod = mod;
+    this.builder = builder;
+    this.namedValues = namedValues;
+  }
+
+  public free() {
+    this.builder.free();
+    this.mod.free();
   }
 }
 
 /// Reader line from cmd line
 function read() : void {
+  let context: Context = new Context(llvmc.Module.create('calculator_module'), llvmc.Builder.create());
 	let rl = readline.createInterface({
 			input: process.stdin,
 			output: process.stdout
@@ -585,18 +599,17 @@ function read() : void {
     	prog = line;
     	console.log("Program: " + prog + "\n");
     	getNextToken();
-    	mainLoop();
+    	mainLoop(context);
     }
     rl.prompt();
 	}).on('close',function(){
-    builder.free();
-    mod.free();
+    context.free();
     process.exit(0);
 	});
 }
 
 /// top ::= definition | external | expression | ';'
-function mainLoop() : void {
+function mainLoop(context: Context) : void {
     switch (curTok.id) {
     	case 'Tok_Eof':
       	return;
@@ -604,13 +617,13 @@ function mainLoop() : void {
       	getNextToken();
       	break;
     	case 'Tok_Def':
-      	handleDefinition();
+      	handleDefinition(context);
       	break;
     	case 'Tok_Extern':
-      	handleExtern();
+      	handleExtern(context);
       	break;
     	default:
-      	handleTopLevelExpression();
+      	handleTopLevelExpression(context);
       	break;
     }
 }
