@@ -1,5 +1,3 @@
-//TODO: find more satisfying way to handle nullptr
-// TODO: handle llvm null ref's
 import * as llvmc from './src/wrapped';
 import * as readline from 'readline';
 
@@ -143,13 +141,6 @@ interface ExprAST extends ASTNode{
 	id: string; 
 	codegen() : llvmc.Value; 
 };
-
-class NullExprAST implements ExprAST {
-	public id: string = 'NullExprAST';
-	public codegen() : llvmc.Value { 
-		throw "null exception"
-	}
-}
 
 /// VariableExprAST - Expression class for referencing a variable, like "a".
 class VariableExprAST implements ExprAST {
@@ -335,19 +326,19 @@ function getNextToken() : Token {
 };
 
 /// numberexpr ::= number
-function parseNumberExpr(): ExprAST {
+function parseNumberExpr(): ExprAST|null {
   let result: ExprAST = new NumberExprAST(numVal);
   getNextToken(); // consume the number
   return result;
 };
 
 /// parenexpr ::= '(' expression ')'
-function parseParenExpr() : ExprAST {
+function parseParenExpr() : ExprAST|null {
 	getNextToken(); // eat (.
 	  
-	let v: ExprAST = parseExpression();
-	if (v instanceof NullExprAST)
-	  	return new NullExprAST();
+	let v: ExprAST|null = parseExpression();
+	if (!v)
+	  	return null;
 
 	if (curTok.id !== ')')
 	   	throw 'mismatch parens';
@@ -358,7 +349,7 @@ function parseParenExpr() : ExprAST {
 
 /// identifierexpr
 ///   ::= identifier
-function parseIdentifierExpr() : ExprAST {
+function parseIdentifierExpr() : ExprAST|null {
 	let idName: string = idStr;
 
   getNextToken();  // eat identifier.
@@ -372,12 +363,12 @@ function parseIdentifierExpr() : ExprAST {
 
   if (curTok.id !== '(') {
     while (true) {
-    	let arg = parseExpression();
+    	let arg: ExprAST|null = parseExpression();
       
-      if (!(arg instanceof NullExprAST))
+      if (arg)
         args.push(arg);
       else
-        return new NullExprAST;
+        return null;
 
       if (curTok.id == ')')
         break;
@@ -397,7 +388,7 @@ function parseIdentifierExpr() : ExprAST {
 /// primary
 ///   ::= numberexpr
 ///   ::= parenexpr
-function parsePrimary() : ExprAST {
+function parsePrimary() : ExprAST|null {
   	switch (curTok.id) {
   		case 'Tok_Id':
     		return parseIdentifierExpr();
@@ -431,7 +422,7 @@ function getTokPrecedence() : number {
 
 /// binoprhs
 ///   ::= ('+' primary)*
-function parseBinOpRHS (exprPrec: number, left: ExprAST) : ExprAST  {
+function parseBinOpRHS (exprPrec: number, left: ExprAST) : ExprAST|null  {
   // If this is a binop, find its precedence.
   while (true) {
     let tokPrec: number = getTokPrecedence();
@@ -446,17 +437,17 @@ function parseBinOpRHS (exprPrec: number, left: ExprAST) : ExprAST  {
     getNextToken(); // eat binop
 
     // Parse the primary expression after the binary operator.
-    let right: ExprAST = parsePrimary();
-    if (right instanceof NullExprAST)
-      return new NullExprAST();
+    let right: ExprAST|null = parsePrimary();
+    if (!right)
+      return null;
 
     // If BinOp binds less tightly with RHS than the operator after RHS, let
     // the pending operator take RHS as its LHS.
     let nextPrec: number = getTokPrecedence();
     if (tokPrec < nextPrec) {
       right = parseBinOpRHS(tokPrec + 1, right);
-      if (right instanceof NullExprAST)
-        return new NullExprAST();
+      if (!right)
+        return null;
     }
 
     // Merge LHS/RHS.
@@ -467,17 +458,17 @@ function parseBinOpRHS (exprPrec: number, left: ExprAST) : ExprAST  {
 /// expression
 ///   ::= primary binoprhs
 ///
-function parseExpression() : ExprAST {
-	let left : ExprAST = parsePrimary();
-  if (left instanceof NullExprAST)
-		return new NullExprAST();
+function parseExpression() : ExprAST|null {
+	let left : ExprAST|null = parsePrimary();
+  if (!left)
+		return null;
 
   return parseBinOpRHS(0, left);
 };
 
 /// prototype
 ///   ::= id '(' id* ')'
-function parsePrototype() : PrototypeAST {
+function parsePrototype() : PrototypeAST|null {
   if (!(curTok instanceof Tok_Id))
     throw "Expected function name in prototype";
 
@@ -502,33 +493,33 @@ function parsePrototype() : PrototypeAST {
 };
 
 /// definition ::= 'def' prototype expression
-function parseDefinition() : FunctionAST {
+function parseDefinition() : FunctionAST|null {
   getNextToken();  // eat def.
-  let proto: PrototypeAST = parsePrototype();
-  //if (!proto) return nullptr;
+  let proto: PrototypeAST|null = parsePrototype();
+  if (!proto) 
+    return null;
 
-  let exp: ExprAST = parseExpression();
-  if (!(exp instanceof NullExprAST))
+  let exp: ExprAST|null = parseExpression();
+  if (exp)
     return new FunctionAST(proto, exp);
-  //return nullptr;
- 	throw "handle nullptrs better"
+  return null;
 };
 
 /// external ::= 'extern' prototype
-function parseExtern() : PrototypeAST {
+function parseExtern() : PrototypeAST|null {
   getNextToken();  // eat extern.
   return parsePrototype();
 };
 
 /// toplevelexpr ::= expression
-function parseTopLevelExpr() : FunctionAST {
-	let exp: ExprAST = parseExpression();
-  if (!(exp instanceof NullExprAST)) {
+function parseTopLevelExpr() : FunctionAST|null {
+	let exp: ExprAST|null = parseExpression();
+  if (exp) {
     // Make an anonymous proto.
     let proto: PrototypeAST = new PrototypeAST("", []);
     return new FunctionAST(proto, exp);
   }
-  throw "handle nullptrs better"
+  return null;
 }
 
 /////////////////////////////////////////////////
@@ -536,9 +527,8 @@ function parseTopLevelExpr() : FunctionAST {
 /////////////////////////////////////////////////
 
 function handleDefinition() : void {
-	let funcAST: FunctionAST = parseDefinition();
-  //if (auto FnAST = ParseDefinition()) {
-  if (1 === 1) {
+	let funcAST: FunctionAST|null = parseDefinition();
+  if (funcAST) {
   	let funcIR: llvmc.Function = funcAST.codegen();
     console.log("Read function definition:");
     console.log(mod.toString());
@@ -550,9 +540,8 @@ function handleDefinition() : void {
 }
 
 function handleExtern() : void {
-	let protoAST: PrototypeAST = parseExtern();
-  //if (auto ProtoAST = ParseExtern()) {
-  if (1 === 1) {
+	let protoAST: PrototypeAST|null = parseExtern();
+  if (protoAST) {
   	let funcIR: llvmc.Function = protoAST.codegen();
     console.log("Read extern:");
     console.log(mod.toString());
@@ -565,9 +554,8 @@ function handleExtern() : void {
 
 function handleTopLevelExpression() : void {
   // Evaluate a top-level expression into an anonymous function.
-  let funcAST: FunctionAST = parseTopLevelExpr();
-  //if (auto FnAST = ParseTopLevelExpr()) {
-  if (1 === 1) {
+  let funcAST: FunctionAST|null = parseTopLevelExpr();
+  if (funcAST) {
   	let funcIR: llvmc.Function = funcAST.codegen();
     console.log("Read top-level expression:");
     console.log(mod.toString());
