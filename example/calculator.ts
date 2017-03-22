@@ -107,7 +107,7 @@ function mainLoop(context: Context) : void {
 		case 'Tok_Def':
 			handleDefinition(context);
 			break;
-		case 'Tok_Extern':
+		case 'Tok_Ext':
 			handleExtern(context);
 			break;
 		default:
