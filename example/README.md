@@ -61,7 +61,7 @@ entry:
 }
 ```
 
-###Externs
+### Externs
 TODO
 
 In This Repo
@@ -72,6 +72,11 @@ Here we provide a short description of the files in this folder.
 The lexer.ts file contains the tokens and lexer that the calculator uses. The parser.ts file contains the parser. Neither of these files make use of node-llvmc. Both are based on the lexer and parser given in the Kaleidoscope tutorial, so for more information see the Kaleidoscope tutorial.
 
 ### ast.ts
+This file constains the Abstract Syntax Tree. The majority of our use of node-llvmc is located here, so to see examples of node-llvmc, this is probably the best place to look. 
+
+To keep our example similar to the Kaleidoscope Tutorial, we also do not use the visitor pattern for code generation. Instead, each AST Node contains a `codegen()` method which generates code through node-llvmc. 
+
+The main difference between our version and the Kaleidoscope tutorial is that some of our LLVM function calls are a bit different than theirs (i.e. different names or different parameters); however, they are similar enough that the reader shouldn't have too much trouble rectifying these minor differences.
 
 ### calculator.ts
 This is the driver for the calculator. 
