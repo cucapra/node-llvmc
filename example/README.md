@@ -15,8 +15,10 @@ node example/calculator.js
 
 You should now be prompted to enter commands. Our calculator currently supports supports arithmetic operation (except division), function definitions, function calls, and externs. Below we give some example programs. Note that after each command, the calculator will print the entire current LLVM IR you've created thus far.
 
+To exit the calculator, just type `quit` into the prompt.
+
 ### Arithmetic
-We support addition, subtraction, multiplication, and parenthesis. All numbers are treated as floating point values.
+We support addition, subtraction, multiplication, and parentheses. All numbers are treated as floating point values.
 
 ```shell
 Ready> (2+5)*(7-1)
@@ -62,25 +64,47 @@ entry:
 ```
 
 ### Externs
-TODO
+Externs are declared and called just like functions. The only difference is that they are declared using the `extern` keyword instead the `def` keyword, and they do not have a function body.
+
+```shell
+Ready> extern cos(a)
+Read extern:
+; ModuleID = 'calculator_module'
+
+declare float @cos(float)
+
+
+
+Ready> cos(1)
+Read top-level expression:
+; ModuleID = 'calculator_module'
+
+declare float @cos(float)
+
+define float @0() {
+entry:
+  %calltmp = call float @cos(float 1.000000e+00)
+  ret float %calltmp
+}
+```
 
 In This Repo
 ------------
 Here we provide a short description of the files in this folder.
 
 ### lexer.ts and parser.ts
-The lexer.ts file contains the tokens and lexer that the calculator uses. The parser.ts file contains the parser. Neither of these files make use of node-llvmc. Both are based on the lexer and parser given in the Kaleidoscope tutorial, so for more information see the Kaleidoscope tutorial.
+The lexer.ts file contains the tokens and lexer that the calculator uses. The parser.ts file contains the parser. Neither of these files make use of node-llvmc. Both are based on the lexer and parser given in the [LLVM Kaleidoscope Tutorial], so for more information we recommend taking a look there
 
 ### ast.ts
 This file constains the Abstract Syntax Tree. The majority of our use of node-llvmc is located here, so to see examples of node-llvmc, this is probably the best place to look. 
 
-To keep our example similar to the Kaleidoscope Tutorial, we also do not use the visitor pattern for code generation. Instead, each AST Node contains a `codegen()` method which generates code through node-llvmc. 
+To keep our example similar to the [LLVM Kaleidoscope Tutorial], we also do not use the visitor pattern for code generation. Instead, each AST Node contains a `codegen()` method which generates code through node-llvmc. 
 
 The main difference between our version and the Kaleidoscope tutorial is that some of our LLVM function calls are a bit different than theirs (i.e. different names or different parameters); however, they are similar enough that the reader shouldn't have too much trouble rectifying these minor differences.
 
 ### calculator.ts
 This is the driver for the calculator. 
 
-It is also where the `Context` class is defined (which you will see being quite often inside of ast.ts). A `Context` object is merely a wrapper around the following: an LLVM `Module` object (see wrapped.ts), an LLVM `Builder` object (see wrapped.ts), and map that maps identifiers to LLVM `Value` object (see wrapped.ts).
+It is also where the `Context` class is defined (which you will see being quite often inside of ast.ts). A `Context` object is merely a wrapper around the following: an node-llvmc `Module` object, an node-llvmc `Builder` object, and map that maps identifiers to node-llvmc `Value` object. See wrapped.ts for more information on the aforementioned node-llvmc objects.
 
 [LLVM Kaleidoscope Tutorial]: http://llvm.org/docs/tutorial/LangImpl01.html
