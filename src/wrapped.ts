@@ -369,31 +369,82 @@ export class Function extends Value {
 /**
  * Build an integer constant.
  */
-export function constInt(value: number, type: Type): Value {
-  let vref = LLVM.LLVMConstInt(type.ref, value, false);
-  return new Value(vref);
+// export function constInt(value: number, type: Type): Value {
+//   let vref = LLVM.LLVMConstInt(type.ref, value, false);
+//   return new Value(vref);
+// }
+
+/**
+ * Integer constant
+ */
+export class ConstInt extends Value {
+  /**
+   * Build an integer constant
+   */
+  static create(value: number, type: Type): ConstInt {
+    let vref = LLVM.LLVMConstInt(type.ref, value, false);
+    return new ConstInt(vref);
+  }
 }
 
 /**
  * Build a floating point number
  */
-export function constFloat(value: number, type: Type): Value {
-  let vref = LLVM.LLVMConstReal(type.ref, value);
-  return new Value(vref);
+// export function constFloat(value: number, type: Type): Value {
+//   let vref = LLVM.LLVMConstReal(type.ref, value);
+//   return new Value(vref);
+// }
+
+/**
+ * Float constant
+ */
+export class ConstFloat extends Value {
+  /**
+   * Build a float constant 
+   */
+  static create(value: number, type: Type): ConstFloat {
+    let vref = LLVM.LLVMConstReal(type.ref, value);
+    return new ConstFloat(vref);
+  }
 }
 
 /**
  * Create a ConstantDataSequential with string content in the provided context
  */
-export function constStringInContext(context: Context, value: string, dontNullTerminate: boolean): Value {
-  let vref = LLVM.LLVMConstStringInContext(context.ref, value, value.length, dontNullTerminate);
-  return new Value(vref);
-}
+// export function constStringInContext(context: Context, value: string, dontNullTerminate: boolean): Value {
+//   let vref = LLVM.LLVMConstStringInContext(context.ref, value, value.length, dontNullTerminate);
+//   return new Value(vref);
+// }
 
 /**
  * Create a ConstantDataSequential with string content in the global context
  */
-export function constString(value: string, dontNullTerminate: boolean): Value {
-  let vref = LLVM.LLVMConstString(value, value.length, dontNullTerminate);
-  return new Value(vref);
+// export function constString(value: string, dontNullTerminate: boolean): Value {
+//   let vref = LLVM.LLVMConstString(value, value.length, dontNullTerminate);
+//   return new Value(vref);
+// }
+
+/**
+ * String constant
+ */
+export class ConstString extends Value {
+  /**
+   * Create a ConstantDataSequential with string content in the provided context
+   */
+  static createInContext(context: Context, value: string, dontNullTerminate: boolean): ConstString {
+    let vref = LLVM.LLVMConstStringInContext(context.ref, value, value.length, dontNullTerminate);
+    return new ConstString(vref);
+  }
+
+  /**
+   * Create a ConstantDataSequential with string content in the global context
+   */
+  static create(value: string, dontNullTerminate: boolean): ConstString {
+    let vref = LLVM.LLVMConstString(value, value.length, dontNullTerminate);
+    return new ConstString(vref);
+  }
 }
+
+
+
+

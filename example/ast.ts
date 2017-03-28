@@ -42,7 +42,7 @@ export class NumberExprAST implements ExprAST {
 	public constructor(val: number) {this.val = val;}
 
 	public codegen(context: Context) : llvmc.Value {
-		return llvmc.constFloat(this.val, llvmc.Type.float());
+		return llvmc.ConstFloat.create(this.val, llvmc.Type.float());
 	}
 };
 
