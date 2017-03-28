@@ -7,7 +7,7 @@ Getting Started
 ---------------
 
 ### System Requirements 
-* LLVM Distribution with libLLVM.so
+* LLVM Distribution with **libLLVM.so**
 * Node.js
 * npm
 * TypeScript
