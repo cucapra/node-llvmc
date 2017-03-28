@@ -215,11 +215,17 @@ export class Builder extends Ref implements Freeable {
     return new Value(vref);
   }
 
+  /**
+   * Negate integer
+   */
   neg(val: Value, name: string): Value {
     let vref = LLVM.LLVMBuildNeg(this.ref, val.ref, name);
     return new Value(vref);
   }
 
+  /**
+   * Negate floating point value
+   */
   negf(val: Value, name: string): Value {
     let vref = LLVM.LLVMBuildFNeg(this.ref, val.ref, name);
     return new Value(vref);
