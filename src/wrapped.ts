@@ -215,6 +215,16 @@ export class Builder extends Ref implements Freeable {
     return new Value(vref);
   }
 
+  neg(val: Value, name: string): Value {
+    let vref = LLVM.LLVMBuildNeg(this.ref, val.ref, name);
+    return new Value(vref);
+  }
+
+  negf(val: Value, name: string): Value {
+    let vref = LLVM.LLVMBuildFNeg(this.ref, val.ref, name);
+    return new Value(vref);
+  }
+
   /**
    * Build a return instruction.
    */
