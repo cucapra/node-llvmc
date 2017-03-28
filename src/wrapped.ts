@@ -41,6 +41,27 @@ export interface Freeable {
 }
 
 /**
+ * A class for the LLVM Context module
+ */
+ export class Context extends Ref {
+   /**
+    * Create new context
+    */
+   static create() {
+     let cref = LLVM.LLVMContextCreate();
+     return new Context(cref);
+   }
+
+   /**
+    * Retrieve global context
+    */
+   static getGlobal() {
+     let cref = LLVM.LLVMGetGlobalContext();
+     return new Context(cref);
+   }
+ }
+
+/**
  * Represents an LLVM module: specifically, and underlying `LLVMModuleRef`.
  */
 export class Module extends Ref implements Freeable {
@@ -333,5 +354,21 @@ export function constInt(value: number, type: Type): Value {
  */
 export function constFloat(value: number, type: Type): Value {
   let vref = LLVM.LLVMConstReal(type.ref, value);
+  return new Value(vref);
+}
+
+/**
+ * Create a ConstantDataSequential with string content in the provided context
+ */
+export function constStringInContext(context: Context, value: string, dontNullTerminate: boolean): Value {
+  let vref = LLVM.LLVMConstStringInContext(context.ref, value, value.length, dontNullTerminate);
+  return new Value(vref);
+}
+
+/**
+ * Create a ConstantDataSequential with string content in the global context
+ */
+export function constString(value: string, dontNullTerminate: boolean): Value {
+  let vref = LLVM.LLVMConstString(value, value.length, dontNullTerminate);
   return new Value(vref);
 }
