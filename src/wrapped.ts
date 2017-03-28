@@ -129,18 +129,43 @@ export class Builder extends Ref implements Freeable {
   }
 
   /**
-   * Build function call
-   */
-   buildCall(func: Function, args: Value[], name: string): Value {
-     return new Value(LLVM.LLVMBuildCall(this.ref, func.ref, genPtrArray(args), args.length, name));
-   }
-
-  /**
    * Position the builder's insertion point at the end of the given basic block.
    */
   positionAtEnd(bb: BasicBlock) {
     LLVM.LLVMPositionBuilderAtEnd(this.ref, bb.ref);
   }
+
+  /**
+   * Build function call
+   */
+   buildCall(func: Function, args: Value[], name: string): Value {
+     let vref = LLVM.LLVMBuildCall(this.ref, func.ref, genPtrArray(args), args.length, name);
+     return new Value(vref);
+   }
+
+   /**
+    * Create alloca
+    */
+   buildAlloca(type: Type, name: string): Value {
+     let vref = LLVM.LLVMBuildAlloca(this.ref, type.ref, name);
+     return new Value(vref);
+   }
+
+   /**
+    * Obtain value pointed to by ptr
+    */
+   buildLoad(ptr: Value, name: string): Value {
+     let vref = LLVM.LLVMBuildLoad(this.ref, ptr.ref, name);
+     return new Value(vref);
+   }
+
+   /**
+    * Store value in ptr
+    */
+   buildStore(value: Value, ptr: Value): Value {
+     let vref = LLVM.LLVMBuildStore(this.ref, value.ref, ptr.ref);
+     return new Value(vref);
+   }
 
   /**
    * Build an integer addition instruction.
