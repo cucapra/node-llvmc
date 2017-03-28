@@ -14,8 +14,8 @@ let entry = main.appendBasicBlock("entry");
 // Build a tiny program in the block.
 let builder = llvmc.Builder.create();
 builder.positionAtEnd(entry);
-let arg1 = llvmc.constInt(34, llvmc.Type.int32());
-let arg2 = llvmc.constInt(8, llvmc.Type.int32());
+let arg1 = llvmc.ConstInt.create(34, llvmc.Type.int32());
+let arg2 = llvmc.ConstInt.create(8, llvmc.Type.int32());
 let sum = builder.add(arg1, arg2, "sum");
 builder.ret(sum);
 builder.free();
