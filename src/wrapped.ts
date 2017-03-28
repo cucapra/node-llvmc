@@ -367,14 +367,6 @@ export class Function extends Value {
 }
 
 /**
- * Build an integer constant.
- */
-// export function constInt(value: number, type: Type): Value {
-//   let vref = LLVM.LLVMConstInt(type.ref, value, false);
-//   return new Value(vref);
-// }
-
-/**
  * Integer constant
  */
 export class ConstInt extends Value {
@@ -388,14 +380,6 @@ export class ConstInt extends Value {
 }
 
 /**
- * Build a floating point number
- */
-// export function constFloat(value: number, type: Type): Value {
-//   let vref = LLVM.LLVMConstReal(type.ref, value);
-//   return new Value(vref);
-// }
-
-/**
  * Float constant
  */
 export class ConstFloat extends Value {
@@ -407,22 +391,6 @@ export class ConstFloat extends Value {
     return new ConstFloat(vref);
   }
 }
-
-/**
- * Create a ConstantDataSequential with string content in the provided context
- */
-// export function constStringInContext(context: Context, value: string, dontNullTerminate: boolean): Value {
-//   let vref = LLVM.LLVMConstStringInContext(context.ref, value, value.length, dontNullTerminate);
-//   return new Value(vref);
-// }
-
-/**
- * Create a ConstantDataSequential with string content in the global context
- */
-// export function constString(value: string, dontNullTerminate: boolean): Value {
-//   let vref = LLVM.LLVMConstString(value, value.length, dontNullTerminate);
-//   return new Value(vref);
-// }
 
 /**
  * String constant
