@@ -114,6 +114,29 @@ export class Module extends Ref implements Freeable {
 
 
 export class BasicBlock extends Ref {
+  /**
+   * Obtain the function to which this basic block belongs
+   */
+  getParent(): Function {
+    let fref = LLVM.LLVMGetBasicBlockParent(this.ref);
+    return new Function(fref);
+  }
+
+  /**
+   * Obtain first instruction of basic block
+   */
+  getFirstInstr(): Value {
+    let vref = LLVM.LLVMGetFirstInstruction(this.ref);
+    return new Value(vref);
+  }
+
+  /**
+   * Obtain last instruction of basic block
+   */
+  getLastInstr(): Value {
+    let vref = LLVM.LLVMGetLastInstruction(this.ref);
+    return new Value(vref);
+  }
 }
 
 /**
@@ -123,9 +146,28 @@ export class Builder extends Ref implements Freeable {
   /**
    * Create a new builder.
    */
-  static create() {
+  static create(): Builder {
     let bref = LLVM.LLVMCreateBuilder();
     return new Builder(bref);
+  }
+
+  getInsertBlock(): BasicBlock {
+    let bbref = LLVM.LLVMGetInsertBlock(this.ref);
+    return new BasicBlock(bbref);
+  }
+
+  /**
+   * Position the builder after the provided instruction
+   */
+  positionAfter(bb: BasicBlock, instr: Value) {
+    LLVM.LLVMPositionBuilder(this.ref, bb.ref, instr.ref);
+  }
+
+  /**
+   * Position the builder before the provided instruction
+   */
+  positionBefore(instr: Value) {
+    LLVM.LLVMPositionBuilderBefore(this.ref, instr.ref);
   }
 
   /**
@@ -355,6 +397,11 @@ export class Function extends Value {
    */
   appendBasicBlock(name: string): BasicBlock {
     let bbref = LLVM.LLVMAppendBasicBlock(this.ref, "entry");
+    return new BasicBlock(bbref);
+  }
+
+  getEntryBlock(): BasicBlock {
+    let bbref = LLVM.LLVMGetEntryBasicBlock(this.ref);
     return new BasicBlock(bbref);
   }
 
