@@ -167,6 +167,14 @@ export class Builder extends Ref implements Freeable {
      return new Value(vref);
    }
 
+   /**
+    * Build cast of signed int to floating point
+    */
+   buildSIToFP(val: Value, destType: Type, name: string): Value {
+     let vref = LLVM.LLVMBuildSIToFP(this.ref, val.ref, destType.ref, name);
+     return new Value(vref);
+   }
+
   /**
    * Build an integer addition instruction.
    */
