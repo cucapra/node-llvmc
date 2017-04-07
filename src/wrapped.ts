@@ -484,6 +484,19 @@ export class ConstString extends Value {
   }
 }
 
+/**
+ * Pointer type
+ */
+export class Pointer extends Value {
+  /**
+   * Create an llvm pointer type
+   */
+  static create(type: Type, addressSpace: number) {
+    let pref = LLVM.LLVMPointerType(type, addressSpace);
+    return new Pointer(pref);
+  }
+}
+
 
 
 
