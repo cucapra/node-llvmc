@@ -492,7 +492,7 @@ export class Pointer extends Value {
    * Create an llvm pointer type
    */
   static create(type: Type, addressSpace: number) {
-    let pref = LLVM.LLVMPointerType(type, addressSpace);
+    let pref = LLVM.LLVMPointerType(type.ref, addressSpace);
     return new Pointer(pref);
   }
 }
