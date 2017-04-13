@@ -369,6 +369,35 @@ export class FunctionType extends Ref {
 }
 
 /**
+ * Wraps around StructType
+ */
+export class StructType extends Type {
+  /**
+   * Construct StructType
+   */
+  static create(elementTypes: Type[], packed: boolean): StructType {
+    let _elementTypes = genPtrArray(elementTypes);
+    let sref = LLVM.LLVMStructType(_elementTypes, elementTypes.length, packed);
+    return new StructType(sref);
+  }
+
+  /**
+   * Get number of elems in struct
+   */
+  static numStructElements(struct: Type): number {
+    return LLVM.LLVMCountStructElementTypes(struct.ref);
+  }
+
+  /**
+   * Get type of element at provided index
+   */
+  static getTypeAt(struct: Type, index: number): Type {
+    let tref = LLVM.LLVMStructGetTypeAtIndex(struct.ref, index);
+    return new Type(tref);
+  }
+}
+
+/**
  * Wraps *any* LLVM value via an `LLVMValueRef`.
  */
 export class Value extends Ref {
