@@ -384,15 +384,15 @@ export class StructType extends Type {
   /**
    * Get number of elems in struct
    */
-  static numStructElements(struct: Type): number {
-    return LLVM.LLVMCountStructElementTypes(struct.ref);
+  static numStructElements(): number {
+    return LLVM.LLVMCountStructElementTypes(this.ref);
   }
 
   /**
    * Get type of element at provided index
    */
-  static getTypeAt(struct: Type, index: number): Type {
-    let tref = LLVM.LLVMStructGetTypeAtIndex(struct.ref, index);
+  static getTypeAt(index: number): Type {
+    let tref = LLVM.LLVMStructGetTypeAtIndex(this.ref, index);
     return new Type(tref);
   }
 }
