@@ -384,14 +384,14 @@ export class StructType extends Type {
   /**
    * Get number of elems in struct
    */
-  static numStructElements(): number {
+  numStructElements(): number {
     return LLVM.LLVMCountStructElementTypes(this.ref);
   }
 
   /**
    * Get type of element at provided index
    */
-  static getTypeAt(index: number): Type {
+  getTypeAt(index: number): Type {
     let tref = LLVM.LLVMStructGetTypeAtIndex(this.ref, index);
     return new Type(tref);
   }
@@ -493,9 +493,35 @@ export class ConstFloat extends Value {
 }
 
 /**
+ * Pointer type
+ */
+export class Pointer extends Value {
+  /**
+   * Create an llvm pointer type
+   */
+  static create(type: Type, addressSpace: number) {
+    let pref = LLVM.LLVMPointerType(type.ref, addressSpace);
+    return new Pointer(pref);
+  }
+}
+
+/**
+ * Composite Constant
+ */
+export class ConstComposite extends Value {
+  /**
+   * Get an element at specified index as a constant. 
+   */
+  getElementAt(index: number): Value {
+    let vref = LLVM.LLVMGetElementAsConstant(this.ref, index);
+    return new Value(index);
+  }
+}
+
+/**
  * String constant
  */
-export class ConstString extends Value {
+export class ConstString extends ConstComposite {
   /**
    * Create a ConstantDataSequential with string content in the provided context
    */
@@ -514,18 +540,25 @@ export class ConstString extends Value {
 }
 
 /**
- * Pointer type
+ * Struct constant
  */
-export class Pointer extends Value {
+export class ConstStruct extends ConstComposite {
   /**
-   * Create an llvm pointer type
+   * Create a ConstantStruct in the global Context. 
    */
-  static create(type: Type, addressSpace: number) {
-    let pref = LLVM.LLVMPointerType(type.ref, addressSpace);
-    return new Pointer(pref);
+  static create(vals: Value[], packed: boolean) {
+    let _vals = genPtrArray(vals);
+    let sref = LLVM.LLVMConstStruct(_vals, vals.length, packed);
+    return new ConstStruct(sref);
+  }
+
+  /**
+   * Create a non-anonymous ConstantStruct from values. 
+   */
+  static createNamed(structType: StructType, vals: Value[]) {
+    let _vals = genPtrArray(vals);
+    let sref = LLVM.LLVMConstNamedStruct(structType.ref, _vals, vals.length);
   }
 }
-
-
 
 
