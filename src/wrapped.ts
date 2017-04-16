@@ -495,13 +495,13 @@ export class ConstFloat extends Value {
 /**
  * Pointer type
  */
-export class Pointer extends Value {
+export class PointerType extends Type {
   /**
    * Create an llvm pointer type
    */
   static create(type: Type, addressSpace: number) {
     let pref = LLVM.LLVMPointerType(type.ref, addressSpace);
-    return new Pointer(pref);
+    return new PointerType(pref);
   }
 }
 
