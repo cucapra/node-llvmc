@@ -565,4 +565,14 @@ export class ConstStruct extends ConstComposite {
   }
 }
 
+export class ConstExpr extends Value {
+  /**
+   * Cast a constant value to the provided type
+   */
+  static constBitCast(val: Value, toType: Type) {
+    let cref = LLVM.LLVMConstBitCast(val.ref, toType.ref);
+    return new Value(cref);
+  }
+}
+
 
