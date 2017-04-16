@@ -355,6 +355,10 @@ export class Type extends Ref {
     static double():Type {
       return new Type(LLVM.LLVMDoubleType());
     }
+
+    static _void():Type {
+      return new Type(LLVM.LLVMVoidType());
+    }
 }
 
 /**
@@ -365,6 +369,19 @@ export class FunctionType extends Ref {
     // Construct the function type.
     let ftref = LLVM.LLVMFunctionType(ret.ref, genPtrArray(params), params.length, isVarArg);
     return new FunctionType(ftref);
+  }
+}
+
+/**
+ * Pointer type
+ */
+export class PointerType extends Type {
+  /**
+   * Create an llvm pointer type
+   */
+  static create(type: Type, addressSpace: number) {
+    let pref = LLVM.LLVMPointerType(type.ref, addressSpace);
+    return new PointerType(pref);
   }
 }
 
@@ -489,19 +506,6 @@ export class ConstFloat extends Value {
   static create(value: number, type: Type): ConstFloat {
     let vref = LLVM.LLVMConstReal(type.ref, value);
     return new ConstFloat(vref);
-  }
-}
-
-/**
- * Pointer type
- */
-export class PointerType extends Type {
-  /**
-   * Create an llvm pointer type
-   */
-  static create(type: Type, addressSpace: number) {
-    let pref = LLVM.LLVMPointerType(type.ref, addressSpace);
-    return new PointerType(pref);
   }
 }
 
