@@ -217,6 +217,14 @@ export class Builder extends Ref implements Freeable {
      return new Value(vref);
    }
 
+   /**
+    * Build bit cast
+    */
+   buildBitCast(val: Value, destType: Type, name: string): Value {
+     let vref = LLVM.LLVMBuildBitCast(this.ref, val.ref, destType.ref, name);
+     return new Value(vref);
+   }
+
   /**
    * Build an integer addition instruction.
    */
@@ -562,16 +570,6 @@ export class ConstStruct extends ConstComposite {
   static createNamed(structType: StructType, vals: Value[]) {
     let _vals = genPtrArray(vals);
     let sref = LLVM.LLVMConstNamedStruct(structType.ref, _vals, vals.length);
-  }
-}
-
-export class ConstExpr extends Value {
-  /**
-   * Cast a constant value to the provided type
-   */
-  static constBitCast(val: Value, toType: Type) {
-    let cref = LLVM.LLVMConstBitCast(val.ref, toType.ref);
-    return new Value(cref);
   }
 }
 
