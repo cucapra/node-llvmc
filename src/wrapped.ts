@@ -210,6 +210,14 @@ export class Builder extends Ref implements Freeable {
    }
 
    /**
+    * Generate element pointer for structs
+    */
+   buildStructGEP(value: Value, idx: number, name: string) {
+      let vref = LLVM.LLVMBuildStructGEP(this.ref, value.ref, idx, name);
+      return new Value(vref);
+   }
+
+   /**
     * Build cast of signed int to floating point
     */
    buildSIToFP(val: Value, destType: Type, name: string): Value {
@@ -518,22 +526,9 @@ export class ConstFloat extends Value {
 }
 
 /**
- * Composite Constant
- */
-export class ConstComposite extends Value {
-  /**
-   * Get an element at specified index as a constant. 
-   */
-  getElementAt(index: number): Value {
-    let vref = LLVM.LLVMGetElementAsConstant(this.ref, index);
-    return new Value(index);
-  }
-}
-
-/**
  * String constant
  */
-export class ConstString extends ConstComposite {
+export class ConstString extends Value {
   /**
    * Create a ConstantDataSequential with string content in the provided context
    */
@@ -554,7 +549,7 @@ export class ConstString extends ConstComposite {
 /**
  * Struct constant
  */
-export class ConstStruct extends ConstComposite {
+export class ConstStruct extends Value {
   /**
    * Create a ConstantStruct in the global Context. 
    */
