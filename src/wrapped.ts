@@ -9,18 +9,9 @@
 
 import { LLVM, PointerArray } from './llvmc';
 
-/**
- * Convert a normal JavaScript Ref array to a PointerArray
- */
-function genPtrArray(array: Ref[]) {
-  let ptrArray = new PointerArray(array.length);
-  let i = 0;
-  for (let elem of array) {
-    ptrArray[i] = array[i].ref;
-    ++i;
-  }
-  return ptrArray
-}
+////////////////////////////////////////////////////////
+// Base Types & Interfaces
+////////////////////////////////////////////////////////
 
 /**
  * A base class for our wrapper classes that abstract an `LLVM*Ref` type.
@@ -40,6 +31,27 @@ export interface Freeable {
   free(): void;
 }
 
+//////////////////////////////////////////////////////////
+// Utility functions
+//////////////////////////////////////////////////////////
+
+/**
+ * Convert a normal JavaScript Ref array to a PointerArray
+ */
+function genPtrArray(array: Ref[]) {
+  let ptrArray = new PointerArray(array.length);
+  let i = 0;
+  for (let elem of array) {
+    ptrArray[i] = array[i].ref;
+    ++i;
+  }
+  return ptrArray
+}
+
+//////////////////////////////////////////////////////////
+// Context
+//////////////////////////////////////////////////////////
+
 /**
  * A class for the LLVM Context module
  */
@@ -47,7 +59,7 @@ export interface Freeable {
    /**
     * Create new context
     */
-   static create() {
+   static create(): Context {
      let cref = LLVM.LLVMContextCreate();
      return new Context(cref);
    }
@@ -55,20 +67,21 @@ export interface Freeable {
    /**
     * Retrieve global context
     */
-   static getGlobal() {
+   static getGlobal(): Context {
      let cref = LLVM.LLVMGetGlobalContext();
      return new Context(cref);
    }
  }
 
+//////////////////////////////////////////////////////////
+// Module
+//////////////////////////////////////////////////////////
+
 /**
  * Represents an LLVM module: specifically, and underlying `LLVMModuleRef`.
  */
 export class Module extends Ref implements Freeable {
-  /**
-   * Create a new module.
-   */
-  static create(name: String) {
+  static create(name: String): Module {
     let modref = LLVM.LLVMModuleCreateWithName(name);
     return new Module(modref);
   }
@@ -106,12 +119,302 @@ export class Module extends Ref implements Freeable {
   /**
    * Free the memory for this module.
    */
-  free() {
+  free(): void {
     LLVM.LLVMDisposeModule(this.ref);
   }
 }
 
+//////////////////////////////////////////////////////////
+// Types
+//////////////////////////////////////////////////////////
 
+/**
+ * An LLVM type; wraps `LLVMTypeRef`.
+ */
+export class Type extends Ref {
+  /**
+   * Get the i1 type.
+   */
+  static int1(): Type {
+    return new Type(LLVM.LLVMInt1Type());
+  }
+
+  /**
+   * Get the i8 type.
+   */
+  static int8(): Type {
+    return new Type(LLVM.LLVMInt8Type());
+  }
+
+  /**
+   * Get the i16 type.
+   */
+  static int16(): Type {
+    return new Type(LLVM.LLVMInt16Type());
+  }
+
+  /**
+   * Get the i32 type.
+   */
+  static int32(): Type {
+    return new Type(LLVM.LLVMInt32Type());
+  }
+
+  /**
+   * Get the i64 type.
+   */
+  static int64(): Type {
+    return new Type(LLVM.LLVMInt64Type());
+  }
+
+  /**
+   * Get the i128 type.
+   */
+  static int128(): Type {
+    return new Type(LLVM.LLVMInt128Type());
+  }
+
+  /**
+   * Get a float type
+   */
+   static float(): Type {
+     return new Type(LLVM.LLVMFloatType());
+   }
+
+   /**
+    * Get a double type
+    */
+    static double(): Type {
+      return new Type(LLVM.LLVMDoubleType());
+    }
+
+    /**
+     * Get void type
+     */
+    static _void(): Type {
+      return new Type(LLVM.LLVMVoidType());
+    }
+}
+
+/**
+ * Wraps function type
+ */
+export class FunctionType extends Type {
+  static create(ret: Type, params: Type[], isVarArg = false): FunctionType {
+    // Construct the function type.
+    let ftref = LLVM.LLVMFunctionType(ret.ref, genPtrArray(params), params.length, isVarArg);
+    return new FunctionType(ftref);
+  }
+}
+
+/**
+ * Wraps structure type
+ */
+export class StructType extends Type {
+  static create(elementTypes: Type[], packed: boolean): StructType {
+    let _elementTypes = genPtrArray(elementTypes);
+    let sref = LLVM.LLVMStructType(_elementTypes, elementTypes.length, packed);
+    return new StructType(sref);
+  }
+
+  /**
+   * Get number of elems in struct
+   */
+  numStructElements(): number {
+    return LLVM.LLVMCountStructElementTypes(this.ref);
+  }
+
+  /**
+   * Get type of element at provided index
+   */
+  getTypeAt(index: number): Type {
+    let tref = LLVM.LLVMStructGetTypeAtIndex(this.ref, index);
+    return new Type(tref);
+  }
+
+  /**
+   * Iterate over the types in the param.
+   */
+  *types() {
+    let count = this.numStructElements();
+    for (let i = 0; i < count; ++i) {
+      yield this.getTypeAt(i);
+    }
+}
+
+/**
+ * Sequential Type
+ */
+export class SequentialType extends Type { }
+
+/**
+ * Wraps pointer type
+ */
+export class PointerType extends SequentialType {
+  static create(type: Type, addressSpace: number): PointerType {
+    let pref = LLVM.LLVMPointerType(type.ref, addressSpace);
+    return new PointerType(pref);
+  }
+}
+
+//////////////////////////////////////////////////////////
+// Values
+//////////////////////////////////////////////////////////
+
+/**
+ * Wraps *any* LLVM value via an `LLVMValueRef`.
+ */
+export class Value extends Ref {
+  /**
+   * Get the value's name.
+   */
+  getName(): string {
+    return LLVM.LLVMGetValueName(this.ref);
+  }
+
+  /**
+   * Set the value's name.
+   */
+  setName(name: string): void {
+    LLVM.LLVMSetValueName(this.ref, name);
+  }
+}
+
+/**
+ * Constant value
+ */
+export class Constant extends Value { }
+
+/**
+ * Represents an LLVM function, wrapping an `LLVMValueRef` that points to a
+ * function.
+ */
+export class Function extends Constant {
+  /**
+   * Add a new basic block to this function.
+   */
+  appendBasicBlock(name: string): BasicBlock {
+    let bbref = LLVM.LLVMAppendBasicBlock(this.ref, "entry");
+    return new BasicBlock(bbref);
+  }
+
+  /**
+   * Return function's entry block
+   */
+  getEntryBlock(): BasicBlock {
+    let bbref = LLVM.LLVMGetEntryBasicBlock(this.ref);
+    return new BasicBlock(bbref);
+  }
+
+  /**
+   * Get number of parameters to the function.
+   */
+  countParams(): number {
+    return LLVM.LLVMCountParams(this.ref);
+  }
+
+  /**
+   * Get function parameter at the specified index.
+   */
+  getParam(idx: number): Value {
+    return new Value(LLVM.LLVMGetParam(this.ref, idx));
+  }
+
+  /**
+   * Iterate over the parameters in the function.
+   */
+  *params() {
+    let count = this.countParams();
+    for (let i = 0; i < count; ++i) {
+      yield this.getParam(i);
+    }
+  }
+
+  /**
+   * Delete the function from its containing module.
+   */
+  deleteFromParent(): void {
+    LLVM.LLVMDeleteFunction(this.ref);
+  }
+}
+
+/**
+ * Scalar constant
+ */
+export class ConstScalar extends Constant { }
+
+/**
+ * Integer constant
+ */
+export class ConstInt extends ConstScalar {
+  static create(value: number, type: Type): ConstInt {
+    let vref = LLVM.LLVMConstInt(type.ref, value, false);
+    return new ConstInt(vref);
+  }
+}
+
+/**
+ * Float constant
+ */
+export class ConstFloat extends ConstScalar {
+  static create(value: number, type: Type): ConstFloat {
+    let vref = LLVM.LLVMConstReal(type.ref, value);
+    return new ConstFloat(vref);
+  }
+}
+
+/**
+ * Composite scalar
+ */
+export class ConstComposite extends Constant { }
+
+/**
+ * String constant
+ */
+export class ConstString extends ConstComposite {
+  /**
+   * Create a ConstantDataSequential with string content in the provided context
+   */
+  static createInContext(context: Context, value: string, dontNullTerminate: boolean): ConstString {
+    let vref = LLVM.LLVMConstStringInContext(context.ref, value, value.length, dontNullTerminate);
+    return new ConstString(vref);
+  }
+
+  /**
+   * Create a ConstantDataSequential with string content in the global context
+   */
+  static create(value: string, dontNullTerminate: boolean): ConstString {
+    let vref = LLVM.LLVMConstString(value, value.length, dontNullTerminate);
+    return new ConstString(vref);
+  }
+}
+
+/**
+ * Struct constant
+ */
+export class ConstStruct extends ConstComposite {
+  /**
+   * Create a ConstantStruct in the global Context. 
+   */
+  static create(vals: Value[], packed: boolean): ConstStruct {
+    let _vals = genPtrArray(vals);
+    let sref = LLVM.LLVMConstStruct(_vals, vals.length, packed);
+    return new ConstStruct(sref);
+  }
+
+  /**
+   * Create a non-anonymous ConstantStruct from values. 
+   */
+  static createNamed(structType: StructType, vals: Value[]): ConstStruct {
+    let _vals = genPtrArray(vals);
+    let sref = LLVM.LLVMConstNamedStruct(structType.ref, _vals, vals.length);
+    return new ConstStruct(sref)
+  }
+}
+
+//////////////////////////////////////////////////////////
+// Basic Block
+//////////////////////////////////////////////////////////
 
 export class BasicBlock extends Ref {
   /**
@@ -139,18 +442,22 @@ export class BasicBlock extends Ref {
   }
 }
 
+///////////////////////////////////////////////////////
+// Builder
+///////////////////////////////////////////////////////
+
 /**
  * Represents an LLVM IR builder.
  */
 export class Builder extends Ref implements Freeable {
-  /**
-   * Create a new builder.
-   */
   static create(): Builder {
     let bref = LLVM.LLVMCreateBuilder();
     return new Builder(bref);
   }
 
+  /**
+   * Get builder's insert block
+   */
   getInsertBlock(): BasicBlock {
     let bbref = LLVM.LLVMGetInsertBlock(this.ref);
     return new BasicBlock(bbref);
@@ -159,21 +466,21 @@ export class Builder extends Ref implements Freeable {
   /**
    * Position the builder after the provided instruction
    */
-  positionAfter(bb: BasicBlock, instr: Value) {
+  positionAfter(bb: BasicBlock, instr: Value): void {
     LLVM.LLVMPositionBuilder(this.ref, bb.ref, instr.ref);
   }
 
   /**
    * Position the builder before the provided instruction
    */
-  positionBefore(instr: Value) {
+  positionBefore(instr: Value): void {
     LLVM.LLVMPositionBuilderBefore(this.ref, instr.ref);
   }
 
   /**
    * Position the builder's insertion point at the end of the given basic block.
    */
-  positionAtEnd(bb: BasicBlock) {
+  positionAtEnd(bb: BasicBlock): void {
     LLVM.LLVMPositionBuilderAtEnd(this.ref, bb.ref);
   }
 
@@ -183,7 +490,7 @@ export class Builder extends Ref implements Freeable {
    buildCall(func: Value, args: Value[], name: string): Value {
      let vref = LLVM.LLVMBuildCall(this.ref, func.ref, genPtrArray(args), args.length, name);
      return new Value(vref);
-   }
+  }
 
    /**
     * Create alloca
@@ -191,7 +498,7 @@ export class Builder extends Ref implements Freeable {
    buildAlloca(type: Type, name: string): Value {
      let vref = LLVM.LLVMBuildAlloca(this.ref, type.ref, name);
      return new Value(vref);
-   }
+  }
 
    /**
     * Obtain value pointed to by ptr
@@ -199,7 +506,7 @@ export class Builder extends Ref implements Freeable {
    buildLoad(ptr: Value, name: string): Value {
      let vref = LLVM.LLVMBuildLoad(this.ref, ptr.ref, name);
      return new Value(vref);
-   }
+  }
 
    /**
     * Store value in ptr
@@ -207,15 +514,15 @@ export class Builder extends Ref implements Freeable {
    buildStore(value: Value, ptr: Value): Value {
      let vref = LLVM.LLVMBuildStore(this.ref, value.ref, ptr.ref);
      return new Value(vref);
-   }
+  }
 
    /**
     * Generate element pointer for structs
     */
-   buildStructGEP(value: Value, idx: number, name: string) {
+   buildStructGEP(value: Value, idx: number, name: string): Value {
       let vref = LLVM.LLVMBuildStructGEP(this.ref, value.ref, idx, name);
       return new Value(vref);
-   }
+  }
 
    /**
     * Build cast of signed int to floating point
@@ -223,7 +530,7 @@ export class Builder extends Ref implements Freeable {
    buildSIToFP(val: Value, destType: Type, name: string): Value {
      let vref = LLVM.LLVMBuildSIToFP(this.ref, val.ref, destType.ref, name);
      return new Value(vref);
-   }
+  }
 
    /**
     * Build bit cast
@@ -231,7 +538,7 @@ export class Builder extends Ref implements Freeable {
    buildBitCast(val: Value, destType: Type, name: string): Value {
      let vref = LLVM.LLVMBuildBitCast(this.ref, val.ref, destType.ref, name);
      return new Value(vref);
-   }
+  }
 
   /**
    * Build an integer addition instruction.
@@ -300,271 +607,15 @@ export class Builder extends Ref implements Freeable {
   /**
    * Build a return instruction.
    */
-  ret(arg: Value): any {
+  ret(arg: Value): Value {
     return LLVM.LLVMBuildRet(this.ref, arg.ref);
   }
 
   /**
    * Free the memory for this builder.
    */
-  free() {
+  free(): void {
     LLVM.LLVMDisposeBuilder(this.ref);
-  }
-}
-
-/**
- * An LLVM type; wraps `LLVMTypeRef`.
- */
-export class Type extends Ref {
-  /**
-   * Get the i1 type.
-   */
-  static int1(): Type {
-    return new Type(LLVM.LLVMInt1Type());
-  }
-
-  /**
-   * Get the i8 type.
-   */
-  static int8(): Type {
-    return new Type(LLVM.LLVMInt8Type());
-  }
-
-  /**
-   * Get the i16 type.
-   */
-  static int16(): Type {
-    return new Type(LLVM.LLVMInt16Type());
-  }
-
-  /**
-   * Get the i32 type.
-   */
-  static int32(): Type {
-    return new Type(LLVM.LLVMInt32Type());
-  }
-
-  /**
-   * Get the i64 type.
-   */
-  static int64(): Type {
-    return new Type(LLVM.LLVMInt64Type());
-  }
-
-  /**
-   * Get the i128 type.
-   */
-  static int128(): Type {
-    return new Type(LLVM.LLVMInt128Type());
-  }
-
-  /**
-   * Get a float type
-   */
-   static float():Type {
-     return new Type(LLVM.LLVMFloatType());
-   }
-
-   /**
-    * Get a double type
-    */
-    static double():Type {
-      return new Type(LLVM.LLVMDoubleType());
-    }
-
-    static _void():Type {
-      return new Type(LLVM.LLVMVoidType());
-    }
-}
-
-/**
- * Wraps a function type: an `LLVMFunctionTypeRef`.
- */
-export class FunctionType extends Ref {
-  static create(ret: Type, params: Type[], isVarArg = false) {
-    // Construct the function type.
-    let ftref = LLVM.LLVMFunctionType(ret.ref, genPtrArray(params), params.length, isVarArg);
-    return new FunctionType(ftref);
-  }
-}
-
-/**
- * Pointer type
- */
-export class PointerType extends Type {
-  /**
-   * Create an llvm pointer type
-   */
-  static create(type: Type, addressSpace: number) {
-    let pref = LLVM.LLVMPointerType(type.ref, addressSpace);
-    return new PointerType(pref);
-  }
-}
-
-/**
- * Wraps around StructType
- */
-export class StructType extends Type {
-  /**
-   * Construct StructType
-   */
-  static create(elementTypes: Type[], packed: boolean): StructType {
-    let _elementTypes = genPtrArray(elementTypes);
-    let sref = LLVM.LLVMStructType(_elementTypes, elementTypes.length, packed);
-    return new StructType(sref);
-  }
-
-  /**
-   * Get number of elems in struct
-   */
-  numStructElements(): number {
-    return LLVM.LLVMCountStructElementTypes(this.ref);
-  }
-
-  /**
-   * Get type of element at provided index
-   */
-  getTypeAt(index: number): Type {
-    let tref = LLVM.LLVMStructGetTypeAtIndex(this.ref, index);
-    return new Type(tref);
-  }
-}
-
-/**
- * Wraps *any* LLVM value via an `LLVMValueRef`.
- */
-export class Value extends Ref {
-  /**
-   * Get the value's name.
-   */
-  getName(): string {
-    return LLVM.LLVMGetValueName(this.ref);
-  }
-
-  /**
-   * Set the value's name.
-   */
-  setName(name: string): void {
-    LLVM.LLVMSetValueName(this.ref, name);
-  }
-}
-
-/**
- * Represents an LLVM function, wrapping an `LLVMValueRef` that points to a
- * function.
- */
-export class Function extends Value {
-  /**
-   * Add a new basic block to this function.
-   */
-  appendBasicBlock(name: string): BasicBlock {
-    let bbref = LLVM.LLVMAppendBasicBlock(this.ref, "entry");
-    return new BasicBlock(bbref);
-  }
-
-  getEntryBlock(): BasicBlock {
-    let bbref = LLVM.LLVMGetEntryBasicBlock(this.ref);
-    return new BasicBlock(bbref);
-  }
-
-  /**
-   * Get number of parameters to the function.
-   */
-  countParams(): number {
-    return LLVM.LLVMCountParams(this.ref);
-  }
-
-  /**
-   * Get function parameter at the specified index.
-   */
-  getParam(idx: number): Value {
-    return new Value(LLVM.LLVMGetParam(this.ref, idx));
-  }
-
-  /**
-   * Iterate over the parameters in the function.
-   */
-  *params() {
-    let count = this.countParams();
-    for (let i = 0; i < count; ++i) {
-      yield this.getParam(i);
-    }
-  }
-
-  /**
-   * Delete the function from its containing module.
-   */
-  deleteFromParent(): void {
-    LLVM.LLVMDeleteFunction(this.ref);
-  }
-}
-
-/**
- * Integer constant
- */
-export class ConstInt extends Value {
-  /**
-   * Build an integer constant
-   */
-  static create(value: number, type: Type): ConstInt {
-    let vref = LLVM.LLVMConstInt(type.ref, value, false);
-    return new ConstInt(vref);
-  }
-}
-
-/**
- * Float constant
- */
-export class ConstFloat extends Value {
-  /**
-   * Build a float constant 
-   */
-  static create(value: number, type: Type): ConstFloat {
-    let vref = LLVM.LLVMConstReal(type.ref, value);
-    return new ConstFloat(vref);
-  }
-}
-
-/**
- * String constant
- */
-export class ConstString extends Value {
-  /**
-   * Create a ConstantDataSequential with string content in the provided context
-   */
-  static createInContext(context: Context, value: string, dontNullTerminate: boolean): ConstString {
-    let vref = LLVM.LLVMConstStringInContext(context.ref, value, value.length, dontNullTerminate);
-    return new ConstString(vref);
-  }
-
-  /**
-   * Create a ConstantDataSequential with string content in the global context
-   */
-  static create(value: string, dontNullTerminate: boolean): ConstString {
-    let vref = LLVM.LLVMConstString(value, value.length, dontNullTerminate);
-    return new ConstString(vref);
-  }
-}
-
-/**
- * Struct constant
- */
-export class ConstStruct extends Value {
-  /**
-   * Create a ConstantStruct in the global Context. 
-   */
-  static create(vals: Value[], packed: boolean) {
-    let _vals = genPtrArray(vals);
-    let sref = LLVM.LLVMConstStruct(_vals, vals.length, packed);
-    return new ConstStruct(sref);
-  }
-
-  /**
-   * Create a non-anonymous ConstantStruct from values. 
-   */
-  static createNamed(structType: StructType, vals: Value[]) {
-    let _vals = genPtrArray(vals);
-    let sref = LLVM.LLVMConstNamedStruct(structType.ref, _vals, vals.length);
   }
 }
 
