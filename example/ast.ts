@@ -42,7 +42,7 @@ export class NumberExprAST implements ExprAST {
   public constructor(val: number) {this.val = val;}
 
   public codegen(context: Context) : llvmc.Value {
-    return llvmc.ConstFloat.create(this.val, llvmc.Type.float());
+    return llvmc.ConstFloat.create(this.val, llvmc.FloatType.float());
   }
 };
 
@@ -134,8 +134,8 @@ export class PrototypeAST implements ASTNode {
     // Make the function type:  double(double,double) etc.
     let floats: llvmc.Type[] = [];
     for (let i = 0; i < this.args.length; i++)
-      floats.push(llvmc.Type.float());
-      let ft: llvmc.FunctionType = llvmc.FunctionType.create(llvmc.Type.float(), floats, false);
+      floats.push(llvmc.FloatType.float());
+      let ft: llvmc.FunctionType = llvmc.FunctionType.create(llvmc.FloatType.float(), floats, false);
 
       let func: llvmc.Function = context.mod.addFunction(this.name, ft);
 

@@ -16,7 +16,7 @@ import { LLVM, PointerArray } from './llvmc';
 /**
  * A base class for our wrapper classes that abstract an `LLVM*Ref` type.
  */
-export class Ref {
+export abstract class Ref {
   /**
    * Create a new wrapepr for an underlying `LLVM*Ref` value.
    */
@@ -56,9 +56,6 @@ function genPtrArray(array: Ref[]) {
  * A class for the LLVM Context module
  */
  export class Context extends Ref {
-   /**
-    * Create new context
-    */
    static create(): Context {
      let cref = LLVM.LLVMContextCreate();
      return new Context(cref);
@@ -131,68 +128,80 @@ export class Module extends Ref implements Freeable {
 /**
  * An LLVM type; wraps `LLVMTypeRef`.
  */
-export class Type extends Ref {
+export class Type extends Ref { }
+
+/**
+ * Void type
+ */
+export class VoidType extends Type {
+  static create(): VoidType {
+    return new VoidType(LLVM.LLVMVoidType());
+  }
+}
+
+/**
+ * Integer types
+ */
+export class IntType extends Type {
   /**
    * Get the i1 type.
    */
-  static int1(): Type {
-    return new Type(LLVM.LLVMInt1Type());
+  static int1(): IntType {
+    return new IntType(LLVM.LLVMInt1Type());
   }
 
   /**
    * Get the i8 type.
    */
-  static int8(): Type {
-    return new Type(LLVM.LLVMInt8Type());
+  static int8(): IntType {
+    return new IntType(LLVM.LLVMInt8Type());
   }
 
   /**
    * Get the i16 type.
    */
-  static int16(): Type {
-    return new Type(LLVM.LLVMInt16Type());
+  static int16(): IntType {
+    return new IntType(LLVM.LLVMInt16Type());
   }
 
   /**
    * Get the i32 type.
    */
-  static int32(): Type {
-    return new Type(LLVM.LLVMInt32Type());
+  static int32(): IntType {
+    return new IntType(LLVM.LLVMInt32Type());
   }
 
   /**
    * Get the i64 type.
    */
-  static int64(): Type {
-    return new Type(LLVM.LLVMInt64Type());
+  static int64(): IntType {
+    return new IntType(LLVM.LLVMInt64Type());
   }
 
   /**
    * Get the i128 type.
    */
-  static int128(): Type {
-    return new Type(LLVM.LLVMInt128Type());
+  static int128(): IntType {
+    return new IntType(LLVM.LLVMInt128Type());
   }
+}
 
+/**
+ * Floating point types
+ */
+export class FloatType extends Type {
   /**
    * Get a float type
    */
-   static float(): Type {
-     return new Type(LLVM.LLVMFloatType());
+   static float(): FloatType {
+     return new FloatType(LLVM.LLVMFloatType());
    }
 
    /**
     * Get a double type
     */
-    static double(): Type {
-      return new Type(LLVM.LLVMDoubleType());
-    }
-
-    /**
-     * Get void type
-     */
-    static _void(): Type {
-      return new Type(LLVM.LLVMVoidType());
+    static double(): FloatType {
+      return new FloatType(LLVM.LLVMDoubleType());
     }
 }
 
@@ -240,6 +249,7 @@ export class StructType extends Type {
     for (let i = 0; i < count; ++i) {
       yield this.getTypeAt(i);
     }
+  }
 }
 
 /**
