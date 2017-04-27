@@ -915,6 +915,31 @@ export const LLVM = ffi.Library('libLLVM', {
 'LLVMOffsetOfElement':                ['ulonglong', [voidp, voidp, 'uint']],
 'LLVMDisposeTargetData':              [void_, [voidp]],
 */
+
+  // Target machine
+  // http://llvm.org/docs/doxygen/html/c_2TargetMachine_8h.html#a873fa19524cffa775e6d8d45ffe95dad
+  // contains typedefs, enums
+  'LLVMGetFirstTarget':                   [voidp, []],
+  'LLVMGetNextTarget':                    [voidp, [voidp]],
+  'LLVMGetTargetFromName':                [voidp, ['string']],
+  'LLVMGetTargetFromTriple':              ['bool', ['string', voidpp, stringp]],
+  'LLVMGetTargetName':                    ['string', [voidp]],
+  'LLVMGetTargetDescription':             ['string', [voidp]], 
+  'LLVMTargetHasJIT':                     ['bool', [voidp]],
+  'LLVMTargetHasTargetMachine':           ['bool', [voidp]],
+  'LLVMTargetHasAsmBackend':              ['bool', [voidp]],
+  'LLVMCreateTargetMachine':              [voidp, [voidp, 'string', 'string', 'string', 'int', 'int', 'int']],       
+  'LLVMDisposeTargetMachine':             [void_, [voidp]], 
+  'LLVMGetTargetMachineTarget':           [voidp, [voidp]],
+  'LLVMGetTargetMachineTriple':           ['string', [voidp]],
+  'LLVMGetTargetMachineCPU':              ['string', [voidp]],
+  'LLVMGetTargetMachineFeatureString':    ['string', [voidp]],
+  'LLVMGetTargetMachineData':             [voidp, [voidp]],
+  'LLVMSetTargetMachineAsmVerbosity':     [void_, [voidp, 'bool']],
+  'LLVMTargetMachineEmitToFile':          ['bool', [voidp, voidp, 'string', 'int', stringp]], 
+  'LLVMTargetMachineEmitToMemoryBuffer':  ['bool', [voidp, voidp, 'int', stringp, voidpp]], 
+  'LLVMGetDefaultTargetTriple':           ['string', []],
+  'LLVMAddAnalysisPasses':                [void_, [voidp, voidp]],
 });
 
 
