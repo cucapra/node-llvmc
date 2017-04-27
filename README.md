@@ -9,8 +9,8 @@ Getting Started
 ### System Requirements 
 * LLVM Distribution with **libLLVM.so**
 * Node.js
-* npm
 * TypeScript
+* npm (recommended)
 
 ### Set up
 When setting up LLVM, make sure your installation comes with libLLVM.so. 
