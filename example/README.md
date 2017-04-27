@@ -98,13 +98,13 @@ The lexer.ts file contains the tokens and lexer that the calculator uses. The pa
 ### ast.ts
 This file constains the Abstract Syntax Tree. The majority of our use of node-llvmc is located here, so to see examples of node-llvmc, this is probably the best place to look. 
 
-To keep our example similar to the [LLVM Kaleidoscope Tutorial], we also do not use the visitor pattern for code generation. Instead, each AST Node contains a `codegen()` method which generates code through node-llvmc. 
+Like the [LLVM Kaleidoscope Tutorial], each AST Node contains a `codegen()` method which generates code through node-llvmc. 
 
-The main difference between our version and the Kaleidoscope tutorial is that some of our LLVM function calls are a bit different than theirs (i.e. different names or different parameters); however, they are similar enough that the reader shouldn't have too much trouble rectifying these minor differences.
+Our node-llvmc LLVM function calls are sometimes a bit different than the C++ LLVM function calls in the Kaleidoscope tutorials (i.e. different names or different parameters); however, they are similar enough that the reader shouldn't have too much trouble rectifying the minor differences.
 
 ### calculator.ts
 This is the driver for the calculator. 
 
-It is also where the `Context` class is defined (which you will see being quite often inside of ast.ts). A `Context` object is merely a wrapper around the following: an node-llvmc `Module` object, an node-llvmc `Builder` object, and map that maps identifiers to node-llvmc `Value` object. See wrapped.ts for more information on the aforementioned node-llvmc objects.
+It is also where the `Context` class is defined (which you will see being used a lot inside of ast.ts). A `Context` object is merely a wrapper around an node-llvmc `Module` object, an node-llvmc `Builder` object, and a map that maps identifiers to node-llvmc `Value` objects. See wrapped.ts for more information on the aforementioned node-llvmc objects.
 
 [LLVM Kaleidoscope Tutorial]: http://llvm.org/docs/tutorial/LangImpl01.html
