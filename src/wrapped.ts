@@ -84,6 +84,13 @@ export class Module extends Ref implements Freeable {
   }
 
   /**
+   * Set the target triple for the module
+   */
+  setTarget(targetTriple: string): void {
+    LLVM.LLVMSetTarget(this.ref, targetTriple);
+  }
+
+  /**
    * Dump the IR to a file on disk.
    */
   writeBitcodeToFile(filename: string): number {
