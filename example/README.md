@@ -3,7 +3,7 @@ Calculator Example
 
 This is an example usage of node-llvmc based on the first three chapters of the [LLVM Kaleidoscope Tutorial]. 
 
-Our implementation is very similar to theirs minus trivial differences (e.g. they support comments, but we do not; wecheck whether numbers have too many decimal points, but they do not). As such, taking a look at the tutorial linked above should give you a good idea of what the calculator can do and how it works. We will give a brief overview here as well though.
+Our implementation is very similar to theirs minus trivial differences (e.g. they support comments, but we do not; we check whether numbers have too many decimal points, but they do not). As such, taking a look at the tutorial linked above should give you a good idea of what the calculator can do and how it works. We will give a brief overview here as well though.
 
 Usage
 -----
@@ -13,7 +13,7 @@ If you followed the node-llvmc's set-up instructions, you should be able to run 
 node example/calculator.js
 ```
 
-You should now be prompted to enter commands. Our calculator currently supports supports arithmetic operation (except division), function definitions, function calls, and externs. Below we give some example programs. Note that after each command, the calculator will print the entire current LLVM IR you've created thus far.
+You should now be prompted to enter commands. Our calculator currently supports supports arithmetic operations, function definitions, function calls, and externs. Below we give some example programs. Note that after each command, the calculator will print the entire current LLVM IR you've created thus far.
 
 To exit the calculator, just type `quit` into the prompt.
 
