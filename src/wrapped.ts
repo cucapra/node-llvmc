@@ -636,4 +636,13 @@ export class Builder extends Ref implements Freeable {
   }
 }
 
+///////////////////////////////////////////////////////
+// Target Machine
+///////////////////////////////////////////////////////
+export class TargetMachine extends Ref {
+  static getDefaultTargetTriple(): string {
+    return LLVM.LLVMGetDefaultTargetTriple();
+  }
+}
+
 
