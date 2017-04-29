@@ -131,16 +131,15 @@ export class Module extends Ref implements Freeable {
    * TODO: not complete yet (replica of C++ Module.getOrInsertFunction)
    */
   getOrInsertFunction(name: string, type: FunctionType): Function {
-    let funcref = this.getFunction(name);
-    if (funcref.isNull()) {
-      funcref = this.addFunction(name, type);
+    let func = this.getFunction(name);
+    if (func.ref.isNull()) {
       // TODO: do some stuff with attributes?
-      return new Function(funcref);
+      return this.addFunction(name, type);
     } 
 
     // TODO: check if typing is correct, if it isn't do a cast
 
-    return new Function(funcref);
+    return func;
   }
 
   /**
