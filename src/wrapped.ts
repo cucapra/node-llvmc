@@ -91,6 +91,13 @@ export class Module extends Ref implements Freeable {
   }
 
   /**
+   * Set data layout for module
+   */
+  setDataLayout(triple: string): void {
+    LLVM.LLVMSetTarget(this.ref, triple);
+  }
+
+  /**
    * Dump the IR to a file on disk.
    */
   writeBitcodeToFile(filename: string): number {
