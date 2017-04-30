@@ -694,6 +694,10 @@ export class Target extends Ref {
       throw "error retrieving target";
     return new Target(target_ptr.deref());
   }
+
+  toString(): string {
+    return LLVM.LLVMCopyStringRepOfTargetData(this.ref);
+  }
 }
 
 export function initX86Target(): void {
