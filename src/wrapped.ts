@@ -679,6 +679,11 @@ export class TargetMachine extends Ref {
   static getDefaultTargetTriple(): string {
     return LLVM.LLVMGetDefaultTargetTriple();
   }
+
+  getTargetMachineTarget(): Target {
+    let tref = LLVM.LLVMGetTargetMachineTarget(this.ref);
+    return new Target(tref);
+  }
 }
 
 export class Target extends Ref {
