@@ -685,7 +685,7 @@ export class Target extends Ref {
   static getFromTriple(triple: string): Target {
     let error_ptr = rf.alloc('string');
     let target_ptr = rf.alloc(voidp);
-    if (!LLVM.LLVMGetTargetFromTriple(triple, target_ptr, error_ptr))
+    if (LLVM.LLVMGetTargetFromTriple(triple, target_ptr, error_ptr))
       throw "error retrieving target";
     return new Target(target_ptr.deref());
   }
