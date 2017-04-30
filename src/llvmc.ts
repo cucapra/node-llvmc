@@ -12,14 +12,14 @@ import * as ArrayType from 'ref-array'
 import * as Struct from 'ref-struct';
 
 // Some useful types.
-let boolp = ref.refType('bool');
-let uintp = ref.refType('uint');
-let uint8p = ref.refType('uint8');
-let size_tp = ref.refType('size_t');
-let stringp = ref.refType('string');
-let voidp = ref.refType(ref.types.void);  // Pointer to an opaque LLVM value.
-let voidpp = ref.refType(voidp);  // void**, used for arrays and out-parameters.
-let void_ = ref.types.void;
+export let boolp = ref.refType('bool');
+export let uintp = ref.refType('uint');
+export let uint8p = ref.refType('uint8');
+export let size_tp = ref.refType('size_t');
+export let stringp = ref.refType('string');
+export let voidp = ref.refType(ref.types.void);  // Pointer to an opaque LLVM value.
+export let voidpp = ref.refType(voidp);  // void**, used for arrays and out-parameters.
+export let void_ = ref.types.void;
 
 /**
  * A constructor for arrays of pointers. Use this as `new PointerArray(N)` to

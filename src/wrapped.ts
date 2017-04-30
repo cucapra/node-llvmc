@@ -7,7 +7,8 @@
  * TypeScript class instead of an opaque pointer from the API.
  */
 
-import { LLVM, PointerArray } from './llvmc';
+import { LLVM, PointerArray, voidp } from './llvmc';
+import * as rf from 'ref';
 
 ////////////////////////////////////////////////////////
 // Base Types & Interfaces
@@ -659,11 +660,34 @@ export class Builder extends Ref implements Freeable {
 }
 
 ///////////////////////////////////////////////////////
-// Target Machine
+// Targets
 ///////////////////////////////////////////////////////
 export class TargetMachine extends Ref {
+    static create(
+    target: Target, 
+    triple: string, 
+    cpu: string = "", 
+    features: string = "", 
+    opt_level: number = 2, 
+    reloc_mode: number = 0, 
+    code_model: number = 0) 
+  {
+    let tmref = LLVM.LLVMCreateTargetMachine(target.ref, triple, cpu, features, opt_level, reloc_mode, code_model);
+    return new TargetMachine(tmref);
+  }
+
   static getDefaultTargetTriple(): string {
     return LLVM.LLVMGetDefaultTargetTriple();
+  }
+}
+
+export class Target extends Ref {
+  static getFromTriple(triple: string): Target {
+    let error_ptr = rf.alloc('string');
+    let target_ptr = rf.alloc(voidp);
+    if (!LLVM.LLVMGetTargetFromTriple(triple, target_ptr, error_ptr))
+      throw "error retrieving target";
+    return new Target(target_ptr.deref());
   }
 }
 
