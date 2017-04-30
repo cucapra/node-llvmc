@@ -691,4 +691,10 @@ export class Target extends Ref {
   }
 }
 
+export function initX86Target(): void {
+  LLVM.LLVMInitializeX86TargetInfo();
+  LLVM.LLVMInitializeX86Target();
+  LLVM.LLVMInitializeX86TargetMC();
+}
+
 
