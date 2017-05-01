@@ -95,7 +95,7 @@ export class Module extends Ref implements Freeable {
    * Set data layout for module
    */
   setDataLayout(triple: string): void {
-    LLVM.LLVMSetTarget(this.ref, triple);
+    LLVM.LLVMSetDataLayout(this.ref, triple);
   }
 
   /**
@@ -684,6 +684,17 @@ export class TargetMachine extends Ref {
     let tref = LLVM.LLVMGetTargetMachineTarget(this.ref);
     return new Target(tref);
   }
+
+  getTargetMachineData(): TargetData {
+    let tdref = LLVM.LLVMGetTargetMachineData(this.ref);
+    return new TargetData(tdref);
+  }
+}
+
+export class TargetData extends Ref {
+  toString(): string {
+    return LLVM.LLVMCopyStringRepOfTargetData(this.ref);
+  }
 }
 
 export class Target extends Ref {
@@ -693,10 +704,6 @@ export class Target extends Ref {
     if (LLVM.LLVMGetTargetFromTriple(triple, target_ptr, error_ptr))
       throw "error retrieving target";
     return new Target(target_ptr.deref());
-  }
-
-  toString(): string {
-    return LLVM.LLVMCopyStringRepOfTargetData(this.ref);
   }
 }
 
