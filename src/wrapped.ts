@@ -287,6 +287,13 @@ export class StructType extends Type {
  */
 export class SequentialType extends Type { }
 
+export class ArrayType extends Type {
+  static create(type: Type, count: number): ArrayType {
+    let aref = LLVM.LLVMArrayType(type.ref, count);
+    return new ArrayType(aref);
+  }
+}
+
 /**
  * Wraps pointer type
  */
@@ -449,6 +456,17 @@ export class ConstStruct extends ConstComposite {
     let _vals = genPtrArray(vals);
     let sref = LLVM.LLVMConstNamedStruct(structType.ref, _vals, vals.length);
     return new ConstStruct(sref)
+  }
+}
+
+/**
+ * Array constant
+ */
+export class ConstArray extends ConstComposite {
+  static create(type: Type, vals: Value[]): ConstArray {
+    let _vals = genPtrArray(vals);
+    let aref = LLVM.LLVMConstArray(type.ref, _vals, vals.length);
+    return new ConstArray(aref);
   }
 }
 
