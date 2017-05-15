@@ -484,10 +484,6 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMSetFunctionCallConv':            [void_, [voidp, 'uint']],
   'LLVMGetGC':                          ['string', [voidp]],
   'LLVMSetGC':                          [void_, [voidp, 'string']], 
-  'LLVMAddFunctionAttr':                [void_, [voidp, 'int']], 
-  'LLVMAddTargetDependentFunctionAttr': [void_, [voidp, 'string', 'string']], 
-  'LLVMGetFunctionAttr':                ['int', [voidp]], 
-  'LLVMRemoveFunctionAttr':             [void_, [voidp, 'int']],
 
   // Function Parameters
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueFunctionParameters.html 
@@ -499,9 +495,6 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetLastParam':             [voidp, [voidp]],  
   'LLVMGetNextParam':             [voidp, [voidp]],  
   'LLVMGetPreviousParam':         [voidp, [voidp]],  
-  'LLVMAddAttribute':             [void_, [voidp, 'int']], 
-  'LLVMRemoveAttribute':          [void_, [voidp, 'int']], 
-  'LLVMGetAttribute':             ['int', [voidp]],
   'LLVMSetParamAlignment':        [void_, [voidp, 'uint']],
 
   // Metadata
@@ -557,9 +550,6 @@ export const LLVM = ffi.Library('libLLVM', {
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueInstructionCall.html
   'LLVMSetInstructionCallConv':      [void_, [voidp, 'uint']],
   'LLVMGetInstructionCallConv':      ['uint', [voidp]],
-  'LLVMAddInstrAttribute':           [void_, [voidp, 'uint', 'int']], 
-  'LLVMRemoveInstrAttribute':        [void_, [voidp, 'uint', 'int']],
-  'LLVMSetInstrParamAlignment':      [void_, [voidp, 'uint', 'uint']],
   'LLVMIsTailCall':                  ['bool', [voidp]],
   'LLVMSetTailCall':                 [void_, [voidp, 'bool']],
 
