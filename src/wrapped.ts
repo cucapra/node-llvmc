@@ -733,8 +733,22 @@ export class Target extends Ref {
   /**
    * Get the target's description as a string.
    */
-  toString() {
+  description() {
     return LLVM.LLVMGetTargetDescription(this.ref);
+  }
+
+  /**
+   * Get the target's name as a string.
+   */
+  name() {
+    return LLVM.LLVMGetTargetName(this.ref);
+  }
+
+  /**
+   * Converting the target to a string just gets its name.
+   */
+  toString() {
+    return this.name();
   }
 }
 
