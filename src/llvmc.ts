@@ -923,7 +923,6 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetTargetMachineTriple':           ['string', [voidp]],
   'LLVMGetTargetMachineCPU':              ['string', [voidp]],
   'LLVMGetTargetMachineFeatureString':    ['string', [voidp]],
-  'LLVMGetTargetMachineData':             [voidp, [voidp]],
   'LLVMSetTargetMachineAsmVerbosity':     [void_, [voidp, 'bool']],
   'LLVMTargetMachineEmitToFile':          ['bool', [voidp, voidp, 'string', 'int', stringp]], 
   'LLVMTargetMachineEmitToMemoryBuffer':  ['bool', [voidp, voidp, 'int', stringp, voidpp]], 

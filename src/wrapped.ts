@@ -702,11 +702,6 @@ export class TargetMachine extends Ref {
     let tref = LLVM.LLVMGetTargetMachineTarget(this.ref);
     return new Target(tref);
   }
-
-  getTargetMachineData(): TargetData {
-    let tdref = LLVM.LLVMGetTargetMachineData(this.ref);
-    return new TargetData(tdref);
-  }
 }
 
 export class TargetData extends Ref {
