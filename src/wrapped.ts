@@ -136,7 +136,7 @@ export class Module extends Ref implements Freeable {
     if (func.ref.isNull()) {
       // TODO: do some stuff with attributes?
       return this.addFunction(name, type);
-    } 
+    }
 
     // TODO: check if typing is correct, if it isn't do a cast
 
@@ -441,7 +441,7 @@ export class ConstString extends ConstComposite {
  */
 export class ConstStruct extends ConstComposite {
   /**
-   * Create a ConstantStruct in the global Context. 
+   * Create a ConstantStruct in the global Context.
    */
   static create(vals: Value[], packed: boolean): ConstStruct {
     let _vals = genPtrArray(vals);
@@ -450,7 +450,7 @@ export class ConstStruct extends ConstComposite {
   }
 
   /**
-   * Create a non-anonymous ConstantStruct from values. 
+   * Create a non-anonymous ConstantStruct from values.
    */
   static createNamed(structType: StructType, vals: Value[]): ConstStruct {
     let _vals = genPtrArray(vals);
@@ -682,13 +682,13 @@ export class Builder extends Ref implements Freeable {
 ///////////////////////////////////////////////////////
 export class TargetMachine extends Ref {
     static create(
-    target: Target, 
-    triple: string, 
-    cpu: string = "", 
-    features: string = "", 
-    opt_level: number = 2, 
-    reloc_mode: number = 0, 
-    code_model: number = 0) 
+    target: Target,
+    triple: string,
+    cpu: string = "",
+    features: string = "",
+    opt_level: number = 2,
+    reloc_mode: number = 0,
+    code_model: number = 0)
   {
     let tmref = LLVM.LLVMCreateTargetMachine(target.ref, triple, cpu, features, opt_level, reloc_mode, code_model);
     return new TargetMachine(tmref);
