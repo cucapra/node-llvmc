@@ -680,6 +680,10 @@ export class Builder extends Ref implements Freeable {
 ///////////////////////////////////////////////////////
 // Targets
 ///////////////////////////////////////////////////////
+
+/**
+ * Wraps an LLVMTargetMachineRef.
+ */
 export class TargetMachine extends Ref {
     static create(
     target: Target,
@@ -698,6 +702,9 @@ export class TargetMachine extends Ref {
     return LLVM.LLVMGetDefaultTargetTriple();
   }
 
+  /**
+   * Get the target machine's LLVMTargetRef object.
+   */
   getTargetMachineTarget(): Target {
     let tref = LLVM.LLVMGetTargetMachineTarget(this.ref);
     return new Target(tref);
@@ -710,6 +717,9 @@ export class TargetData extends Ref {
   }
 }
 
+/**
+ * Wraps an LLVMTargetRef.
+ */
 export class Target extends Ref {
   static getFromTriple(triple: string): Target {
     let error_ptr = rf.alloc('string');
@@ -718,6 +728,13 @@ export class Target extends Ref {
       throw "error retrieving target";
     }
     return new Target(rf.deref(target_ptr));
+  }
+
+  /**
+   * Get the target's description as a string.
+   */
+  toString() {
+    return LLVM.LLVMGetTargetDescription(this.ref);
   }
 }
 
