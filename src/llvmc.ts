@@ -928,6 +928,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMTargetMachineEmitToMemoryBuffer':  ['bool', [voidp, voidp, 'int', stringp, voidpp]],
   'LLVMGetDefaultTargetTriple':           ['string', []],
   'LLVMAddAnalysisPasses':                [void_, [voidp, voidp]],
+  'LLVMCreateTargetDataLayout':           [voidp, [voidp]],
 
     // Init
   'LLVMInitializeX86TargetInfo':          [void_, []],

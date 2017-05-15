@@ -685,7 +685,7 @@ export class Builder extends Ref implements Freeable {
  * Wraps an LLVMTargetMachineRef.
  */
 export class TargetMachine extends Ref {
-    static create(
+  static create(
     target: Target,
     triple: string,
     cpu: string = "",
@@ -708,6 +708,15 @@ export class TargetMachine extends Ref {
   getTargetMachineTarget(): Target {
     let tref = LLVM.LLVMGetTargetMachineTarget(this.ref);
     return new Target(tref);
+  }
+
+  /**
+   * Create an LLVMTargetDataRef that represents the target machine's data
+   * layout.
+   */
+  createDataLayout(): TargetData {
+    let tdref = LLVM.LLVMCreateTargetDataLayout(this.ref);
+    return new TargetData(tdref);
   }
 }
 
