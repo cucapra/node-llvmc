@@ -136,7 +136,7 @@ export class Module extends Ref implements Freeable {
     if (func.ref.isNull()) {
       // TODO: do some stuff with attributes?
       return this.addFunction(name, type);
-    } 
+    }
 
     // TODO: check if typing is correct, if it isn't do a cast
 
@@ -449,7 +449,7 @@ export class ConstString extends ConstComposite {
  */
 export class ConstStruct extends ConstComposite {
   /**
-   * Create a ConstantStruct in the global Context. 
+   * Create a ConstantStruct in the global Context.
    */
   static create(vals: Value[], packed: boolean): ConstStruct {
     let _vals = genPtrArray(vals);
@@ -458,7 +458,7 @@ export class ConstStruct extends ConstComposite {
   }
 
   /**
-   * Create a non-anonymous ConstantStruct from values. 
+   * Create a non-anonymous ConstantStruct from values.
    */
   static createNamed(structType: StructType, vals: Value[]): ConstStruct {
     let _vals = genPtrArray(vals);
@@ -696,15 +696,19 @@ export class Builder extends Ref implements Freeable {
 ///////////////////////////////////////////////////////
 // Targets
 ///////////////////////////////////////////////////////
+
+/**
+ * Wraps an LLVMTargetMachineRef.
+ */
 export class TargetMachine extends Ref {
-    static create(
-    target: Target, 
-    triple: string, 
-    cpu: string = "", 
-    features: string = "", 
-    opt_level: number = 2, 
-    reloc_mode: number = 0, 
-    code_model: number = 0) 
+  static create(
+    target: Target,
+    triple: string,
+    cpu: string = "",
+    features: string = "",
+    opt_level: number = 2,
+    reloc_mode: number = 0,
+    code_model: number = 0)
   {
     let tmref = LLVM.LLVMCreateTargetMachine(target.ref, triple, cpu, features, opt_level, reloc_mode, code_model);
     return new TargetMachine(tmref);
@@ -714,13 +718,20 @@ export class TargetMachine extends Ref {
     return LLVM.LLVMGetDefaultTargetTriple();
   }
 
+  /**
+   * Get the target machine's LLVMTargetRef object.
+   */
   getTargetMachineTarget(): Target {
     let tref = LLVM.LLVMGetTargetMachineTarget(this.ref);
     return new Target(tref);
   }
 
-  getTargetMachineData(): TargetData {
-    let tdref = LLVM.LLVMGetTargetMachineData(this.ref);
+  /**
+   * Create an LLVMTargetDataRef that represents the target machine's data
+   * layout.
+   */
+  createDataLayout(): TargetData {
+    let tdref = LLVM.LLVMCreateTargetDataLayout(this.ref);
     return new TargetData(tdref);
   }
 }
@@ -731,13 +742,38 @@ export class TargetData extends Ref {
   }
 }
 
+/**
+ * Wraps an LLVMTargetRef.
+ */
 export class Target extends Ref {
   static getFromTriple(triple: string): Target {
     let error_ptr = rf.alloc('string');
     let target_ptr = rf.alloc(voidp);
-    if (LLVM.LLVMGetTargetFromTriple(triple, target_ptr, error_ptr))
+    if (LLVM.LLVMGetTargetFromTriple(triple, target_ptr, error_ptr)) {
       throw "error retrieving target";
-    return new Target(target_ptr.deref());
+    }
+    return new Target(rf.deref(target_ptr));
+  }
+
+  /**
+   * Get the target's description as a string.
+   */
+  description() {
+    return LLVM.LLVMGetTargetDescription(this.ref);
+  }
+
+  /**
+   * Get the target's name as a string.
+   */
+  name() {
+    return LLVM.LLVMGetTargetName(this.ref);
+  }
+
+  /**
+   * Converting the target to a string just gets its name.
+   */
+  toString() {
+    return this.name();
   }
 }
 
@@ -746,5 +782,3 @@ export function initX86Target(): void {
   LLVM.LLVMInitializeX86Target();
   LLVM.LLVMInitializeX86TargetMC();
 }
-
-

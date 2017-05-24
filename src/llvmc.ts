@@ -2,7 +2,7 @@
  * This module contains the low-level FFI declaration for the LLVM C library.
  * You can call the functions on the `LLVM` object contained here to operate
  * directly on LLVM value references.
- * 
+ *
  * More convenient wrapper classes are found in the `wrapped` module.
  */
 
@@ -32,7 +32,7 @@ export const PointerArray = ArrayType(ref.refType(ref.types.void));
 var LLVMOpInfoSymbol1 = Struct({
   'Present':  'uint64',
   'Name':     'string',
-  'Value':    'uint64', 
+  'Value':    'uint64',
 });
 var LLVMOpInfoSymbol1Ptr = ref.refType(LLVMOpInfoSymbol1);
 
@@ -51,7 +51,7 @@ var LLVMCJITCompilerOptions = Struct({
   'CodeModel':           'int',
   'NoFramePointerElim':  'bool',
   'EnableFastISel':      'bool',
-   'MCJMM':              voidp, 
+   'MCJMM':              voidp,
 });
 var LLVMCJITCompilerOptionsPtr = ref.refType(LLVMCJITCompilerOptions);
 
@@ -99,19 +99,19 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMAddIPConstantPropagationPass':  [void_, [voidp]],
   'LLVMAddPruneEHPass':                [void_, [voidp]],
   'LLVMAddIPSCCPPass':                 [void_, [voidp]],
-  'LLVMAddInternalizePass':            [void_, [voidp, 'uint']], 
+  'LLVMAddInternalizePass':            [void_, [voidp, 'uint']],
   'LLVMAddStripDeadPrototypesPass':    [void_, [voidp]],
   'LLVMAddStripSymbolsPass':           [void_, [voidp]],
 
   // Pass manager builder
   // http://llvm.org/docs/doxygen/html/group__LLVMCTransformsPassManagerBuilder.html
-  'LLVMPassManagerBuilderCreate':                      [voidp, []], 
+  'LLVMPassManagerBuilderCreate':                      [voidp, []],
   'LLVMPassManagerBuilderDispose':                     [void_, [voidp]],
   'LLVMPassManagerBuilderSetOptLevel':                 [void_, [voidp, 'uint']],
   'LLVMPassManagerBuilderSetSizeLevel':                [void_, [voidp, 'uint']],
   'LLVMPassManagerBuilderSetDisableUnitAtATime':       [void_, [voidp, 'bool']],
   'LLVMPassManagerBuilderSetDisableUnrollLoops':       [void_, [voidp, 'bool']],
-  'LLVMPassManagerBuilderSetDisableSimplifyLibCalls':  [void_, [voidp, 'bool']],   
+  'LLVMPassManagerBuilderSetDisableSimplifyLibCalls':  [void_, [voidp, 'bool']],
   'LLVMPassManagerBuilderUseInlinerWithThreshold':     [void_, [voidp, 'uint']],
   'LLVMPassManagerBuilderPopulateFunctionPassManager': [void_, [voidp, voidp]],
   'LLVMPassManagerBuilderPopulateModulePassManager':   [void_, [voidp, voidp]],
@@ -205,7 +205,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetModuleContext':               [voidp, [voidp]],
   'LLVMGetTypeByName':                  [voidp, [voidp, 'string']],
   'LLVMGetNamedMetadataNumOperands':    ['uint', [voidp, 'string']],
-  'LLVMGetNamedMetadataOperands':       [void_, [voidp, 'string', voidpp]], 
+  'LLVMGetNamedMetadataOperands':       [void_, [voidp, 'string', voidpp]],
   'LLVMAddNamedMetadataOperand':        [void_, [voidp, 'string', voidp]],
   'LLVMAddFunction':                    [voidp, [voidp, 'string', voidp]],
   'LLVMGetNamedFunction':               [voidp, [voidp, 'string']],
@@ -217,7 +217,7 @@ export const LLVM = ffi.Library('libLLVM', {
   // Types
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreType.html
   'LLVMGetTypeKind':            ['int', [voidp]],
-  'LLVMTypeIsSized':            ['bool', [voidp]],                                    
+  'LLVMTypeIsSized':            ['bool', [voidp]],
   'LLVMGetTypeContext':         [voidp, [voidp]],
   'LLVMDumpType':               [void_, [voidp]],
   'LLVMPrintTypeToString':      ['string', [voidp]],
@@ -258,7 +258,7 @@ export const LLVM = ffi.Library('libLLVM', {
   // Function types.
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeFunction.html
   'LLVMFunctionType':           [voidp, [voidp, PointerArray, 'uint', 'bool']],
-  'LLVMIsFunctionVarArg':       ['bool', [voidp]],                                      
+  'LLVMIsFunctionVarArg':       ['bool', [voidp]],
   'LLVMGetReturnType':          [voidp, [voidp]],
   'LLVMCountParamTypes':        ['uint', [voidp]],
   'LLVMGetParamTypes':          [void_, [voidp, voidpp]],
@@ -269,12 +269,12 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMStructType':               [voidp, [PointerArray, 'uint', 'bool']],
   'LLVMStructCreateNamed':        [voidp, [voidp, 'string']],
   'LLVMGetStructName':            ['string', [voidp]],
-  'LLVMStructSetBody':            [void_, [voidp, PointerArray, 'uint', 'bool']], 
+  'LLVMStructSetBody':            [void_, [voidp, PointerArray, 'uint', 'bool']],
   'LLVMCountStructElementTypes':  ['uint', [voidp]],
   'LLVMGetStructElementTypes':    [void_, [voidp, voidpp]],
   'LLVMStructGetTypeAtIndex':     [voidp, [voidp, 'uint']],
-  'LLVMIsPackedStruct':           ['bool', [voidp]],                                   
-  'LLVMIsOpaqueStruct':           ['bool', [voidp]],                                   
+  'LLVMIsPackedStruct':           ['bool', [voidp]],
+  'LLVMIsOpaqueStruct':           ['bool', [voidp]],
 
   // Sequential Types
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreTypeSequential.html
@@ -308,8 +308,8 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMDumpValue':              [void_, [voidp]],
   'LLVMPrintValueToString':     ['string', [voidp]],
   'LLVMReplaceAllUsesWith':     [void_, [voidp, voidp]],
-  'LLVMIsConstant':             ['bool', [voidp]],                   
-  'LLVMIsUndef':                ['bool', [voidp]],                   
+  'LLVMIsConstant':             ['bool', [voidp]],
+  'LLVMIsUndef':                ['bool', [voidp]],
   'LLVMIsAMDNode':              [voidp, [voidp]],
   'LLVMIsAMDString':            [voidp, [voidp]],
 
@@ -332,7 +332,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMConstNull':              [voidp, [voidp]],
   'LLVMConstAllOnes':           [voidp, [voidp]],
   'LLVMGetUndef':               [voidp, [voidp]],
-  'LLVMIsNull':                 ['bool', [voidp]],                                    
+  'LLVMIsNull':                 ['bool', [voidp]],
   'LLVMConstPointerNull':       [voidp, [voidp]],
 
   // Scalar constants.
@@ -347,7 +347,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMConstIntGetZExtValue':           ['ulonglong', [voidp]],
   'LLVMConstIntGetSExtValue':           ['longlong', [voidp]],
   'LLVMConstRealGetDouble':             ['double', [voidp, boolp]],
-  
+
   // Composite Constants
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantComposite.html
   'LLVMConstStringInContext':   [voidp, [voidp, 'string', 'uint', 'bool']],
@@ -356,11 +356,11 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetAsString':            ['string', [voidp, 'size_t']],
   'LLVMConstStructInContext':   [voidp, [voidp, PointerArray, 'uint', 'bool']],
   'LLVMConstStruct':            [voidp, [PointerArray, 'uint', 'bool']],
-  'LLVMConstArray':             [voidp, [voidp, PointerArray, 'uint']], 
-  'LLVMConstNamedStruct':       [voidp, [voidp, PointerArray, 'uint']], 
+  'LLVMConstArray':             [voidp, [voidp, PointerArray, 'uint']],
+  'LLVMConstNamedStruct':       [voidp, [voidp, PointerArray, 'uint']],
   'LLVMGetElementAsConstant':   [voidp, [voidp, 'uint']],
   'LLVMConstVector':            [voidp, [PointerArray, 'uint']],
-  
+
   // Constant Expression
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueConstantExpressions.html
   'LLVMGetConstOpcode':         ['int', [voidp]],
@@ -384,16 +384,16 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMConstNUWMul':            [voidp, [voidp, voidp]],
   'LLVMConstFMul':              [voidp, [voidp, voidp]],
   'LLVMConstUDiv':              [voidp, [voidp, voidp]],
-  'LLVMConstSDiv':              [voidp, [voidp, voidp]],   
+  'LLVMConstSDiv':              [voidp, [voidp, voidp]],
   'LLVMConstExactSDiv':         [voidp, [voidp, voidp]],
   'LLVMConstFDiv':              [voidp, [voidp, voidp]],
   'LLVMConstURem':              [voidp, [voidp, voidp]],
-  'LLVMConstSRem':              [voidp, [voidp, voidp]],   
+  'LLVMConstSRem':              [voidp, [voidp, voidp]],
   'LLVMConstFRem':              [voidp, [voidp, voidp]],
   'LLVMConstAnd':               [voidp, [voidp, voidp]],
   'LLVMConstOr':                [voidp, [voidp, voidp]],
   'LLVMConstXor':               [voidp, [voidp, voidp]],
-  'LLVMConstICmp':              [voidp, ['int', voidp, voidp]], 
+  'LLVMConstICmp':              [voidp, ['int', voidp, voidp]],
   'LLVMConstFCmp':              [voidp, ['int', voidp, voidp]],
   'LLVMConstShl':               [voidp, [voidp, voidp]],
   'LLVMConstLShr':              [voidp, [voidp, voidp]],
@@ -406,13 +406,13 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMConstFPTrunc':           [voidp, [voidp, voidp]],
   'LLVMConstFPExt':             [voidp, [voidp, voidp]],
   'LLVMConstUIToFP':            [voidp, [voidp, voidp]],
-  'LLVMConstSIToFP':            [voidp, [voidp, voidp]], 
+  'LLVMConstSIToFP':            [voidp, [voidp, voidp]],
   'LLVMConstFPToUI':            [voidp, [voidp, voidp]],
   'LLVMConstFPToSI':            [voidp, [voidp, voidp]],
   'LLVMConstPtrToInt':          [voidp, [voidp, voidp]],
-  'LLVMConstIntToPtr':          [voidp, [voidp, voidp]],   
+  'LLVMConstIntToPtr':          [voidp, [voidp, voidp]],
   'LLVMConstBitCast':           [voidp, [voidp, voidp]],
-  'LLVMConstAddrSpaceCast':     [voidp, [voidp, voidp]],    
+  'LLVMConstAddrSpaceCast':     [voidp, [voidp, voidp]],
   'LLVMConstZExtOrBitCast':     [voidp, [voidp, voidp]],
   'LLVMConstSExtOrBitCast':     [voidp, [voidp, voidp]],
   'LLVMConstTruncOrBitCast':    [voidp, [voidp, voidp]],
@@ -424,7 +424,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMConstInsertElement':     [voidp, [voidp, voidp, voidp]],
   'LLVMConstShuffleVector':     [voidp, [voidp, voidp, voidp]],
   'LLVMConstExtractValue':      [voidp, [voidp, uintp, 'uint']],
-  'LLVMConstInsertValue':       [voidp, [voidp, voidp, uintp, 'uint']], 
+  'LLVMConstInsertValue':       [voidp, [voidp, voidp, uintp, 'uint']],
   'LLVMConstInlineAsm':         [voidp, [voidp, 'string', 'string', 'bool', 'bool']],
   'LLVMBlockAddress':           [voidp, [voidp, voidp]],
 
@@ -433,13 +433,13 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetGlobalParent':         [voidp, [voidp]],
   'LLVMIsDeclaration':           ['bool', [voidp]],
   'LLVMGetLinkage':              ['int', [voidp]],
-  'LLVMSetLinkage':              [void_, [voidp, 'int']], 
+  'LLVMSetLinkage':              [void_, [voidp, 'int']],
   'LLVMGetSection':              ['string', [voidp]],
   'LLVMSetSection':              [void_, [voidp, 'string']],
   'LLVMGetVisibility':           ['int', [voidp]],
   'LLVMSetVisibility':           [void_, [voidp, 'int']],
-  'LLVMGetDLLStorageClass':      ['int', [voidp]], 
-  'LLVMSetDLLStorageClass':      [void_, [voidp, 'int']], 
+  'LLVMGetDLLStorageClass':      ['int', [voidp]],
+  'LLVMSetDLLStorageClass':      [void_, [voidp, 'int']],
   'LLVMHasUnnamedAddr':          ['bool', [voidp]],
   'LLVMSetUnnamedAddr':          [void_, [voidp, 'bool']],
   'LLVMGetAlignment':            ['uint', [voidp]],
@@ -463,9 +463,9 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMSetInitializer':           [void_, [voidp, voidp]],
   'LLVMIsThreadLocal':            [void_, [voidp]],
   'LLVMSetThreadLocal':           [void_, [voidp, 'bool']],
-  'LLVMIsGlobalConstant':         ['bool', [voidp]],   
+  'LLVMIsGlobalConstant':         ['bool', [voidp]],
   'LLVMSetGlobalConstant':        [void_, [voidp, 'bool']],
-  'LLVMGetThreadLocalMode':       ['int', [voidp]], 
+  'LLVMGetThreadLocalMode':       ['int', [voidp]],
   'LLVMSetThreadLocalMode':       [void_, [voidp, 'int']],
   'LLVMIsExternallyInitialized':  ['bool', [voidp]],
   'LLVMSetExternallyInitialized': [void_, [voidp, 'bool']],
@@ -476,32 +476,25 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Function Values
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueFunction.html
-  'LLVMDeleteFunction':                 [void_, [voidp]], 
+  'LLVMDeleteFunction':                 [void_, [voidp]],
   'LLVMGetPersonalityFn':               [voidp, [voidp]],
   'LLVMSetPersonalityFn':               [void_, [voidp, voidp]],
   'LLVMGetIntrinsicID':                 ['uint', [voidp]],
   'LLVMGetFunctionCallConv':            ['uint', [voidp]],
   'LLVMSetFunctionCallConv':            [void_, [voidp, 'uint']],
   'LLVMGetGC':                          ['string', [voidp]],
-  'LLVMSetGC':                          [void_, [voidp, 'string']], 
-  'LLVMAddFunctionAttr':                [void_, [voidp, 'int']], 
-  'LLVMAddTargetDependentFunctionAttr': [void_, [voidp, 'string', 'string']], 
-  'LLVMGetFunctionAttr':                ['int', [voidp]], 
-  'LLVMRemoveFunctionAttr':             [void_, [voidp, 'int']],
+  'LLVMSetGC':                          [void_, [voidp, 'string']],
 
   // Function Parameters
-  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueFunctionParameters.html 
+  // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueFunctionParameters.html
   'LLVMCountParams':              ['uint', [voidp]],
   'LLVMGetParams':                [void_, [voidp, PointerArray]],
   'LLVMGetParam':                 [voidp, [voidp, 'uint']],
-  'LLVMGetParamParent':           [voidp, [voidp]],  
-  'LLVMGetFirstParam':            [voidp, [voidp]],  
-  'LLVMGetLastParam':             [voidp, [voidp]],  
-  'LLVMGetNextParam':             [voidp, [voidp]],  
-  'LLVMGetPreviousParam':         [voidp, [voidp]],  
-  'LLVMAddAttribute':             [void_, [voidp, 'int']], 
-  'LLVMRemoveAttribute':          [void_, [voidp, 'int']], 
-  'LLVMGetAttribute':             ['int', [voidp]],
+  'LLVMGetParamParent':           [voidp, [voidp]],
+  'LLVMGetFirstParam':            [voidp, [voidp]],
+  'LLVMGetLastParam':             [voidp, [voidp]],
+  'LLVMGetNextParam':             [voidp, [voidp]],
+  'LLVMGetPreviousParam':         [voidp, [voidp]],
   'LLVMSetParamAlignment':        [void_, [voidp, 'uint']],
 
   // Metadata
@@ -510,7 +503,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMMDString':                 [voidp, ['string', 'uint']],
   'LLVMMDNodeInContext':          [voidp, [voidp, PointerArray, 'uint']],
   'LLVMMDNode':                   [voidp, [PointerArray, 'uint']],
-  'LLVMGetMDString':              ['string', [voidp, uintp]], 
+  'LLVMGetMDString':              ['string', [voidp, uintp]],
   'LLVMGetMDNodeNumOperands':     ['uint', [voidp]],
   'LLVMGetMDNodeOperands':        [void_, [voidp, voidpp]],
 
@@ -522,22 +515,22 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetBasicBlockParent':         [voidp, [voidp]],
   'LLVMGetBasicBlockTerminator':     [voidp, [voidp]],
   'LLVMCountBasicBlocks':            ['uint', [voidp]],
-  'LLVMGetBasicBlocks':              [void_, [voidp, PointerArray]], 
+  'LLVMGetBasicBlocks':              [void_, [voidp, PointerArray]],
   'LLVMGetFirstBasicBlock':          [voidp, [voidp]],
   'LLVMGetLastBasicBlock':           [voidp, [voidp]],
   'LLVMGetNextBasicBlock':           [voidp, [voidp]],
-  'LLVMGetPreviousBasicBlock':       [voidp, [voidp]],   
+  'LLVMGetPreviousBasicBlock':       [voidp, [voidp]],
   'LLVMGetEntryBasicBlock':          [voidp, [voidp]],
   'LLVMAppendBasicBlockInContext':   [voidp, [voidp, voidp, 'string']],
   'LLVMAppendBasicBlock':            [voidp, [voidp, 'string']],
-  'LLVMInsertBasicBlockInContext':   [voidp, [voidp, voidp, 'string']], 
+  'LLVMInsertBasicBlockInContext':   [voidp, [voidp, voidp, 'string']],
   'LLVMInsertBasicBlock':            [voidp, [voidp, 'string']],
   'LLVMDeleteBasicBlock':            [void_, [voidp]],
   'LLVMRemoveBasicBlockFromParent':  [void_, [voidp]],
   'LLVMMoveBasicBlockBefore':        [void_, [voidp, voidp]],
-  'LLVMMoveBasicBlockAfter':         [void_, [voidp, voidp]], 
+  'LLVMMoveBasicBlockAfter':         [void_, [voidp, voidp]],
   'LLVMGetFirstInstruction':         [voidp, [voidp]],
-  'LLVMGetLastInstruction':          [voidp, [voidp]], 
+  'LLVMGetLastInstruction':          [voidp, [voidp]],
 
   // Instructions
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueInstruction.html
@@ -557,9 +550,6 @@ export const LLVM = ffi.Library('libLLVM', {
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueInstructionCall.html
   'LLVMSetInstructionCallConv':      [void_, [voidp, 'uint']],
   'LLVMGetInstructionCallConv':      ['uint', [voidp]],
-  'LLVMAddInstrAttribute':           [void_, [voidp, 'uint', 'int']], 
-  'LLVMRemoveInstrAttribute':        [void_, [voidp, 'uint', 'int']],
-  'LLVMSetInstrParamAlignment':      [void_, [voidp, 'uint', 'uint']],
   'LLVMIsTailCall':                  ['bool', [voidp]],
   'LLVMSetTailCall':                 [void_, [voidp, 'bool']],
 
@@ -575,8 +565,8 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // PHI Nodes
   // http://llvm.org/docs/doxygen/html/group__LLVMCCoreValueInstructionPHINode.html
-  'LLVMAddIncoming':            [void_, [voidp, PointerArray, PointerArray, 'uint']], 
-  'LLVMCountIncoming':          ['uint', [voidp]], 
+  'LLVMAddIncoming':            [void_, [voidp, PointerArray, PointerArray, 'uint']],
+  'LLVMCountIncoming':          ['uint', [voidp]],
   'LLVMGetIncomingValue':       [voidp, [voidp, 'uint']],
   'LLVMGetIncomingBlock':       [voidp, [voidp, 'uint']],
 
@@ -594,13 +584,13 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMDisposeBuilder':                      [void_, [voidp]],
   'LLVMSetCurrentDebugLocation':             [void_, [voidp, voidp]],
   'LLVMGetCurrentDebugLocation':             [voidp, [voidp]],
-  'LLVMSetInstDebugLocation':                [void_, [voidp, voidp]], 
+  'LLVMSetInstDebugLocation':                [void_, [voidp, voidp]],
   'LLVMBuildRetVoid':                        [voidp, [voidp]],
   'LLVMBuildRet':                            [voidp, [voidp, voidp]],
   'LLVMBuildAggregateRet':                   [voidp, [voidp, PointerArray, 'uint']],
-  'LLVMBuildBr':                             [voidp, [voidp, voidp]], 
+  'LLVMBuildBr':                             [voidp, [voidp, voidp]],
   'LLVMBuildCondBr':                         [voidp, [voidp, voidp, voidp, voidp]],
-  'LLVMBuildSwitch':                         [voidp, [voidp, voidp, voidp, 'uint']],   
+  'LLVMBuildSwitch':                         [voidp, [voidp, voidp, voidp, 'uint']],
   'LLVMBuildIndirectBr':                     [voidp, [voidp, voidp, 'uint']],
   'LLVMBuildInvoke':                         [voidp, [voidp, voidp, PointerArray, 'uint', voidp, voidp, 'string']],
   'LLVMBuildLandingPad':                     [voidp, [voidp, voidp, voidp, 'uint', 'string']],
@@ -612,7 +602,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMSetCleanup':                          [void_, [voidp, 'bool']],
   'LLVMBuildAdd':                            [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildNSWAdd':                         [voidp, [voidp, voidp, voidp, 'string']],
-  'LLVMBuildNUWAdd':                         [voidp, [voidp, voidp, voidp, 'string']],              
+  'LLVMBuildNUWAdd':                         [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildFAdd':                           [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildSub':                            [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildNSWSub':                         [voidp, [voidp, voidp, voidp, 'string']],
@@ -621,7 +611,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMBuildMul':                            [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildNSWMul':                         [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildNUWMul':                         [voidp, [voidp, voidp, voidp, 'string']],
-  'LLVMBuildFMul':                           [voidp, [voidp, voidp, voidp, 'string']],   
+  'LLVMBuildFMul':                           [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildUDiv':                           [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildSDiv':                           [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildExactSDiv':                      [voidp, [voidp, voidp, voidp, 'string']],
@@ -648,7 +638,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMBuildFree':                           [voidp, [voidp, voidp]],
   'LLVMBuildLoad':                           [voidp, [voidp, voidp, 'string']],
   'LLVMBuildStore':                          [voidp, [voidp, voidp, voidp]],
-  'LLVMBuildGEP':                            [voidp, [voidp, voidp, PointerArray, 'uint', 'string']],   
+  'LLVMBuildGEP':                            [voidp, [voidp, voidp, PointerArray, 'uint', 'string']],
   'LLVMBuildInBoundsGEP':                    [voidp, [voidp, voidp, PointerArray, 'uint', 'string']],
   'LLVMBuildStructGEP':                      [voidp, [voidp, voidp, 'uint', 'string']],
   'LLVMBuildGlobalString':                   [voidp, [voidp, 'string', 'string']],
@@ -656,7 +646,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetVolatile':                         ['bool', [voidp]],
   'LLVMSetVolatile':                         [void_, [voidp, 'bool']],
   'LLVMGetOrdering':                         ['int', [voidp]],
-  'LLVMSetOrdering':                         [void_, [voidp, 'int']],   
+  'LLVMSetOrdering':                         [void_, [voidp, 'int']],
   'LLVMBuildTrunc':                          [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildZExt':                           [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildSExt':                           [voidp, [voidp, voidp, voidp, 'string']],
@@ -679,7 +669,7 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMBuildFPCast':                         [voidp, [voidp, voidp, voidp, 'string']],
   'LLVMBuildICmp':                           [voidp, [voidp, 'int', voidp, voidp, 'string']],
   'LLVMBuildFCmp':                           [voidp, [voidp, 'int', voidp, voidp, 'string']],
-  'LLVMBuildPhi':                            [voidp, [voidp, voidp, 'string']],   
+  'LLVMBuildPhi':                            [voidp, [voidp, voidp, 'string']],
   'LLVMBuildCall':                           [voidp, [voidp, voidp, PointerArray, 'uint', 'string']],
   'LLVMBuildSelect':                         [voidp, [voidp, voidp, voidp, voidp, 'string']],
   'LLVMBuildVAArg':                          [voidp, [voidp, voidp, voidp, 'string']],
@@ -742,7 +732,7 @@ export const LLVM = ffi.Library('libLLVM', {
 
   // Execution Engine
   // http://llvm.org/docs/doxygen/html/group__LLVMCExecutionEngine.html
-  // contains structs, typedefs, 
+  // contains structs, typedefs,
   'LLVMLinkInMCJIT':                          [void_, []],
   'LLVMLinkInInterpreter':                    [void_, []],
   'LLVMCreateGenericValueOfInt':              [voidp, [voidp, 'ulonglong', 'bool']],
@@ -838,7 +828,7 @@ export const LLVM = ffi.Library('libLLVM', {
 'lto_codegen_write_merged_modules':                ['bool', [voidp, 'string']],
 'lto_codegen_compile':                             [voidp, [voidp, size_tp]],
 'lto_codegen_compile_to_file':                     ['bool', [voidp, stringp]],
-'lto_codegen_optimize':                            ['bool', [voidp]],                        
+'lto_codegen_optimize':                            ['bool', [voidp]],
 'lto_codegen_compile_optimized':                   [voidp, [voidp, size_tp]],
 'lto_api_version':                                 ['uint', []],
 'lto_codegen_debug_options':                       [void_, [voidp, 'string']],
@@ -898,10 +888,10 @@ export const LLVM = ffi.Library('libLLVM', {
 // 'LLVMAddTargetLibraryInfo':           [void_, [voidp, voidp]],
 'LLVMCopyStringRepOfTargetData':      ['string', [voidp]],
 // 'LLVMByteOrder':                      ['int', [voidp]],
-// 'LLVMPointerSize':                    ['uint', [voidp]],   
+// 'LLVMPointerSize':                    ['uint', [voidp]],
 // 'LLVMPointerSizeForAS':               ['uint', [voidp, 'uint']],
 // 'LLVMIntPtrType':                     [voidp, [voidp]],
-// 'LLVMIntPtrTypeForAS':                [voidp, [voidp, 'uint']],   
+// 'LLVMIntPtrTypeForAS':                [voidp, [voidp, 'uint']],
 // 'LLVMIntPtrTypeInContext':            [voidp, [voidp, voidp]],
 // 'LLVMIntPtrTypeForASInContext':       [voidp, [voidp, voidp, 'uint']],
 // 'LLVMSizeOfTypeInBits':               ['ulonglong', [voidp, voidp]],
@@ -923,22 +913,22 @@ export const LLVM = ffi.Library('libLLVM', {
   'LLVMGetTargetFromName':                [voidp, ['string']],
   'LLVMGetTargetFromTriple':              ['bool', ['string', voidpp, stringp]],
   'LLVMGetTargetName':                    ['string', [voidp]],
-  'LLVMGetTargetDescription':             ['string', [voidp]], 
+  'LLVMGetTargetDescription':             ['string', [voidp]],
   'LLVMTargetHasJIT':                     ['bool', [voidp]],
   'LLVMTargetHasTargetMachine':           ['bool', [voidp]],
   'LLVMTargetHasAsmBackend':              ['bool', [voidp]],
-  'LLVMCreateTargetMachine':              [voidp, [voidp, 'string', 'string', 'string', 'int', 'int', 'int']],       
-  'LLVMDisposeTargetMachine':             [void_, [voidp]], 
+  'LLVMCreateTargetMachine':              [voidp, [voidp, 'string', 'string', 'string', 'int', 'int', 'int']],
+  'LLVMDisposeTargetMachine':             [void_, [voidp]],
   'LLVMGetTargetMachineTarget':           [voidp, [voidp]],
   'LLVMGetTargetMachineTriple':           ['string', [voidp]],
   'LLVMGetTargetMachineCPU':              ['string', [voidp]],
   'LLVMGetTargetMachineFeatureString':    ['string', [voidp]],
-  'LLVMGetTargetMachineData':             [voidp, [voidp]],
   'LLVMSetTargetMachineAsmVerbosity':     [void_, [voidp, 'bool']],
-  'LLVMTargetMachineEmitToFile':          ['bool', [voidp, voidp, 'string', 'int', stringp]], 
-  'LLVMTargetMachineEmitToMemoryBuffer':  ['bool', [voidp, voidp, 'int', stringp, voidpp]], 
+  'LLVMTargetMachineEmitToFile':          ['bool', [voidp, voidp, 'string', 'int', stringp]],
+  'LLVMTargetMachineEmitToMemoryBuffer':  ['bool', [voidp, voidp, 'int', stringp, voidpp]],
   'LLVMGetDefaultTargetTriple':           ['string', []],
   'LLVMAddAnalysisPasses':                [void_, [voidp, voidp]],
+  'LLVMCreateTargetDataLayout':           [voidp, [voidp]],
 
     // Init
   'LLVMInitializeX86TargetInfo':          [void_, []],
