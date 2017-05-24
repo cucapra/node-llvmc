@@ -313,6 +313,14 @@ export class PointerType extends SequentialType {
  */
 export class Value extends Ref {
   /**
+   * Get an undef of provided type
+   */
+  static getUndef(type: Type): Value {
+  	let vref = LLVM.LLVMGetUndef(type.ref);
+  	return new Value(vref);
+  }
+
+  /**
    * Get the value's name.
    */
   getName(): string {
@@ -596,6 +604,14 @@ export class Builder extends Ref implements Freeable {
    buildBitCast(val: Value, destType: Type, name: string): Value {
      let vref = LLVM.LLVMBuildBitCast(this.ref, val.ref, destType.ref, name);
      return new Value(vref);
+  }
+
+  /**
+   * Insert value into aggregate
+   */
+  buildInsertValue(aggVal: Value, element: Value, idx: number, name: string): Value {
+  	let vref = LLVM.LLVMBuildInsertValue(this.ref, aggVal.ref, element.ref, idx, name);
+  	return new Value(vref);
   }
 
   /**
