@@ -321,6 +321,22 @@ export class Value extends Ref {
   }
 
   /**
+   * get null instance of provided type
+   */
+  static constNull(type: Type): Value {
+    let vref = LLVM.LLVMConstNull(type.ref);
+    return new Value(vref);
+  }
+
+  /**
+   * Obtain a constant that is a constant pointer pointing to NULL for a specified type
+   */
+  static constPointerNull(type: Type): Value {
+    let vref = LLVM.LLVMConstPointerNull(type.ref);
+    return new Value(vref);
+  }
+
+  /**
    * Get the value's name.
    */
   getName(): string {
