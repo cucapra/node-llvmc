@@ -3,6 +3,11 @@ node-llvmc
 
 These are bindings to the [LLVM C API][llvm-c] for [Node.js][], written in [TypeScript][] using [node-ffi][].
 
+[llvm-c]: http://llvm.org/doxygen/group__LLVMC.html
+[node.js]: https://nodejs.org/en/
+[typescript]: https://www.typescriptlang.org
+[node-ffi]: https://github.com/node-ffi/node-ffi
+
 
 Setting Up
 ----------
@@ -48,10 +53,10 @@ There are two ways to use the library: a low-level interface and a set of friend
 
 ### Low-Level Bindings
 
-To use the direct bindings to the LLVM C API functions, import the `LLVM` object from the `llvmc` module. You can invoke the C API functions as methods on this object.
+To use the direct bindings to the LLVM C API functions, import the `LLVM` object from the `llvmc` module. You can invoke the [C API functions][capi] as methods on this object:
 
 ```typescript
-import { LLVM } from './src/llvmc';
+import { LLVM } from 'llvmc';
 let mod = LLVM.LLVMModuleCreateWithName("some_module");
 // ...
 let ir = LLVM.LLVMPrintModuleToString(mod);
@@ -59,20 +64,21 @@ console.log(ir);
 LLVM.LLVMDisposeModule(mod);
 ```
 
-This low-level module does not have TypeScript definitions (yet).
+This low-level interface does not have useful TypeScript annotations (yet).
 
-### Higher-Level Wrappers
+### Higher-Level, Object-Oriented Interface
 
-This library also provides JavaScript object wrappers for LLVM objects. These wrappers *do* come with TypeScript types, which enable completion and static checking.
-
-To use the higher-level interface, import the `wrapped` module.
+This library also provides ES2015 class wrappers for LLVM objects. These wrappers *do* come with TypeScript types, which enable completion and static checking. You can import these classes, such as `Module`, from the library:
 
 ```typescript
+import * as llvmc from 'llvmc';
 let mod = llvmc.Module.create("some_module");
 // ...
 console.log(mod.toString());
 mod.free();
 ```
+
+Someday, we will generate documentation for this suite of classes.
 
 
 Other Projects
@@ -83,13 +89,6 @@ Here are the other LLVM bindings I could find:
 * [llvm2](https://github.com/dirk/llvm2): Another FFI-based binding to the C API.
 * [node-llvm](https://github.com/kevinmehall/node-llvm): Bindings using a compiled extension.
 * [petard](https://github.com/couchand/petard): Another compiled extension, also focused on IR generation.
-
-[llvm-c]: http://llvm.org/docs/doxygen/html/group__LLVMC.html
-[node.js]: https://nodejs.org/en/
-[typescript]: https://www.typescriptlang.org
-[node-ffi]: https://github.com/node-ffi/node-ffi
-[LLVM Getting Started]: http://llvm.org/docs/GettingStarted.html
-[Calculator example]: https://github.com/cucapra/node-llvmc/tree/master/example
 
 
 Credits
