@@ -1,4 +1,4 @@
-import * as llvmc from '../src/wrapped';
+import * as llvmc from '../lib/wrapped';
 import * as readline from 'readline';
 import * as ast from './ast';
 import * as parser from './parser';
@@ -77,7 +77,7 @@ function read() : void {
       input: process.stdin,
       output: process.stdout
   });
-  
+
   rl.setPrompt('Ready> ');
   rl.prompt();
   rl.on('line', function(line) {

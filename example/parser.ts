@@ -1,4 +1,4 @@
-import * as llvmc from '../src/wrapped';
+import * as llvmc from '../lib/wrapped';
 import * as readline from 'readline';
 import * as ast from './ast';
 import * as lexer from './lexer';

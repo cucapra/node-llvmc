@@ -1,4 +1,4 @@
-import * as llvmc from '../src/wrapped';
+import * as llvmc from '../lib/wrapped';
 import * as readline from 'readline';
 import {Context} from './calculator';
 
@@ -11,8 +11,8 @@ export interface ASTNode {
 }
 
 export interface ExprAST extends ASTNode{
-  id: string; 
-  codegen(context: Context) : llvmc.Value; 
+  id: string;
+  codegen(context: Context) : llvmc.Value;
 };
 
 /*
@@ -38,7 +38,7 @@ export class VariableExprAST implements ExprAST {
 export class NumberExprAST implements ExprAST {
   public id: string = 'NumberExprAST';
     public val: number;
-  
+
   public constructor(val: number) {this.val = val;}
 
   public codegen(context: Context) : llvmc.Value {

@@ -1,4 +1,4 @@
-import * as llvmc from './src/wrapped';
+import * as llvmc from './lib/wrapped';
 
 // Create a module.
 let mod = llvmc.Module.create("some_module");

@@ -1,11 +1,13 @@
 {
     "compilerOptions": {
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "noImplicitThis": true,
+        "strict": true,
+        "noImplicitReturns": true,
 
         "target": "ES6",
         "module": "commonjs",
+
+        "declaration": true,
+        "sourceMap": true,
 
         "outDir": "build"
     }
