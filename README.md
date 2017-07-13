@@ -22,18 +22,23 @@ You should now be able to install and `require` the `llvmc` library.
 Examples
 --------
 
-To test if everything is working, you can run the following command (and should see the following output):
+This repository contains two examples. You can build them by cloning this repository and then running:
 
-```shell
-node build/example.js
-; ModuleID = 'some_module'
+    $ cd node-llvmc
+    $ yarn  # Install the dependencies.
+    $ cd example
+    $ tsc  # Compile the examples.
 
-define i32 @main() {
-entry:
-  ret i32 42
-}
-```
-For a more interesting example of how node-llmvc can be used, see our [Calculator example].
+The first example is really simple, but it shows all the pieces you need to generate LLVM IR. Type this to see it in action:
+
+    $ node build/example/basic.js
+
+You'll see textual LLVM IR dumped to standard output, and the script will also write LLVM bitcode to a file `out.bc`. You can type `clang out.bc` to compile the program to native code and then `./a.out` to execute it.
+
+We have also included a more complex example based on LLVM's venerable [Kaleidoscope][] tutorial.
+See [the example's README](example/kaleidoscope/README.md) for an introduction.
+
+[Kaleidoscope]: http://llvm.org/docs/tutorial/index.html
 
 
 Using the Bindings
