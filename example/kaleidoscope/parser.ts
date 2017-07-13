@@ -1,4 +1,4 @@
-import * as llvmc from '../lib/wrapped';
+import * as llvmc from '../../lib/wrapped';
 import * as readline from 'readline';
 import * as ast from './ast';
 import * as lexer from './lexer';
@@ -39,7 +39,7 @@ export function parseNumberExpr(): ast.ExprAST|null {
  */
 export function parseParenExpr() : ast.ExprAST|null {
   getNextToken(); // eat (.
-    
+
   let v: ast.ExprAST|null = parseExpression();
   if (!v)
       return null;
@@ -60,7 +60,7 @@ export function parseIdentifierExpr() : ast.ExprAST|null {
   let idName: string = lexer.getIdStr();
 
   getNextToken();  // eat identifier.
-  
+
   if (curTok.id !== '(') // Simple variable ref.
     return new ast.VariableExprAST(idName);
 
@@ -71,7 +71,7 @@ export function parseIdentifierExpr() : ast.ExprAST|null {
   if (curTok.id !== '(') {
     while (true) {
       let arg: ast.ExprAST|null = parseExpression();
-      
+
       if (arg)
         args.push(arg);
       else
@@ -82,7 +82,7 @@ export function parseIdentifierExpr() : ast.ExprAST|null {
 
       if (curTok.id != ',')
         throw "Expected ')' or ',' in argument list";
-      
+
       getNextToken();
     }
   }
@@ -121,7 +121,7 @@ let BinopPrecedence:{ [op:string] : number } = {
   '*': 40,
 };
 
-/* 
+/*
  * GetTokPrecedence - Get the precedence of the pending binary operator token.
  */
 function getTokPrecedence() : number {
@@ -201,7 +201,7 @@ export function parsePrototype() : ast.PrototypeAST|null {
   let argNames: string[] = [];
   while (getNextToken() instanceof lexer.Tok_Id)
     argNames.push(lexer.getIdStr());
-  
+
   if (curTok.id !== ')')
     throw "Expected ')' in prototype";
 
@@ -217,7 +217,7 @@ export function parsePrototype() : ast.PrototypeAST|null {
 export function parseDefinition() : ast.FunctionAST|null {
   getNextToken();  // eat def.
   let proto: ast.PrototypeAST|null = parsePrototype();
-  if (!proto) 
+  if (!proto)
     return null;
 
   let exp: ast.ExprAST|null = parseExpression();

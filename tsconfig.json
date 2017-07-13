@@ -10,5 +10,6 @@
         "sourceMap": true,
 
         "outDir": "build"
-    }
+    },
+    "include": ["lib/**/*"]
 }

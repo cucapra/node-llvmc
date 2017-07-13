@@ -4,7 +4,7 @@
 let prog: string; // program to run
 let lastChar: string = ' '; // contains last char read (' ' to start)
 let idx: number = 0; // where we are in program
-let EOF: string = ''; 
+let EOF: string = '';
 
 /**
  * reset the lexer to be read new prog
@@ -29,8 +29,8 @@ export class Tok_Eof implements Token {
   public id: string = 'Tok_Eof';
 };
 
-/* 
- * Token representing variable declaration 
+/*
+ * Token representing variable declaration
  */
 export class Tok_Def implements Token {
   public id: string = 'Tok_Def';
@@ -57,7 +57,7 @@ export class Tok_Id implements Token {
   public id: string = 'Tok_Id';
 };
 
-/* 
+/*
  * Token representing other things (e.g. parens and operators)
  */
 export class Tok_Other implements Token {
@@ -119,11 +119,11 @@ function isDigit(str : string) : boolean {
  */
 export function getTok() : Token {
   // skip whitespace
-  while (lastChar === ' ') 
+  while (lastChar === ' ')
     lastChar = getChar();
-  
+
   // identifier: [a-zA-Z][a-zA-Z0-9]*
-  if (isAlpha(lastChar)) { 
+  if (isAlpha(lastChar)) {
       idStr = lastChar;
     while (isAlNum((lastChar = getChar())))
       idStr += lastChar;
@@ -133,7 +133,7 @@ export function getTok() : Token {
     if (idStr === "extern")
       return new Tok_Ext();
     return new Tok_Id();
-  } 
+  }
 
   // number: [0-9.]+
   let seenDecimal: boolean = false;
@@ -150,7 +150,7 @@ export function getTok() : Token {
       numVal = parseFloat(numStr);
       return new Tok_Number();
   }
-  
+
   // check for end of file
   if (lastChar === EOF)
     return new Tok_Eof();
