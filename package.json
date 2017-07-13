@@ -2,8 +2,8 @@
   "name": "llvmc",
   "version": "1.0.0",
   "license": "MIT",
-  "main": "./build/llvmc.ts",
-  "types": "./build/llvmc.d.ts",
+  "main": "./build/index.ts",
+  "types": "./build/index.d.ts",
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "tsc"
