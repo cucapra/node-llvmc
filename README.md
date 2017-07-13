@@ -3,34 +3,24 @@ node-llvmc
 
 These are bindings to the [LLVM C API][llvm-c] for [Node.js][], written in [TypeScript][] using [node-ffi][].
 
-Getting Started
----------------
 
-### System Requirements 
-* LLVM Distribution with **libLLVM.so**
-* Node.js
-* TypeScript
-* npm (recommended)
+Setting Up
+----------
 
-### Set up
-When setting up LLVM, make sure your installation comes with libLLVM.so. 
+You will need an installation of LLVM that includes its shared library, which is called `libLLVM.so` or `libLLVM.dylib`. On macOS, for example, Xcode does not ship with the shared library, but the [Homebrew][] package for LLVM does. If you build LLVM yourself, set `LLVM_BUILD_LLVM_DYLIB=On` to get the shared library.
 
-If you are installing LLVM with a package manager, it may or may not come with libLLVM.so. For example, Xcode does not; however, Homebrew provides the shared library by default. 
+[Homebrew]: https://brew.sh
 
-If you want to build LLVM by yourself, we recommend the [LLVM Getting Started] guide. When running CMake, make sure to set the following option: `LLVM_BUILD_LLVM_DYLIB=On`. This variable is what causes the build to generate libLLVM.so.
+Next, the dynamic linker will need to be able to find the shared library. If you installed LLVM with Homebrew, for example, try this:
 
-Once this is done, you may have to configure your search path to link to the directory containing libLLVM.so. For Mac users, the environment variable is named `DYLD_LIBRARY_PATH`. For Linux users, on the systems that we have tested, the environment variable is named `LD_LIBRARY_PATH`. For reference, here is the command we used to get everything configured on an Ubuntu system:
+    $ export LD_LIBRARY_PATH=`brew --prefix llvm`/lib
 
-```shell
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<Path to directory containing libLLVM.so>
-```
+to put the appropriate "keg-only" library directory on your linker path.
+You should now be able to install and `require` the `llvmc` library.
 
-At this point, you should be able install the necessary dependencies and build the project by running:
 
-```shell
-npm install
-npm run build
-```
+Examples
+--------
 
 To test if everything is working, you can run the following command (and should see the following output):
 
@@ -44,6 +34,7 @@ entry:
 }
 ```
 For a more interesting example of how node-llmvc can be used, see our [Calculator example].
+
 
 Using the Bindings
 ------------------
@@ -94,3 +85,14 @@ Here are the other LLVM bindings I could find:
 [node-ffi]: https://github.com/node-ffi/node-ffi
 [LLVM Getting Started]: http://llvm.org/docs/GettingStarted.html
 [Calculator example]: https://github.com/cucapra/node-llvmc/tree/master/example
+
+
+Credits
+-------
+
+This is a project of [Capra][] at Cornell. It was written by [Adrian Sampson][adrian] and [Richie Henwood][richie]. The license is [MIT][].
+
+[MIT]: https://opensource.org/licenses/MIT
+[richie]: https://github.com/rhenwood39
+[adrian]: http://www.cs.cornell.edu/~asampson/
+[capra]: https://capra.cs.cornell.edu
