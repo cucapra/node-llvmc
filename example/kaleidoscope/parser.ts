@@ -207,7 +207,8 @@ export class Parser {
     while (this.getNextToken() instanceof lexer.Tok_Id)
       argNames.push(this.lex.getIdStr());
 
-    if (this.curTok.id !== ')')
+    let tok: string = this.curTok.id;  // Sidestep TypeScript aggression.
+    if (tok !== ')')
       throw "Expected ')' in prototype";
 
     // success.
