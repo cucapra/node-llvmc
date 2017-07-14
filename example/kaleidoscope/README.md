@@ -1,110 +1,61 @@
 Calculator Example
 ==================
 
-This is an example usage of node-llvmc based on the first three chapters of the [LLVM Kaleidoscope Tutorial]. 
+This example uses node-llvmc to implement the first three chapters of the [LLVM Kaleidoscope Tutorial][kaleidoscope]. There are a few cosmetic differences (e.g., we do not support comments or check whether numbers have too many decimal points). The tutorial should give you an idea of what the calculator can do and how it works.
 
-Our implementation is very similar to theirs minus trivial differences (e.g. they support comments, but we do not; we check whether numbers have too many decimal points, but they do not). As such, taking a look at the tutorial linked above should give you a good idea of what the calculator can do and how it works. We will give a brief overview here as well though.
+[kaleidoscope]: http://llvm.org/docs/tutorial/index.html
 
 Usage
 -----
-If you followed the node-llvmc's set-up instructions, you should be able to run the calculator by navigating to the build folder and using the following command: 
 
-```shell
-node example/calculator.js
-```
+Compile the examples by running `tsc` in the `examples` directory. Then, type:
 
-You should now be prompted to enter commands. Our calculator currently supports supports arithmetic operations, function definitions, function calls, and externs. Below we give some example programs. Note that after each command, the calculator will print the entire current LLVM IR you've created thus far.
+    $ node build/example/kaleidoscope/calculator.js
 
-To exit the calculator, just type `quit` into the prompt.
+to run the calculator. The program will prompt you to enter programs. The calculator supports supports arithmetic operations, function definitions, function calls, and externs. There are some example programs below.
+
+After each command, the calculator will print the entire current LLVM IR you've created thus far.
+
+To exit the calculator, type `quit` at the prompt.
 
 ### Arithmetic
-We support addition, subtraction, multiplication, and parentheses. All numbers are treated as floating point values.
 
-```shell
-Ready> (2+5)*(7-1)
-Read top-level expression:
-; ModuleID = 'calculator_module'
+The language supports addition, subtraction, multiplication, and parentheses. All numbers are treated as floating-point values.
 
-define float @0() {
-entry:
-  ret float 4.200000e+01
-}
-```
-### Function Definitions/Calls
-Functions are defined using the keyword `def`. In function definition, arguments are separated by a space. The function body must be a single line, and whatever that line produces is what gets returned. When calling a function, however, arguments must be separated by a comma.
+    Ready> (2+5)*(7-1)
 
-```shell
-Ready> def adder(a b) a+b
-Read function definition:
-; ModuleID = 'calculator_module'
+### Functions
 
-define float @adder(float %a, float %b) {
-entry:
-  %addtmp = fadd float %a, %b
-  ret float %addtmp
-}
+Functions are defined using the keyword `def`. In function definition, arguments are separated by a space. The function body must be a single line, and whatever that line produces is what gets returned. When calling a function, however, arguments are separated by a comma.
 
-
-
-Ready> adder(1,2)
-Read top-level expression:
-; ModuleID = 'calculator_module'
-
-define float @adder(float %a, float %b) {
-entry:
-  %addtmp = fadd float %a, %b
-  ret float %addtmp
-}
-
-define float @0() {
-entry:
-  %calltmp = call float @adder(float 1.000000e+00, float 2.000000e+00)
-  ret float %calltmp
-}
-```
+    Ready> def adder(a b) a+b
+    Ready> adder(1,2)
 
 ### Externs
+
 Externs are declared and called just like functions. The only difference is that they are declared using the `extern` keyword instead the `def` keyword, and they do not have a function body.
 
-```shell
-Ready> extern cos(a)
-Read extern:
-; ModuleID = 'calculator_module'
-
-declare float @cos(float)
+    Ready> extern cos(a)
+    Ready> cos(1)
 
 
+The Code
+--------
 
-Ready> cos(1)
-Read top-level expression:
-; ModuleID = 'calculator_module'
+Here's what each file does.
 
-declare float @cos(float)
+### Lexer & Parser
 
-define float @0() {
-entry:
-  %calltmp = call float @cos(float 1.000000e+00)
-  ret float %calltmp
-}
-```
+`lexer.ts` contains the tokens and lexer that the calculator uses. `parser.ts` contains the parser. Neither uses node-llvmc. Both are based on the lexer and parser given in [Kaleidoscope][].
 
-In This Repo
-------------
-Here we provide a short description of the files in this folder.
+### AST
 
-### lexer.ts and parser.ts
-The lexer.ts file contains the tokens and lexer that the calculator uses. The parser.ts file contains the parser. Neither of these files make use of node-llvmc. Both are based on the lexer and parser given in the [LLVM Kaleidoscope Tutorial], so for more information we recommend taking a look there
+`ast.ts` defines the abstract syntax tree for the calculator language. The majority of our use of node-llvmc happens here. As in [Kaleidoscope][], each AST node has a `codegen()` that generates LLVM IR.
 
-### ast.ts
-This file constains the Abstract Syntax Tree. The majority of our use of node-llvmc is located here, so to see examples of node-llvmc, this is probably the best place to look. 
+Our node-llvmc function names are sometimes a bit different from the C++ LLVM function calls in the Kaleidoscope tutorials (i.e., different names or different parameters), but they shouldn't be too hard to decipher.
 
-Like the [LLVM Kaleidoscope Tutorial], each AST Node contains a `codegen()` method which generates code through node-llvmc. 
+### Main Driver
 
-Our node-llvmc LLVM function calls are sometimes a bit different than the C++ LLVM function calls in the Kaleidoscope tutorials (i.e. different names or different parameters); however, they are similar enough that the reader shouldn't have too much trouble rectifying the minor differences.
+`calculator.ts` is the driver for the calculator.
 
-### calculator.ts
-This is the driver for the calculator. 
-
-It is also where the `Context` class is defined (which you will see being used a lot inside of ast.ts). A `Context` object is merely a wrapper around an node-llvmc `Module` object, an node-llvmc `Builder` object, and a map that maps identifiers to node-llvmc `Value` objects. See wrapped.ts for more information on the aforementioned node-llvmc objects.
-
-[LLVM Kaleidoscope Tutorial]: http://llvm.org/docs/tutorial/LangImpl01.html
+It is also where the `Context` class is defined, which you will see being used a lot in `ast.ts`. A `Context` object is a wrapper around an node-llvmc `Module` object, an node-llvmc `Builder` object, and a map that maps identifiers to node-llvmc `Value` objects. See `wrapped.ts` in the library for more information on these node-llvmc objects.
