@@ -1,7 +1,7 @@
 Calculator Example
 ==================
 
-This example uses node-llvmc to implement the first three chapters of the [LLVM Kaleidoscope Tutorial][kaleidoscope]. There are a few cosmetic differences (e.g., we do not support comments or check whether numbers have too many decimal points). The tutorial should give you an idea of what the calculator can do and how it works.
+This example uses node-llvmc to implement the first three chapters of the [LLVM Kaleidoscope Tutorial][kaleidoscope]. There are a few cosmetic differences (e.g., this implementation does not support comments). The tutorial should give you an idea of what the calculator can do and how it works.
 
 [kaleidoscope]: http://llvm.org/docs/tutorial/index.html
 

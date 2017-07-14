@@ -4,17 +4,14 @@ import * as ast from './ast';
 import * as parser from './parser';
 import * as lexer from './lexer';
 
-/////////////////////////////////////////////////
-// Top Level
-/////////////////////////////////////////////////
-
-/*
- * Wrapper for various constructs that must be passed around
+/**
+ * Wrapper for various constructs that must be passed around.
  */
 export class Context {
   public mod: llvmc.Module;
   public builder: llvmc.Builder;
-  public namedValues: {[id:string] : llvmc.Value};
+  public namedValues: { [id:string]: llvmc.Value };
+  public parser = new parser.Parser();
 
   constructor(mod: llvmc.Module, builder: llvmc.Builder, namedValues: {[id:string] : llvmc.Value} = {}) {
     this.mod = mod;
@@ -29,7 +26,7 @@ export class Context {
 }
 
 function handleDefinition(context: Context) : void {
-  let funcAST: ast.FunctionAST|null = parser.parseDefinition();
+  let funcAST: ast.FunctionAST|null = context.parser.parseDefinition();
   if (funcAST) {
     let funcIR: llvmc.Function = funcAST.codegen(context);
     console.log("Read function definition:");
@@ -37,12 +34,12 @@ function handleDefinition(context: Context) : void {
     console.log("\n");
   } else {
     // Skip token for error recovery.
-    parser.getNextToken();
+    context.parser.getNextToken();
   }
 }
 
 function handleExtern(context: Context) : void {
-  let protoAST: ast.PrototypeAST|null = parser.parseExtern();
+  let protoAST: ast.PrototypeAST | null = context.parser.parseExtern();
   if (protoAST) {
     let funcIR: llvmc.Function = protoAST.codegen(context);
     console.log("Read extern:");
@@ -50,13 +47,13 @@ function handleExtern(context: Context) : void {
     console.log("\n");
   } else {
     // Skip token for error recovery.
-    parser.getNextToken();
+    context.parser.getNextToken();
   }
 }
 
 function handleTopLevelExpression(context: Context) : void {
   // Evaluate a top-level expression into an anonymous function.
-  let funcAST: ast.FunctionAST|null = parser.parseTopLevelExpr();
+  let funcAST: ast.FunctionAST|null = context.parser.parseTopLevelExpr();
   if (funcAST) {
     let funcIR: llvmc.Function = funcAST.codegen(context);
     console.log("Read top-level expression:");
@@ -64,7 +61,7 @@ function handleTopLevelExpression(context: Context) : void {
     console.log("\n");
   } else {
     // Skip token for error recovery.
-    parser.getNextToken();
+    context.parser.getNextToken();
   }
 }
 
@@ -85,8 +82,8 @@ function read() : void {
       rl.close();
     }
     else if (line !== "") {
-      lexer.reset(line);
-      parser.getNextToken();
+      context.parser.lex.reset(line);
+      context.parser.getNextToken();
       mainLoop(context);
     }
     rl.prompt();
@@ -98,11 +95,11 @@ function read() : void {
 
 /// top ::= definition | external | expression | ';'
 function mainLoop(context: Context) : void {
-  switch (parser.getCurTokID()) {
+  switch (context.parser.getCurTokID()) {
     case 'Tok_Eof':
       return;
     case ';': // ignore top-level semicolons.
-      parser.getNextToken();
+      context.parser.getNextToken();
       break;
     case 'Tok_Def':
       handleDefinition(context);
