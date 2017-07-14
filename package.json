@@ -1,6 +1,7 @@
 {
   "name": "llvmc",
-  "version": "1.0.0",
+  "description": "LLVM bindings via the C API",
+  "version": "1.0.1",
   "license": "MIT",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
