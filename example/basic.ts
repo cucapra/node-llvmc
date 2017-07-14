@@ -4,8 +4,9 @@ import * as llvmc from '../lib';
 let mod = llvmc.Module.create("some_module");
 
 // Dance to set the target triple and data layout.
-// First, we initialize the x86 target. (This is hard-coded for now; the C API
-// doesn't seem to have a way to initialize the default target. [TODO])
+// First, we initialize the x86 target. This is hard-coded for now; the C API
+// doesn't seem to have a way to initialize the default target:
+// http://lists.llvm.org/pipermail/llvm-dev/2013-February/059543.html
 llvmc.initX86Target();
 
 // Get the target triple and data layout for the default target (i.e., the

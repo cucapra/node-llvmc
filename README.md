@@ -40,8 +40,7 @@ The first example is really simple, but it shows all the pieces you need to gene
 
 You'll see textual LLVM IR dumped to standard output, and the script will also write LLVM bitcode to a file `out.bc`. You can type `clang out.bc` to compile the program to native code and then `./a.out` to execute it.
 
-We have also included a more complex example based on LLVM's venerable [Kaleidoscope][] tutorial.
-See [the example's README](example/kaleidoscope/README.md) for an introduction.
+We have also included a more complex example based on LLVM's venerable [Kaleidoscope][] tutorial. See [the example's README](example/kaleidoscope/README.md) for an introduction.
 
 [Kaleidoscope]: http://llvm.org/docs/tutorial/index.html
 
