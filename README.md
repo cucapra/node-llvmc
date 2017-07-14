@@ -21,7 +21,12 @@ Next, the dynamic linker will need to be able to find the shared library. If you
     $ export LD_LIBRARY_PATH=`brew --prefix llvm`/lib
 
 to put the appropriate "keg-only" library directory on your linker path.
-You should now be able to install and `require` the `llvmc` library.
+
+You should now be able to install and `require` the `llvmc` library. Installation works in the usual way:
+
+    $ yarn add llvmc
+    (or)
+    $ npm install --save llvmc
 
 
 Examples
@@ -52,7 +57,7 @@ There are two ways to use the library: a low-level interface and a set of friend
 
 ### Low-Level Bindings
 
-To use the direct bindings to the LLVM C API functions, import the `LLVM` object from the `llvmc` module. You can invoke the [C API functions][capi] as methods on this object:
+To use the direct bindings to the LLVM C API functions, import the `LLVM` object from the `llvmc` module. You can invoke the [C API functions][llvm-c] as methods on this object:
 
 ```typescript
 import { LLVM } from 'llvmc';
