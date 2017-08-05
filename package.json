@@ -5,6 +5,7 @@
   "license": "MIT",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
+  "repository": "cucapra/node-llvmc",
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "tsc"
